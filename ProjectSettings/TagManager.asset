@@ -3,7 +3,19 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - QDSUISharedThemeColor
+  - QDSUIToggleButton
+  - QDSUIIcon
+  - QDSUITextSecondaryColor
+  - QDSUIBorderlessButton
+  - QDSUIToggleSwitch
+  - QDSUITooltip
+  - QDSUIAccentColor
+  - QDSUISecondaryButton
+  - QDSUIToggleBorderlessButton
+  - QDSUIBackplateGradient
+  - QDSUISection
   layers:
   - Default
   - TransparentFX
@@ -15,8 +27,8 @@ TagManager:
   - 
   - 
   - 
-  - 
-  - 
+  - Nozzle
+  - Iron
   - 
   - 
   - 
