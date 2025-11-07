@@ -34,14 +34,10 @@ public class DrawMesh : MonoBehaviour
     private List<GameObject> storedWeldBeads = new List<GameObject>();
     private int weldCounter = 0;
 
-    void Start()
+    public void SetBeadParent(object parent)
     {
-        // Create weld parent if not assigned
-        if (weldParent == null)
-        {
-            GameObject parentObj = new GameObject("WeldBeads");
-            weldParent = parentObj.transform;
-        }
+        var parentTransform = parent as Transform;
+        weldParent = parentTransform;
     }
 
     private void CreateNewWeldObject()

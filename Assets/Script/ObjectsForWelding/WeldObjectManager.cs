@@ -3,14 +3,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Animations;
+using UnityEngine.Events;
 
 public class WeldObjectManager : MonoBehaviour
 {
     [SerializeField] private GameObject obj1;
     [SerializeField] private GameObject obj2;
-
+    public Transform bead;
+    public ObjectEventSO instantiateCompleteEvent;
     private bool isConnected = false;
     private ParentConstraint parentConstraint;
+
+    private void OnEnable()
+    {
+        instantiateCompleteEvent.RaiseEvent(bead, this);
+    }
+    
     public void ConnectWeldObjects()
     {
         if (obj1 == null || obj2 == null) return;
@@ -89,20 +97,33 @@ public class WeldObjectManager : MonoBehaviour
 
     private void CalculateAndSetOffsets(Vector3 targetLocalPos, Quaternion targetLocalRot)
     {
-        // Calculate local difference between obj1 and obj2 (both are children of this transform)
-        Vector3 translationOffset = obj2.transform.localPosition - obj1.transform.localPosition;
+        // Store obj2's current world position and rotation before constraint is applied
+        Vector3 obj2WorldPos = obj2.transform.position;
+        Quaternion obj2WorldRot = obj2.transform.rotation;
 
-        // Calculate local rotation difference
-        Quaternion rotationDifference = Quaternion.Inverse(obj1.transform.localRotation) * obj2.transform.localRotation;
+        // Calculate the offset from obj1 to obj2 in obj1's local space
+        Vector3 worldOffset = obj2WorldPos - obj1.transform.position;
+        Vector3 positionOffset = obj1.transform.InverseTransformDirection(worldOffset);
+    
+
+        // Calculate rotation offset (how much obj2 should differ from obj1's rotation)
+        Quaternion rotationOffset = Quaternion.Inverse(obj1.transform.rotation) * obj2WorldRot;
 
         // Set the offsets arrays (ParentConstraint expects arrays for multiple sources)
-        parentConstraint.translationOffsets = new Vector3[] { translationOffset };
-        parentConstraint.rotationOffsets = new Vector3[] { rotationDifference.eulerAngles };
+        parentConstraint.translationOffsets = new Vector3[] { positionOffset };
+        parentConstraint.rotationOffsets = new Vector3[] { rotationOffset.eulerAngles };
 
-        // Set at-rest values to preserve original local positions
+        // At-rest values: where obj2 should be when constraint weight = 0
+        // These should be obj2's current local position/rotation relative to its current parent
         parentConstraint.translationAtRest = targetLocalPos;
         parentConstraint.rotationAtRest = targetLocalRot.eulerAngles;
+
+        Debug.Log($"Position Offset: {positionOffset}");
+        Debug.Log($"Rotation Offset: {rotationOffset.eulerAngles}");
+        Debug.Log($"Translation At Rest: {targetLocalPos}");
+        Debug.Log($"Rotation At Rest: {targetLocalRot.eulerAngles}");
     }
+
 
 
 
