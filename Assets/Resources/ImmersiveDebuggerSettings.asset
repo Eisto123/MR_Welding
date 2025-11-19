@@ -13,15 +13,15 @@ MonoBehaviour:
   m_Name: ImmersiveDebuggerSettings
   m_EditorClassIdentifier: 
   debugTypes:
-  - AssemblyName: Meta.XR.MultiplayerBlocks.Shared
-    DebugTypes:
-    - Meta.XR.MultiplayerBlocks.Shared.CustomMatchmaking
-    - Meta.XR.MultiplayerBlocks.Shared.FriendsMatchmaking
   - AssemblyName: Meta.XR.ImmersiveDebugger
     DebugTypes:
     - TestSceneUsage
     - UIEditorSetup
-  immersiveDebuggerEnabled: 0
+  - AssemblyName: Meta.XR.MultiplayerBlocks.Shared
+    DebugTypes:
+    - Meta.XR.MultiplayerBlocks.Shared.CustomMatchmaking
+    - Meta.XR.MultiplayerBlocks.Shared.FriendsMatchmaking
+  immersiveDebuggerEnabled: 1
   immersiveDebuggerDisplayAtStartup: 0
   enableOnlyInDebugBuild: 0
   showInspectors: 0

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 0b162352140c37d43a0100da6ebb86c4
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 29678
+  packageName: MarkerBased AR Example
+  packageVersion: 1.2.8
+  assetPath: Assets/MarkerBasedARExample/MarkerBasedAR/MarkerDetector.cs
+  uploadId: 771768

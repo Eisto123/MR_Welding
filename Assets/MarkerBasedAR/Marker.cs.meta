@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: f68a54dba4360c14c9ab9e80724a381d
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 29678
+  packageName: MarkerBased AR Example
+  packageVersion: 1.2.8
+  assetPath: Assets/MarkerBasedARExample/MarkerBasedAR/Marker.cs
+  uploadId: 771768
