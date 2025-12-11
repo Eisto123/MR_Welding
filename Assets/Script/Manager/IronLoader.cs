@@ -6,6 +6,7 @@ public class IronLoader : MonoBehaviour
     public List<GameObject> ironPrefabs;
 
     private Dictionary<int, GameObject> ironDictionary;
+    private GameObject currentIron;
 
     void Awake()
     {
@@ -20,12 +21,12 @@ public class IronLoader : MonoBehaviour
         }
     }
 
-    private void InstantiateIronPrefab(int id, Vector3 position, Quaternion rotation)
+    private void InstantiateIronPrefab(int id, Vector3 position)
     {
         GameObject ironPrefab = GetIronById(id);
         if (ironPrefab != null)
         {
-            Instantiate(ironPrefab, position, rotation);
+            currentIron = Instantiate(ironPrefab, position, Quaternion.identity);
         }
     }
 
@@ -36,7 +37,19 @@ public class IronLoader : MonoBehaviour
         if (stepType == WeldingStepType.PlaceIron)
         {
             // Example: Load iron with ID 0 at origin
-            InstantiateIronPrefab(0, transform.position, transform.rotation);
+            InstantiateIronPrefab(0, transform.position);
+            if (currentIron != null)
+            {
+                currentIron.GetComponent<WeldObjectManager>().SetObjectsTransparent(true);
+            }
+            else
+            {
+                Debug.LogWarning("Failed to load iron.");
+            }
+        }
+        if (stepType == WeldingStepType.Tacking && currentIron != null)
+        {
+            currentIron.GetComponent<WeldObjectManager>().SetObjectsTransparent(false);
         }
     }
 
@@ -49,5 +62,7 @@ public class IronLoader : MonoBehaviour
         Debug.LogWarning($"Iron with ID {id} not found.");
         return null;
     }
+
+
 
 }

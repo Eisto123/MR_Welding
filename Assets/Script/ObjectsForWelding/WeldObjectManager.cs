@@ -9,6 +9,9 @@ public class WeldObjectManager : MonoBehaviour
 {
     [SerializeField] private GameObject obj1;
     [SerializeField] private GameObject obj2;
+
+    public Material Transparent;
+    public Material Solid;
     public Transform bead;
     public ObjectEventSO instantiateCompleteEvent;
     private bool isConnected = false;
@@ -122,6 +125,29 @@ public class WeldObjectManager : MonoBehaviour
         Debug.Log($"Rotation Offset: {rotationOffset.eulerAngles}");
         Debug.Log($"Translation At Rest: {targetLocalPos}");
         Debug.Log($"Rotation At Rest: {targetLocalRot.eulerAngles}");
+    }
+
+    public void SetObjectsTransparent(bool transparent)
+    {
+        Material targetMaterial = transparent ? Transparent : Solid;
+
+        if (obj1 != null)
+        {
+            Renderer renderer1 = obj1.GetComponent<Renderer>();
+            if (renderer1 != null)
+            {
+                renderer1.material = targetMaterial;
+            }
+        }
+
+        if (obj2 != null)
+        {
+            Renderer renderer2 = obj2.GetComponent<Renderer>();
+            if (renderer2 != null)
+            {
+                renderer2.material = targetMaterial;
+            }
+        }
     }
 
 

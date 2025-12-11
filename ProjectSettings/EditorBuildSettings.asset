@@ -5,11 +5,18 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Welding101.unity
     guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 0
+    path: Assets/MeshPaint.unity
+    guid: ee7b38b6204b5a347816783bb2b77f52
+  - enabled: 1
+    path: Assets/Scenes/Welding101 1.unity
+    guid: d71fb591742390143bc5b3949250f30b
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: d07a22ce20f279944b0a4388c97ed5f9,
       type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 4b8e7d944a4149a4cbaa9889965d78d9,
       type: 2}
+  m_UseUCBPForAssetBundles: 0

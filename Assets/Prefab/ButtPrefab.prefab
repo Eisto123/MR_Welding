@@ -15,7 +15,6 @@ GameObject:
   - component: {fileID: 979958407807585935}
   - component: {fileID: 6330675278788550749}
   - component: {fileID: 3262331694796468597}
-  - component: {fileID: 2756287411746382264}
   m_Layer: 11
   m_Name: Iron (1)
   m_TagString: Untagged
@@ -32,7 +31,7 @@ Transform:
   m_GameObject: {fileID: 1052750681801280914}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.05}
+  m_LocalPosition: {x: 0, y: 0.02, z: -0.05}
   m_LocalScale: {x: 0.2, y: 0.02, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -181,18 +180,6 @@ MonoBehaviour:
   _rigidbody: {fileID: 6330675278788550749}
   _kinematicWhileSelected: 1
   _throwWhenUnselected: 1
---- !u!114 &2756287411746382264
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1052750681801280914}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4cda1bb7ea61cb3478edaa8f9e8fbe6d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2184171629447343598
 GameObject:
   m_ObjectHideFlags: 0
@@ -208,7 +195,6 @@ GameObject:
   - component: {fileID: 5724223830999140420}
   - component: {fileID: 1126471835361635248}
   - component: {fileID: 4013932671392555365}
-  - component: {fileID: 296325351235056820}
   m_Layer: 11
   m_Name: Iron
   m_TagString: Untagged
@@ -225,7 +211,7 @@ Transform:
   m_GameObject: {fileID: 2184171629447343598}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.05}
+  m_LocalPosition: {x: 0, y: 0.02, z: 0.05}
   m_LocalScale: {x: 0.2, y: 0.02, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -373,18 +359,6 @@ MonoBehaviour:
   _rigidbody: {fileID: 1126471835361635248}
   _kinematicWhileSelected: 1
   _throwWhenUnselected: 1
---- !u!114 &296325351235056820
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2184171629447343598}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4cda1bb7ea61cb3478edaa8f9e8fbe6d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &4144166477896398588
 GameObject:
   m_ObjectHideFlags: 0
@@ -433,6 +407,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   obj1: {fileID: 1052750681801280914}
   obj2: {fileID: 2184171629447343598}
+  Transparent: {fileID: 2100000, guid: 4b9c44dad42c827488a595a02faef6e3, type: 2}
+  Solid: {fileID: 2100000, guid: ea5b12d70166e7b4383fd99575ab1cb8, type: 2}
   bead: {fileID: 5470378813223909488}
   instantiateCompleteEvent: {fileID: 11400000, guid: 21b18f642dd7cbe4ab2f86e63c0cd16b,
     type: 2}

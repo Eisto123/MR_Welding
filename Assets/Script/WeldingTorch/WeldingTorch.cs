@@ -5,7 +5,7 @@ using UnityEngine;
 public class WeldingTorch : MonoBehaviour
 {
     private bool isGrabbing = false;
-    private DrawMesh drawMesh;
+    private BeadPaint drawMesh;
     [SerializeField] private Transform tipPoint;
 
     [Header("Box Cast Settings")]
@@ -34,7 +34,7 @@ public class WeldingTorch : MonoBehaviour
     private Transform currentHitObject;
     void OnEnable()
     {
-        drawMesh = FindAnyObjectByType<DrawMesh>();
+        drawMesh = FindAnyObjectByType<BeadPaint>();
     }
     public void OnGrab()
     {
@@ -123,14 +123,23 @@ public class WeldingTorch : MonoBehaviour
     {
         if (isPressing)
         {
+            // if(!drawMesh.isDrawing)
+            // drawMesh.SetDrawingActive(true);
             if (PerformBoxCast())
             {
+                if(!drawMesh.isDrawing)
                 drawMesh.SetDrawingActive(true);
             }
             else
             {
+                if(drawMesh.isDrawing)
                 drawMesh.SetDrawingActive(false);
             }
+        }
+        else
+        {
+            if(drawMesh.isDrawing)
+            drawMesh.SetDrawingActive(false);
         }
     }
 
