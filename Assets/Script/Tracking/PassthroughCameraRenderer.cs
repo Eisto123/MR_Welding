@@ -66,31 +66,60 @@ public class PassthroughCameraRenderer : MonoBehaviour
     }
     private void InitializeMarkerTracking()
     {
-        // Step 1: Set up camera parameters for tracking
-        // These intrinsic parameters are essential for accurate marker pose estimation
+        // Wait until camera is ready
+        if (!passthroughCameraAccess.IsPlaying)
+        {
+            Debug.LogWarning("Camera not ready yet");
+            return;
+        }
+
         var intrinsics = passthroughCameraAccess.Intrinsics;
-        var cx = intrinsics.PrincipalPoint.x;  // Principal point X (optical center)
-        var cy = intrinsics.PrincipalPoint.y;  // Principal point Y (optical center)
-        var fx = intrinsics.FocalLength.x;     // Focal length X
-        var fy = intrinsics.FocalLength.y;     // Focal length Y
-        var width = intrinsics.SensorResolution.x;   // Image width
-        var height = intrinsics.SensorResolution.y;  // Image height
-
-        // Initialize the ArUco tracking with camera parameters
-        m_arucoMarkerTracking.Initialize(width, height, cx, cy, fx, fy);
-
-        // Step 2: Build marker dictionary from serialized list
-        // This maps marker IDs to the GameObjects that should be positioned at each marker
+        
+        // Get actual texture dimensions
+        int actualWidth = passthroughCameraAccess.CurrentResolution.x;   // 1280
+        int actualHeight = passthroughCameraAccess.CurrentResolution.y;  // 960
+        int sensorWidth = intrinsics.SensorResolution.x;                 // 1280
+        int sensorHeight = intrinsics.SensorResolution.y;                // 1280
+        
+        Debug.Log($"Sensor resolution: {sensorWidth}x{sensorHeight}");
+        Debug.Log($"Actual texture size: {actualWidth}x{actualHeight}");
+        
+        // Calculate crop region (centered crop)
+        float cropOffsetX = (sensorWidth - actualWidth) / 2.0f;   // 0
+        float cropOffsetY = (sensorHeight - actualHeight) / 2.0f; // 160
+        
+        Debug.Log($"Crop offset: X={cropOffsetX}, Y={cropOffsetY}");
+        
+        // IMPORTANT: Adjust principal point for the crop offset
+        // The principal point shifts when you crop the image
+        float cx = intrinsics.PrincipalPoint.x - cropOffsetX;
+        float cy = intrinsics.PrincipalPoint.y - cropOffsetY;
+        
+        // Focal lengths remain the same (no scaling needed since width is same)
+        float fx = intrinsics.FocalLength.x;
+        float fy = intrinsics.FocalLength.y;
+        
+        Debug.Log($"Original principal point: ({intrinsics.PrincipalPoint.x}, {intrinsics.PrincipalPoint.y})");
+        Debug.Log($"Adjusted principal point: ({cx}, {cy})");
+        Debug.Log($"Focal length: ({fx}, {fy})");
+        
+        // Initialize with ACTUAL dimensions and ADJUSTED parameters
+        m_arucoMarkerTracking.Initialize(actualWidth, actualHeight, cx, cy, fx, fy);
+        
         BuildMarkerDictionary();
-
-        // Step 3: Set up texture for visualization
-        //ConfigureResultTexture(width, height);
     }
     private void ProcessMarkerTracking()
     {
+        Texture cameraTexture = passthroughCameraAccess.GetTexture();
+    
+        if (cameraTexture == null)
+        {
+            Debug.LogWarning("Camera texture is null");
+            return;
+        }
         // Step 1: Detect ArUco markers in the current camera frame
         //WebCamTexture webCamTexture = passthroughCameraAccess.GetTexture() as WebCamTexture;
-        m_arucoMarkerTracking.DetectMarker(passthroughCameraAccess.GetTexture(), m_resultTexture);
+        m_arucoMarkerTracking.DetectMarker(cameraTexture, null);
 
         // Step 2: Estimate the pose of markers and position 3D objects accordingly
         // This maps the 2D marker positions to 3D space using the camera parameters

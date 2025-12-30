@@ -6,7 +6,7 @@ QualitySettings:
   serializedVersion: 5
   m_CurrentQuality: 0
   m_QualitySettings:
-  - serializedVersion: 3
+  - serializedVersion: 4
     name: Performant
     pixelLightCount: 0
     shadows: 0
@@ -28,8 +28,11 @@ QualitySettings:
     realtimeReflectionProbes: 0
     billboardsFaceCameraPosition: 0
     useLegacyDetailDistribution: 1
+    adaptiveVsync: 0
     vSyncCount: 0
     realtimeGICPUUsage: 25
+    adaptiveVsyncExtraA: 0
+    adaptiveVsyncExtraB: 0
     lodBias: 0.4
     maximumLODLevel: 0
     enableLODCrossFade: 1
@@ -64,11 +67,13 @@ QualitySettings:
     GameCoreXboxOne: 0
     Lumin: 0
     Nintendo Switch: 0
+    Nintendo Switch 2: 0
     PS4: 0
     PS5: 0
     Server: 0
     Stadia: 0
     Standalone: 0
+    VisionOS: 0
     WebGL: 0
     Windows Store Apps: 0
     XboxOne: 0
