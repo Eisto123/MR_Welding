@@ -6,6 +6,7 @@ public class WeldingTorch : MonoBehaviour
 {
     private bool isGrabbing = false;
     private BeadPaint drawMesh;
+    private DataRecorder dataRecorder;
     [SerializeField] private Transform tipPoint;
 
     [Header("Box Cast Settings")]
@@ -28,6 +29,8 @@ public class WeldingTorch : MonoBehaviour
     [Tooltip("Only allow welding when hitting these layers")]
     public LayerMask weldableLayers = -1;
 
+    private WeldingStepType currentWeldingStepType;
+
     private bool isPressing = false; 
 
     private RaycastHit[] hitResults = new RaycastHit[10]; // Pre-allocated array for performance
@@ -35,6 +38,7 @@ public class WeldingTorch : MonoBehaviour
     void OnEnable()
     {
         drawMesh = FindAnyObjectByType<BeadPaint>();
+        dataRecorder = FindAnyObjectByType<DataRecorder>();
     }
     public void OnGrab()
     {
@@ -44,6 +48,12 @@ public class WeldingTorch : MonoBehaviour
     {
         isGrabbing = false;
     }
+
+    public void UpdateCurrentStep(object step)
+    {
+        currentWeldingStepType = (WeldingStepType)step;
+    }
+
     private bool PerformBoxCast()
     {
         if (tipPoint == null) return false;
@@ -123,17 +133,19 @@ public class WeldingTorch : MonoBehaviour
     {
         if (isPressing)
         {
-            // if(!drawMesh.isDrawing)
-            // drawMesh.SetDrawingActive(true);
+            if (currentWeldingStepType != WeldingStepType.Tacking) return;
+
             if (PerformBoxCast())
             {
                 if(!drawMesh.isDrawing)
                 drawMesh.SetDrawingActive(true);
+                dataRecorder.StartRecording();
             }
             else
             {
                 if(drawMesh.isDrawing)
                 drawMesh.SetDrawingActive(false);
+                dataRecorder.StopRecording();
             }
         }
         else

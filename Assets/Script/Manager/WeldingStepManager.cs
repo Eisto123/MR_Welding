@@ -83,12 +83,13 @@ public class WeldingStepManager : MonoBehaviour
 
             case WeldingStepType.Tacking:
                 Debug.Log("Processing Tacking Step");
-                // Add logic for Tacking step
+                // enable tracking data from the welding gun
                 break;
             case WeldingStepType.Completed:
                 Debug.Log("Welding Completed!");
-                // Add logic for Completed step
+                // visualize data for review.
                 break;
+            
             default:
                 Debug.LogWarning("Unknown welding step type");
                 break;
