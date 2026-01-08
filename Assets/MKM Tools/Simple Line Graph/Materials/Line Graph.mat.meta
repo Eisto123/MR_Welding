@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 2927906ab721b534e93b6903d5a1a898
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 297010
+  packageName: Simple Line Graph
+  packageVersion: 1.0.4
+  assetPath: Assets/MKM Tools/Simple Line Graph/Materials/Line Graph.mat
+  uploadId: 841422

@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 7a6cca76ccc5f184b90a4670ec1efec4
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 297010
+  packageName: Simple Line Graph
+  packageVersion: 1.0.4
+  assetPath: Assets/MKM Tools/Simple Line Graph/Prefabs/UI/Graph/Example 1/Highlight.prefab
+  uploadId: 841422

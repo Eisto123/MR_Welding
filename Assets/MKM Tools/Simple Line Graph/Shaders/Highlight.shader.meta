@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 38de4aba8ec45ed409c455b34d71fa04
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  preprocessorOverride: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 297010
+  packageName: Simple Line Graph
+  packageVersion: 1.0.4
+  assetPath: Assets/MKM Tools/Simple Line Graph/Shaders/Highlight.shader
+  uploadId: 841422

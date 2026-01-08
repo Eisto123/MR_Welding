@@ -6,7 +6,7 @@ using UnityEngine;
 public class WeldingData
 {
     public Vector3 tipPosition;
-    public quaternion tipRotation;
+    public Vector3 tipLocalRotation;
     public float currentTravelTime;
 
 }
@@ -20,7 +20,7 @@ public class DataRecorder : MonoBehaviour
 
     private bool isRecording = false;
     private float recordingTime = 0f;
-    private float recordingInterval = 0.2f; // Record data every 0.2 seconds
+    public float recordingInterval = 0.5f; // Record data every 0.5 seconds
     private float totalWeldingTime = 0f; // Accumulates only during recording
 
     public void StartRecording()
@@ -45,11 +45,16 @@ public class DataRecorder : MonoBehaviour
                 WeldingData data = new WeldingData
                 {
                     tipPosition = weldingTip.position,
-                    tipRotation = weldingTip.rotation,
+                    tipLocalRotation = weldingTip.localEulerAngles,
                     currentTravelTime = totalWeldingTime
                 };
                 weldingDataList.Add(data);
             }
         }
+    }
+
+    public List<WeldingData> GetWeldingData()
+    {
+        return weldingDataList;
     }
 }

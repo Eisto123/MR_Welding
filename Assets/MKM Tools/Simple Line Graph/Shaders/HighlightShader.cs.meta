@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: c88a536f01e14068b5a38112216cecfd
+timeCreated: 1727551098
+AssetOrigin:
+  serializedVersion: 1
+  productId: 297010
+  packageName: Simple Line Graph
+  packageVersion: 1.0.4
+  assetPath: Assets/MKM Tools/Simple Line Graph/Shaders/HighlightShader.cs
+  uploadId: 841422

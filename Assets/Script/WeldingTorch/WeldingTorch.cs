@@ -137,21 +137,22 @@ public class WeldingTorch : MonoBehaviour
 
             if (PerformBoxCast())
             {
-                if(!drawMesh.isDrawing)
-                drawMesh.SetDrawingActive(true);
+                if (!drawMesh.isDrawing)
+                    drawMesh.SetDrawingActive(true);
                 dataRecorder.StartRecording();
             }
             else
             {
-                if(drawMesh.isDrawing)
-                drawMesh.SetDrawingActive(false);
+                if (drawMesh.isDrawing)
+                    drawMesh.SetDrawingActive(false);
                 dataRecorder.StopRecording();
             }
         }
         else
         {
-            if(drawMesh.isDrawing)
-            drawMesh.SetDrawingActive(false);
+            if (drawMesh.isDrawing)
+                drawMesh.SetDrawingActive(false);
+            dataRecorder.StopRecording();
         }
     }
 
@@ -159,7 +160,6 @@ public class WeldingTorch : MonoBehaviour
     {
         if (!isGrabbing) return;
         isPressing = true;
-
     }
 
     public void StopWelding()
@@ -171,6 +171,7 @@ public class WeldingTorch : MonoBehaviour
         }
         isPressing = false;
         drawMesh.SetDrawingActive(false);
+        dataRecorder.StopRecording();  // Add this: Explicitly stop recording on release
     }
     
     void OnDrawGizmos()

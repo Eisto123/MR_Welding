@@ -55,7 +55,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   blockId: 7358e191-33b7-43ca-b066-b2f00531ac66
-  instanceId: a5017784-fd1d-4545-b969-d51e9a4e9591
+  instanceId: 40dcee37-8577-4bef-8f06-6b0d0899abd6
   version: 1
   installationRoutineCheckpoint:
     _installationRoutineId: 
@@ -196,7 +196,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tipPoint: {fileID: 6287787861562183797}
-  boxSize: {x: 0.02, y: 0.02, z: 0.02}
+  boxSize: {x: 0.02, y: 0.01, z: 0.01}
   castDistance: 0
   localOffset: {x: 0, y: 0, z: 0}
   detectionLayers:
@@ -308,7 +308,7 @@ Transform:
   m_GameObject: {fileID: 5772225418811699112}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.48, y: 0, z: 0}
+  m_LocalPosition: {x: -0.51, y: 0, z: -0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -471,7 +471,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   blockId: f8766c17-aaf8-4b55-9431-de8deea83842
-  instanceId: baa8ae5c-d760-43eb-9c8c-c6b8cebdabfd
+  instanceId: 6e87ab64-18ad-4cfc-931d-4b783ab54b0d
   version: 1
   installationRoutineCheckpoint:
     _installationRoutineId: f8338144-8280-4ff6-9455-ae2bb9c20fe8

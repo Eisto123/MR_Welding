@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 023efc5656dc4877af34133bbb01c598
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 297010
+  packageName: Simple Line Graph
+  packageVersion: 1.0.4
+  assetPath: Assets/MKM Tools/Simple Line Graph/Scripts/UI/Statistics/LineGraph.cs
+  uploadId: 841422

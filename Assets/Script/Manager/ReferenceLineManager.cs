@@ -4,23 +4,90 @@ using UnityEngine;
 
 public class ReferenceLineManager : MonoBehaviour
 {
-    public List<Vector3> _keyPoints = new List<Vector3>();
-    public int _resolution = 10; // Points per unit length
+    // Public fields for the two objects defining the reference line
+    public Transform startObject;  // The object at the "negative length" end
+    public Transform endObject;    // The object at the "positive length" end
+
+    public int _resolution = 10; // Total number of points (not per unit; adjust as needed for density)
     public LineRenderer _lineRenderer;
     private List<Vector3> _referenceLinePoints = new List<Vector3>();
+    private List<Vector3> _keyPoints = new List<Vector3>();  // Switched back to Vector3 for dynamic calculation
 
-    void OnEnable()
+    void Start()
     {
+        // Initial setup (optional, in case Update hasn't run yet)
+        UpdateReferenceLine();
+    }
+
+    void Update()
+    {
+        // Update the reference line every frame to follow the objects
+        UpdateReferenceLine();
+    }
+
+    private void UpdateReferenceLine()
+    {
+        if (startObject == null || endObject == null)
+        {
+            Debug.LogWarning("StartObject or EndObject is not assigned!");
+            return;
+        }
+
+        // Get bounds for corner calculations (assumes Renderer component exists)
+        Renderer startRenderer = startObject.GetComponent<Renderer>();
+        Renderer endRenderer = endObject.GetComponent<Renderer>();
+        if (startRenderer == null || endRenderer == null)
+        {
+            Debug.LogWarning("StartObject or EndObject must have a Renderer component!");
+            return;
+        }
+
+        Bounds startBounds = startRenderer.bounds;
+        Bounds endBounds = endRenderer.bounds;
+
+        // Calculate corners on the top face (max Y)
+        // StartObject bottom-left: min X, max Y, min Z
+        Vector3 startBottomLeft = new Vector3(startBounds.min.x, startBounds.max.y, startBounds.min.z);
+        // StartObject bottom-right: max X, max Y, min Z
+        Vector3 startBottomRight = new Vector3(startBounds.max.x, startBounds.max.y, startBounds.min.z);
+        // EndObject top-left: min X, max Y, max Z
+        Vector3 endTopLeft = new Vector3(endBounds.min.x, endBounds.max.y, endBounds.max.z);
+        // EndObject top-right: max X, max Y, max Z
+        Vector3 endTopRight = new Vector3(endBounds.max.x, endBounds.max.y, endBounds.max.z);
+
+        // Start point: midpoint between startObject's bottom-left and endObject's top-left
+        Vector3 startPoint = (startBottomLeft + endTopLeft) / 2f;
+
+        // End point: midpoint between startObject's bottom-right and endObject's top-right
+        Vector3 endPoint = (startBottomRight + endTopRight) / 2f;
+
+        // Update _keyPoints with the new start and end points
+        _keyPoints.Clear();
+        _keyPoints.Add(startPoint);
+        _keyPoints.Add(endPoint);
+
+        // Regenerate the line
         SetupLineRenderer();
         GenerateReferenceLinePoints();
     }
 
     private void SetupLineRenderer()
     {
-        if(_lineRenderer != null)
+        if (_lineRenderer != null)
         {
+            // Ensure the LineRenderer uses local space (relative to its transform)
+            _lineRenderer.useWorldSpace = false;
+
             _lineRenderer.positionCount = _keyPoints.Count;
-            _lineRenderer.SetPositions(_keyPoints.ToArray());
+
+            // Transform world-space _keyPoints to local positions relative to the LineRenderer's transform
+            Vector3[] localPositions = new Vector3[_keyPoints.Count];
+            for (int i = 0; i < _keyPoints.Count; i++)
+            {
+                localPositions[i] = _lineRenderer.transform.InverseTransformPoint(_keyPoints[i]);
+            }
+
+            _lineRenderer.SetPositions(localPositions);
         }
     }
 
@@ -44,8 +111,6 @@ public class ReferenceLineManager : MonoBehaviour
         // Calculate total number of points based on resolution
         int totalPoints = _resolution;
         float segmentLength = totalLength / (totalPoints - 1);
-
-        Debug.Log($"Total path length: {totalLength:F3}m, Generating {totalPoints} points");
 
         // Generate points along the path
         _referenceLinePoints.Add(_keyPoints[0]); // Start point
@@ -82,8 +147,6 @@ public class ReferenceLineManager : MonoBehaviour
         }
 
         _referenceLinePoints.Add(_keyPoints[^1]); // End point
-
-        Debug.Log($"Generated {_referenceLinePoints.Count} reference line points");
     }
 
     // Optional: Visualize the reference points in Scene view
@@ -111,21 +174,49 @@ public class ReferenceLineManager : MonoBehaviour
         return new List<Vector3>(_referenceLinePoints);
     }
 
-    // Get the closest point on the reference line to a given position
-    public Vector3 GetClosestPointOnLine(Vector3 position, out float distance, out int nearestIndex)
+    // Get the closest point on the reference line (continuous polyline) to a given position
+    // Returns the closest point, distance to it, and the index of the segment it belongs to
+    public Vector3 GetClosestPointOnLine(Vector3 position, out float distance, out int segmentIndex)
     {
+        if (_referenceLinePoints.Count < 2)
+        {
+            // Fallback: if not enough points, return the first point
+            distance = Vector3.Distance(position, _referenceLinePoints[0]);
+            segmentIndex = 0;
+            return _referenceLinePoints[0];
+        }
+
         Vector3 closestPoint = _referenceLinePoints[0];
         distance = float.MaxValue;
-        nearestIndex = 0;
+        segmentIndex = 0;
 
-        for (int i = 0; i < _referenceLinePoints.Count; i++)
+        // Iterate through each segment (pair of consecutive points)
+        for (int i = 0; i < _referenceLinePoints.Count - 1; i++)
         {
-            float dist = Vector3.Distance(position, _referenceLinePoints[i]);
-            if (dist < distance)
+            Vector3 a = _referenceLinePoints[i];
+            Vector3 b = _referenceLinePoints[i + 1];
+            
+            // Compute closest point on the finite line segment [a, b]
+            Vector3 ab = b - a;
+            float abLengthSq = Vector3.Dot(ab, ab);
+            if (abLengthSq == 0f)
             {
-                distance = dist;
-                closestPoint = _referenceLinePoints[i];
-                nearestIndex = i;
+                // Degenerate segment (a == b), skip or treat as point
+                continue;
+            }
+            
+            // Project position onto the infinite line, then clamp to segment
+            float t = Vector3.Dot(position - a, ab) / abLengthSq;
+            t = Mathf.Clamp01(t); // Clamp to [0, 1] for finite segment
+            Vector3 candidatePoint = a + t * ab;
+            
+            // Check distance to this candidate
+            float candidateDistance = Vector3.Distance(position, candidatePoint);
+            if (candidateDistance < distance)
+            {
+                distance = candidateDistance;
+                closestPoint = candidatePoint;
+                segmentIndex = i;
             }
         }
 
@@ -137,7 +228,8 @@ public class ReferenceLineManager : MonoBehaviour
     {
         if (_referenceLinePoints.Count == 0) return 0f;
 
-        GetClosestPointOnLine(position, out float distance, out int nearestIndex);
-        return (float)nearestIndex / (_referenceLinePoints.Count - 1);
+        GetClosestPointOnLine(position, out float distance, out int segmentIndex);
+        // Approximate progress: segmentIndex / totalSegments, but could refine with exact position along segment
+        return (float)segmentIndex / (_referenceLinePoints.Count - 1);
     }
 }

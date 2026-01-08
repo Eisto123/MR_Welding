@@ -369,6 +369,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8875397528626901206}
   - component: {fileID: 8215323972559506522}
+  - component: {fileID: 7847218295277835142}
   m_Layer: 0
   m_Name: lineRenderer
   m_TagString: Untagged
@@ -498,6 +499,22 @@ LineRenderer:
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
+--- !u!114 &7847218295277835142
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2964049411061219411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e40f0bf58459f6e418db999e19eb4931, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startObject: {fileID: 7256515302593779139}
+  endObject: {fileID: 5422713302525588260}
+  _resolution: 20
+  _lineRenderer: {fileID: 8215323972559506522}
 --- !u!1 &4144166477896398588
 GameObject:
   m_ObjectHideFlags: 0
@@ -531,7 +548,6 @@ Transform:
   - {fileID: 7256515302593779139}
   - {fileID: 5422713302525588260}
   - {fileID: 8875397528626901206}
-  - {fileID: 6852843535225287733}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &321785055991614697
@@ -820,52 +836,3 @@ MonoBehaviour:
   _releaseDistance: 0
   _resetGrabOnGrabsUpdated: 1
   _physicsGrabbable: {fileID: 0}
---- !u!1 &7828219363684130479
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6852843535225287733}
-  - component: {fileID: 1932206475242116576}
-  m_Layer: 0
-  m_Name: ReferenceManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &6852843535225287733
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7828219363684130479}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 2005266516116652211}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1932206475242116576
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7828219363684130479}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e40f0bf58459f6e418db999e19eb4931, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _keyPoints:
-  - {x: -0.098, y: 0.035, z: 0}
-  - {x: 0.098, y: 0.035, z: 0}
-  _resolution: 20
-  _lineRenderer: {fileID: 8215323972559506522}
