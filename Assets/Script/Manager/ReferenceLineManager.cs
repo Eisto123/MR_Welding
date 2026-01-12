@@ -10,19 +10,69 @@ public class ReferenceLineManager : MonoBehaviour
 
     public int _resolution = 10; // Total number of points (not per unit; adjust as needed for density)
     public LineRenderer _lineRenderer;
+    private DataRecorder dataRecorder; // Found at runtime
     private List<Vector3> _referenceLinePoints = new List<Vector3>();
     private List<Vector3> _keyPoints = new List<Vector3>();  // Switched back to Vector3 for dynamic calculation
+    private bool isLineFrozen = false; // Track if line has been frozen
+    
+    // Store the local offsets when freezing
+    private Vector3 startPointLocalOffset;
+    private Vector3 endPointLocalOffset;
 
     void Start()
     {
-        // Initial setup (optional, in case Update hasn't run yet)
-        UpdateReferenceLine();
+        // Find DataRecorder in the scene
+        dataRecorder = FindAnyObjectByType<DataRecorder>();
     }
 
     void Update()
     {
-        // Update the reference line every frame to follow the objects
-        UpdateReferenceLine();
+        // Check if we should freeze the line (once recorder has data)
+        if (dataRecorder != null && !isLineFrozen)
+        {
+            if (dataRecorder.GetWeldingData().Count > 0)
+            {
+                CaptureLineOffsets();
+                isLineFrozen = true;
+            }
+        }
+
+        // Update the reference line every frame
+        if (!isLineFrozen)
+        {
+            UpdateReferenceLine();
+        }
+        else
+        {
+            UpdateFrozenReferenceLine();
+        }
+    }
+
+    private void CaptureLineOffsets()
+    {
+        if (startObject == null || _keyPoints.Count < 2) return;
+
+        // Calculate local offsets from startObject to the start and end points
+        startPointLocalOffset = startObject.InverseTransformPoint(_keyPoints[0]);
+        endPointLocalOffset = startObject.InverseTransformPoint(_keyPoints[1]);
+    }
+
+    private void UpdateFrozenReferenceLine()
+    {
+        if (startObject == null) return;
+
+        // Transform the stored local offsets back to world space using startObject's current transform
+        Vector3 startPoint = startObject.TransformPoint(startPointLocalOffset);
+        Vector3 endPoint = startObject.TransformPoint(endPointLocalOffset);
+
+        // Update _keyPoints with the transformed points
+        _keyPoints.Clear();
+        _keyPoints.Add(startPoint);
+        _keyPoints.Add(endPoint);
+
+        // Regenerate the line
+        SetupLineRenderer();
+        GenerateReferenceLinePoints();
     }
 
     private void UpdateReferenceLine()
