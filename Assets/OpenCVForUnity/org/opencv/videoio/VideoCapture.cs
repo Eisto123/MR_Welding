@@ -901,7 +901,7 @@ namespace OpenCVForUnity.VideoioModule
         [return: MarshalAs(UnmanagedType.U1)]
         private static extern bool videoio_VideoCapture_getExceptionMode_10(IntPtr nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void videoio_VideoCapture_delete(IntPtr nativeObj);
 

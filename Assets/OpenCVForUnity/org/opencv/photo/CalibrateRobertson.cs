@@ -144,7 +144,7 @@ namespace OpenCVForUnity.PhotoModule
         [DllImport(LIBNAME)]
         private static extern IntPtr photo_CalibrateRobertson_getRadiance_10(IntPtr nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void photo_CalibrateRobertson_delete(IntPtr nativeObj);
 

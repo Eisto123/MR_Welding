@@ -112,7 +112,7 @@ namespace OpenCVForUnity.TextModule
         [DllImport(LIBNAME)]
         private static extern IntPtr text_TextDetectorCNN_create_10(string modelArchFilename, string modelWeightsFilename);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void text_TextDetectorCNN_delete(IntPtr nativeObj);
 

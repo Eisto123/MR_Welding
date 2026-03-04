@@ -13,10 +13,10 @@ namespace OpenCVForUnity.CoreModule
     public partial class Core
     {
         // these constants are wrapped inside functions to prevent inlining
-        private static string getVersion() { return "4.12.0"; }
+        private static string getVersion() { return "4.13.0"; }
         private static string getNativeLibraryName() { return "opencvforunity"; }
         private static int getVersionMajorJ() { return 4; }
-        private static int getVersionMinorJ() { return 12; }
+        private static int getVersionMinorJ() { return 13; }
         private static int getVersionRevisionJ() { return 0; }
         private static string getVersionStatusJ() { return ""; }
 
@@ -2190,13 +2190,13 @@ namespace OpenCVForUnity.CoreModule
         ///  are taken from the input array. That is, the function processes each element of src as follows:
         ///  \f[\texttt{dst} (I)  \leftarrow \texttt{lut(src(I) + d)}\f]
         ///  where
-        ///  \f[d =  \fork{0}{if \(\texttt{src}\) has depth \(\texttt{CV_8U}\)}{128}{if \(\texttt{src}\) has depth \(\texttt{CV_8S}\)}\f]
+        ///  \f[d =  \forkthree{0}{if \(\texttt{src}\) has depth \(\texttt{CV_8U}\) or \(\texttt{CV_16U}\)}{128}{if \(\texttt{src}\) has depth \(\texttt{CV_8S}\)}{32768}{if \(\texttt{src}\) has depth \(\texttt{CV_16S}\)}\f]
         /// </remarks>
         /// <param name="src">
-        /// input array of 8-bit elements.
+        /// input array of 8-bit or 16-bit integer elements.
         /// </param>
         /// <param name="lut">
-        /// look-up table of 256 elements; in case of multi-channel input array, the table should
+        /// look-up table of 256 elements (if src has depth CV_8U or CV_8S) or 65536 elements(if src has depth CV_16U or CV_16S); in case of multi-channel input array, the table should
         ///  either have a single channel (in this case the same table is used for all channels) or the same
         ///  number of channels as in the input array.
         /// </param>
@@ -5352,13 +5352,17 @@ namespace OpenCVForUnity.CoreModule
         //
 
         /// <summary>
-        ///  Replaces NaNs by given number
+        ///  Replaces NaNs (Not-a-Number values) in a matrix with the specified value.
         /// </summary>
+        /// <remarks>
+        ///  This function modifies the input matrix in-place.
+        ///  The input matrix must be of type `CV_32F` or `CV_64F`; other types are not supported.
+        /// </remarks>
         /// <param name="a">
-        /// input/output matrix (CV_32F type).
+        /// Input/output matrix (CV_32F or CV_64F type).
         /// </param>
         /// <param name="val">
-        /// value to convert the NaNs
+        /// Value used to replace NaNs (defaults to 0).
         /// </param>
         public static void patchNaNs(Mat a, double val)
         {
@@ -5370,13 +5374,17 @@ namespace OpenCVForUnity.CoreModule
         }
 
         /// <summary>
-        ///  Replaces NaNs by given number
+        ///  Replaces NaNs (Not-a-Number values) in a matrix with the specified value.
         /// </summary>
+        /// <remarks>
+        ///  This function modifies the input matrix in-place.
+        ///  The input matrix must be of type `CV_32F` or `CV_64F`; other types are not supported.
+        /// </remarks>
         /// <param name="a">
-        /// input/output matrix (CV_32F type).
+        /// Input/output matrix (CV_32F or CV_64F type).
         /// </param>
         /// <param name="val">
-        /// value to convert the NaNs
+        /// Value used to replace NaNs (defaults to 0).
         /// </param>
         public static void patchNaNs(Mat a)
         {

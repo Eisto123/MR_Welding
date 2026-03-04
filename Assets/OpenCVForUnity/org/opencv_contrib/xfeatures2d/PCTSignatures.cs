@@ -1462,7 +1462,7 @@ namespace OpenCVForUnity.Xfeatures2dModule
         [DllImport(LIBNAME)]
         private static extern void xfeatures2d_PCTSignatures_setDistanceFunction_10(IntPtr nativeObj, int distanceFunction);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void xfeatures2d_PCTSignatures_delete(IntPtr nativeObj);
 

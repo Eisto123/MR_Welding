@@ -76,7 +76,7 @@ namespace OpenCVForUnity.FaceModule
 
 
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void face_FacemarkTrain_delete(IntPtr nativeObj);
 

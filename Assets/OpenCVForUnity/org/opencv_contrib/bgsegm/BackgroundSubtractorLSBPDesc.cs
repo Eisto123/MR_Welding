@@ -54,7 +54,7 @@ namespace OpenCVForUnity.BgsegmModule
 
 
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void bgsegm_BackgroundSubtractorLSBPDesc_delete(IntPtr nativeObj);
 

@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: fec7d7f2d70a92940b330379a59b5d11
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 21088
+  packageName: OpenCV for Unity
+  packageVersion: 3.0.0
+  assetPath: Assets/OpenCVForUnity/StreamingAssets/OpenCVForUnityExamples/features2d/box_in_scene.png
+  uploadId: 796640

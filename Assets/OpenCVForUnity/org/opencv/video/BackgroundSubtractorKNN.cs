@@ -108,7 +108,7 @@ namespace OpenCVForUnity.VideoModule
         ///  Sets the number of data samples in the background model.
         /// </summary>
         /// <remarks>
-        ///      The model needs to be reinitalized to reserve memory.
+        ///      The model needs to be reinitialized to reserve memory.
         /// </remarks>
         public void setNSamples(int _nN)
         {
@@ -377,7 +377,7 @@ namespace OpenCVForUnity.VideoModule
         [DllImport(LIBNAME)]
         private static extern void video_BackgroundSubtractorKNN_setShadowThreshold_10(IntPtr nativeObj, double threshold);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void video_BackgroundSubtractorKNN_delete(IntPtr nativeObj);
 

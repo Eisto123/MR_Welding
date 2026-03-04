@@ -362,7 +362,7 @@ namespace OpenCVForUnity.Xfeatures2dModule
         [return: MarshalAs(UnmanagedType.U1)]
         private static extern bool xfeatures2d_VGG_getUseNormalizeDescriptor_10(IntPtr nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void xfeatures2d_VGG_delete(IntPtr nativeObj);
 

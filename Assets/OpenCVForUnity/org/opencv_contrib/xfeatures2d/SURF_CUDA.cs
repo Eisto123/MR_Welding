@@ -487,7 +487,7 @@ namespace OpenCVForUnity.Xfeatures2dModule
         [DllImport(LIBNAME)]
         private static extern float xfeatures2d_SURF_1CUDA_get_1keypointsRatio_10(IntPtr nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void xfeatures2d_SURF_1CUDA_delete(IntPtr nativeObj);
 

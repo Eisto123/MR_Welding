@@ -203,7 +203,7 @@ namespace OpenCVForUnity.XphotoModule
         [DllImport(LIBNAME)]
         private static extern void xphoto_TonemapDurand_setSigmaColor_10(IntPtr nativeObj, float sigma_color);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void xphoto_TonemapDurand_delete(IntPtr nativeObj);
 

@@ -215,7 +215,7 @@ namespace OpenCVForUnity.ObjdetectModule
         [DllImport(LIBNAME)]
         private static extern void objdetect_QRCodeEncoder_1Params_set_1structure_1number_10(IntPtr nativeObj, int structure_number);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void objdetect_QRCodeEncoder_1Params_delete(IntPtr nativeObj);
 

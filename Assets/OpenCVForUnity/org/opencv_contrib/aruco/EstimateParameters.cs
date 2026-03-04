@@ -198,7 +198,7 @@ namespace OpenCVForUnity.ArucoModule
         [DllImport(LIBNAME)]
         private static extern void aruco_EstimateParameters_set_1solvePnPMethod_10(IntPtr nativeObj, int solvePnPMethod);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void aruco_EstimateParameters_delete(IntPtr nativeObj);
 

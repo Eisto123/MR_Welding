@@ -294,7 +294,7 @@ namespace OpenCVForUnity.XimgprocModule
         [DllImport(LIBNAME)]
         private static extern void ximgproc_SuperpixelSEEDS_getLabelContourMask_11(IntPtr nativeObj, IntPtr image_nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void ximgproc_SuperpixelSEEDS_delete(IntPtr nativeObj);
 

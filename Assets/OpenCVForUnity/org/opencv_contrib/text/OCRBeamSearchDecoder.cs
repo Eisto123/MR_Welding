@@ -309,7 +309,7 @@ namespace OpenCVForUnity.TextModule
         [DllImport(LIBNAME)]
         private static extern IntPtr text_OCRBeamSearchDecoder_create_12(IntPtr classifier_nativeObj, string vocabulary, IntPtr transition_probabilities_table_nativeObj, IntPtr emission_probabilities_table_nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void text_OCRBeamSearchDecoder_delete(IntPtr nativeObj);
 

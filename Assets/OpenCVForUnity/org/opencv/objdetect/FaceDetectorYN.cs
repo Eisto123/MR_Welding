@@ -766,7 +766,7 @@ namespace OpenCVForUnity.ObjdetectModule
         [DllImport(LIBNAME)]
         private static extern IntPtr objdetect_FaceDetectorYN_create_111(string framework, IntPtr bufferModel_mat_nativeObj, IntPtr bufferConfig_mat_nativeObj, double input_size_width, double input_size_height);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void objdetect_FaceDetectorYN_delete(IntPtr nativeObj);
 

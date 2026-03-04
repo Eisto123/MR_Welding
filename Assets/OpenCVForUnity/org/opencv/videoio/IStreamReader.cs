@@ -15,9 +15,17 @@ namespace OpenCVForUnity.VideoioModule
     public class IStreamReader : DisposableOpenCVObject
     {
 
+        protected internal IStreamReader(IntPtr addr) : base(addr) { }
+
+
+        public IntPtr getNativeObjAddr() { return nativeObj; }
+
+        // internal usage only
+        public static IStreamReader __fromPtr__(IntPtr addr) { return new IStreamReader(addr); }
+
+
         protected override void Dispose(bool disposing)
         {
-
             try
             {
                 if (disposing)
@@ -28,22 +36,15 @@ namespace OpenCVForUnity.VideoioModule
                     if (nativeObj != IntPtr.Zero)
                         videoio_IStreamReader_delete(nativeObj);
                     nativeObj = IntPtr.Zero;
+                    if (handle.IsAllocated)
+                        handle.Free();
                 }
             }
             finally
             {
                 base.Dispose(disposing);
             }
-
         }
-
-        protected internal IStreamReader(IntPtr addr) : base(addr) { }
-
-
-        public IntPtr getNativeObjAddr() { return nativeObj; }
-
-        // internal usage only
-        public static IStreamReader __fromPtr__(IntPtr addr) { return new IStreamReader(addr); }
 
 
         protected IStreamReader()
@@ -147,7 +148,7 @@ namespace OpenCVForUnity.VideoioModule
         private static extern IntPtr videoio_IStreamReader_IStreamReader_10(IntPtr userData, Videoio_IStreamReader_Read_Delegate readCallback, Videoio_IStreamReader_Seek_Delegate seekCallback);
 
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void videoio_IStreamReader_delete(IntPtr nativeObj);
 

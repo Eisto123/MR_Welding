@@ -90,7 +90,7 @@ namespace OpenCVForUnity.XimgprocModule
         [DllImport(LIBNAME)]
         private static extern void ximgproc_FastBilateralSolverFilter_filter_10(IntPtr nativeObj, IntPtr src_nativeObj, IntPtr confidence_nativeObj, IntPtr dst_nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void ximgproc_FastBilateralSolverFilter_delete(IntPtr nativeObj);
 

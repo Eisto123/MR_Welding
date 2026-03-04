@@ -5346,5 +5346,50 @@ namespace OpenCVForUnity.UtilsModule
             }
 #endif
         }
+
+        // vector_vector_Mat
+        public static Mat vector_vector_Mat_to_Mat(List<List<Mat>> vecMats)
+        {
+            Mat res;
+            int lCount = (vecMats != null) ? vecMats.Count : 0;
+            if (lCount > 0)
+            {
+                List<Mat> mats = new List<Mat>(lCount);
+
+                foreach (List<Mat> matList in vecMats)
+                {
+                    Mat mat = vector_Mat_to_Mat(matList);
+                    mats.Add(mat);
+                }
+                res = vector_Mat_to_Mat(mats);
+            }
+            else
+            {
+                res = new Mat();
+            }
+            return res;
+        }
+
+        public static void Mat_to_vector_vector_Mat(Mat m, List<List<Mat>> vecMats)
+        {
+            if (vecMats == null)
+                throw new CvException("Output List can't be null");
+
+            if (m == null)
+                throw new CvException("Input Mat can't be null");
+
+            vecMats.Clear();
+            List<Mat> mats = new List<Mat>(m.rows());
+            Mat_to_vector_Mat(m, mats);
+            foreach (Mat mi in mats)
+            {
+                List<Mat> rowList = new List<Mat>(mi.rows());
+                Mat_to_vector_Mat(mi, rowList);
+                vecMats.Add(rowList);
+                mi.release();
+            }
+            mats.Clear();
+        }
+
     }
 }

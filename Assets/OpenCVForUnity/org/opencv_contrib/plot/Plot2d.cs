@@ -441,7 +441,7 @@ namespace OpenCVForUnity.PlotModule
         [DllImport(LIBNAME)]
         private static extern IntPtr plot_Plot2d_create_11(IntPtr dataX_nativeObj, IntPtr dataY_nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void plot_Plot2d_delete(IntPtr nativeObj);
 

@@ -162,7 +162,7 @@ namespace OpenCVForUnity.XimgprocModule
         [DllImport(LIBNAME)]
         private static extern IntPtr ximgproc_AdaptiveManifoldFilter_create_10();
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void ximgproc_AdaptiveManifoldFilter_delete(IntPtr nativeObj);
 

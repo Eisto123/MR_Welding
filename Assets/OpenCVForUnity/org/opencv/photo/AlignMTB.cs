@@ -313,7 +313,7 @@ namespace OpenCVForUnity.PhotoModule
         [DllImport(LIBNAME)]
         private static extern void photo_AlignMTB_setCut_10(IntPtr nativeObj, [MarshalAs(UnmanagedType.U1)] bool value);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void photo_AlignMTB_delete(IntPtr nativeObj);
 

@@ -76,6 +76,12 @@ namespace OpenCVForUnity.Features2dModule
         // C++: static Ptr_SimpleBlobDetector cv::SimpleBlobDetector::create(SimpleBlobDetector_Params parameters = SimpleBlobDetector::Params())
         //
 
+        /// <summary>
+        ///  Flag to enable contour collection.
+        ///        If set to true, the detector will store the contours of the detected blobs in memory,
+        ///        which can be retrieved after the detect() call using getBlobContours().
+        ///        @note Default value is false.
+        /// </summary>
         public static SimpleBlobDetector create(SimpleBlobDetector_Params parameters)
         {
             if (parameters != null) parameters.ThrowIfDisposed();
@@ -85,6 +91,12 @@ namespace OpenCVForUnity.Features2dModule
 
         }
 
+        /// <summary>
+        ///  Flag to enable contour collection.
+        ///        If set to true, the detector will store the contours of the detected blobs in memory,
+        ///        which can be retrieved after the detect() call using getBlobContours().
+        ///        @note Default value is false.
+        /// </summary>
         public static SimpleBlobDetector create()
         {
 
@@ -144,6 +156,11 @@ namespace OpenCVForUnity.Features2dModule
         // C++:  vector_vector_Point cv::SimpleBlobDetector::getBlobContours()
         //
 
+        /// <summary>
+        ///  Returns the contours of the blobs detected during the last call to detect().
+        ///    @note The @ref Params::collectContours parameter must be set to true before calling
+        ///    detect() for this method to return any data.
+        /// </summary>
         public List<MatOfPoint> getBlobContours()
         {
             ThrowIfDisposed();
@@ -184,7 +201,7 @@ namespace OpenCVForUnity.Features2dModule
         [DllImport(LIBNAME)]
         private static extern IntPtr features2d_SimpleBlobDetector_getBlobContours_10(IntPtr nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void features2d_SimpleBlobDetector_delete(IntPtr nativeObj);
 

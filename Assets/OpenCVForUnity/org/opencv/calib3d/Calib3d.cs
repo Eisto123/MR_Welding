@@ -2679,7 +2679,8 @@ namespace OpenCVForUnity.Calib3dModule
         ///         of the P3P problem, the last one is used to retain the best solution that minimizes the reprojection error).
         ///     -   With @ref SOLVEPNP_ITERATIVE method and `useExtrinsicGuess=true`, the minimum number of points is 3 (3 points
         ///         are sufficient to compute a pose but there are up to 4 solutions). The initial solution should be close to the
-        ///         global solution to converge.
+        ///         global solution to converge. The function returns true if some solution is found. User code is responsible for
+        ///         solution quality assessment.
         ///     -   With @ref SOLVEPNP_IPPE input points must be &gt;= 4 and object points must be coplanar.
         ///     -   With @ref SOLVEPNP_IPPE_SQUARE this is a special case suitable for marker pose estimation.
         ///         Number of input points must be 4. Object points must be defined in the following order:
@@ -2780,7 +2781,8 @@ namespace OpenCVForUnity.Calib3dModule
         ///         of the P3P problem, the last one is used to retain the best solution that minimizes the reprojection error).
         ///     -   With @ref SOLVEPNP_ITERATIVE method and `useExtrinsicGuess=true`, the minimum number of points is 3 (3 points
         ///         are sufficient to compute a pose but there are up to 4 solutions). The initial solution should be close to the
-        ///         global solution to converge.
+        ///         global solution to converge. The function returns true if some solution is found. User code is responsible for
+        ///         solution quality assessment.
         ///     -   With @ref SOLVEPNP_IPPE input points must be &gt;= 4 and object points must be coplanar.
         ///     -   With @ref SOLVEPNP_IPPE_SQUARE this is a special case suitable for marker pose estimation.
         ///         Number of input points must be 4. Object points must be defined in the following order:
@@ -2881,7 +2883,8 @@ namespace OpenCVForUnity.Calib3dModule
         ///         of the P3P problem, the last one is used to retain the best solution that minimizes the reprojection error).
         ///     -   With @ref SOLVEPNP_ITERATIVE method and `useExtrinsicGuess=true`, the minimum number of points is 3 (3 points
         ///         are sufficient to compute a pose but there are up to 4 solutions). The initial solution should be close to the
-        ///         global solution to converge.
+        ///         global solution to converge. The function returns true if some solution is found. User code is responsible for
+        ///         solution quality assessment.
         ///     -   With @ref SOLVEPNP_IPPE input points must be &gt;= 4 and object points must be coplanar.
         ///     -   With @ref SOLVEPNP_IPPE_SQUARE this is a special case suitable for marker pose estimation.
         ///         Number of input points must be 4. Object points must be defined in the following order:
@@ -3601,8 +3604,8 @@ namespace OpenCVForUnity.Calib3dModule
         /// </param>
         /// <param name="flags">
         /// Method for solving a P3P problem:
-        ///  -   @ref SOLVEPNP_P3P Method is based on the paper of X.S. Gao, X.-R. Hou, J. Tang, H.-F. Chang
-        ///  "Complete Solution Classification for the Perspective-Three-Point Problem" (@cite gao2003complete).
+        ///  -   @ref SOLVEPNP_P3P Method is based on the paper of Ding, Y., Yang, J., Larsson, V., Olsson, C., &amp; Åstrom, K.
+        ///  "Revisiting the P3P Problem" (@cite ding2023revisiting).
         ///  -   @ref SOLVEPNP_AP3P Method is based on the paper of T. Ke and S. Roumeliotis.
         ///  "An Efficient Algebraic Solution to the Perspective-Three-Point Problem" (@cite Ke17).
         /// </param>
@@ -4750,7 +4753,7 @@ namespace OpenCVForUnity.Calib3dModule
         ///  border and the background is dark, the outer black squares cannot be segmented properly and so the
         ///  square grouping and ordering algorithm fails.
         ///  
-        ///  Use the `gen_pattern.py` Python script (@ref tutorial_camera_calibration_pattern)
+        ///  Use the `generate_pattern.py` Python script (@ref tutorial_camera_calibration_pattern)
         ///  to create the desired checkerboard pattern.
         /// </remarks>
         public static bool findChessboardCorners(Mat image, Size patternSize, MatOfPoint2f corners, int flags)
@@ -4827,7 +4830,7 @@ namespace OpenCVForUnity.Calib3dModule
         ///  border and the background is dark, the outer black squares cannot be segmented properly and so the
         ///  square grouping and ordering algorithm fails.
         ///  
-        ///  Use the `gen_pattern.py` Python script (@ref tutorial_camera_calibration_pattern)
+        ///  Use the `generate_pattern.py` Python script (@ref tutorial_camera_calibration_pattern)
         ///  to create the desired checkerboard pattern.
         /// </remarks>
         public static bool findChessboardCorners(Mat image, Size patternSize, MatOfPoint2f corners)
@@ -4882,7 +4885,7 @@ namespace OpenCVForUnity.Calib3dModule
         ///  This should be used if an accurate camera calibration is required.
         /// </param>
         /// <param name="meta">
-        /// Optional output arrray of detected corners (CV_8UC1 and size = cv::Size(columns,rows)).
+        /// Optional output array of detected corners (CV_8UC1 and size = cv::Size(columns,rows)).
         ///  Each entry stands for one corner of the pattern and can have one of the following values:
         ///  -   0 = no meta data attached
         ///  -   1 = left-top corner of a black cell
@@ -4917,7 +4920,7 @@ namespace OpenCVForUnity.Calib3dModule
         ///  a sample checkerboard optimized for the detection. However, any other checkerboard
         ///  can be used as well.
         ///  
-        ///  Use the `gen_pattern.py` Python script (@ref tutorial_camera_calibration_pattern)
+        ///  Use the `generate_pattern.py` Python script (@ref tutorial_camera_calibration_pattern)
         ///  to create the corresponding checkerboard pattern:
         ///  \image html pics/checkerboard_radon.png width=60%
         /// </remarks>
@@ -14132,6 +14135,689 @@ namespace OpenCVForUnity.Calib3dModule
 
 
         //
+        // C++:  Vec2d cv::estimateTranslation2D(Mat from, Mat to, Mat& inliers = Mat(), int method = RANSAC, double ransacReprojThreshold = 3, size_t maxIters = 2000, double confidence = 0.99, size_t refineIters = 0)
+        //
+
+        /// <summary>
+        ///  Computes a pure 2D translation between two 2D point sets.
+        /// </summary>
+        /// <remarks>
+        ///  It computes
+        ///  \f[
+        ///  \begin{bmatrix}
+        ///  x\\
+        ///  y
+        ///  \end{bmatrix}
+        ///  =
+        ///  \begin{bmatrix}
+        ///  1 & 0\\
+        ///  0 & 1
+        ///  \end{bmatrix}
+        ///  \begin{bmatrix}
+        ///  X\\
+        ///  Y
+        ///  \end{bmatrix}
+        ///  +
+        ///  \begin{bmatrix}
+        ///  t_x\\
+        ///  t_y
+        ///  \end{bmatrix}.
+        ///  \f]
+        /// </remarks>
+        /// <param name="from">
+        /// First input 2D point set containing \f$(X,Y)\f$.
+        /// </param>
+        /// <param name="to">
+        /// Second input 2D point set containing \f$(x,y)\f$.
+        /// </param>
+        /// <param name="inliers">
+        /// Output vector indicating which points are inliers (1-inlier, 0-outlier).
+        /// </param>
+        /// <param name="method">
+        /// Robust method used to compute the transformation. The following methods are possible:
+        ///  -   @ref RANSAC - RANSAC-based robust method
+        ///  -   @ref LMEDS - Least-Median robust method
+        ///  RANSAC is the default method.
+        /// </param>
+        /// <param name="ransacReprojThreshold">
+        /// Maximum reprojection error in the RANSAC algorithm to consider
+        ///  a point as an inlier. Applies only to RANSAC.
+        /// </param>
+        /// <param name="maxIters">
+        /// The maximum number of robust method iterations.
+        /// </param>
+        /// <param name="confidence">
+        /// Confidence level, between 0 and 1, for the estimated transformation. Anything
+        ///  between 0.95 and 0.99 is usually good enough. Values too close to 1 can slow down the estimation
+        ///  significantly. Values lower than 0.8–0.9 can result in an incorrectly estimated transformation.
+        /// </param>
+        /// <param name="refineIters">
+        /// Maximum number of iterations of the refining algorithm. For pure translation
+        ///  the least-squares solution on inliers is closed-form, so passing 0 is recommended (no additional refine).
+        /// </param>
+        /// <returns>
+        ///  A 2D translation vector \f$[t_x, t_y]^T\f$ as `cv::Vec2d`. If the translation could not be
+        ///  estimated, both components are set to NaN and, if @p inliers is provided, the mask is filled with zeros.
+        /// </returns>
+        /// <remarks>
+        ///  \par Converting to a 2x3 transformation matrix:
+        ///  \f[
+        ///  \begin{bmatrix}
+        ///  1 & 0 & t_x\\
+        ///  0 & 1 & t_y
+        ///  \end{bmatrix}
+        ///  \f]
+        /// </remarks>
+        /// <code language="c++">
+        ///  cv::Vec2d t = cv::estimateTranslation2D(from, to, inliers);
+        ///  cv::Mat T = (cv::Mat_<double>(2,3) << 1,0,t[0], 0,1,t[1]);
+        /// </code>
+        /// <remarks>
+        ///  The function estimates a pure 2D translation between two 2D point sets using the selected robust
+        ///  algorithm. Inliers are determined by the reprojection error threshold.
+        ///  
+        ///  @note
+        ///  The RANSAC method can handle practically any ratio of outliers but needs a threshold to
+        ///  distinguish inliers from outliers. The method LMeDS does not need any threshold but works
+        ///  correctly only when there are more than 50% inliers.
+        ///  
+        ///  @sa estimateAffine2D, estimateAffinePartial2D, getAffineTransform
+        /// </remarks>
+        public static double[] estimateTranslation2D(Mat from, Mat to, Mat inliers, int method, double ransacReprojThreshold, long maxIters, double confidence, long refineIters)
+        {
+            if (from != null) from.ThrowIfDisposed();
+            if (to != null) to.ThrowIfDisposed();
+            if (inliers != null) inliers.ThrowIfDisposed();
+
+            double[] retVal = new double[2];
+            calib3d_Calib3d_estimateTranslation2D_10(from.nativeObj, to.nativeObj, inliers.nativeObj, method, ransacReprojThreshold, maxIters, confidence, refineIters, retVal);
+
+            return retVal;
+        }
+
+        /// <summary>
+        ///  Computes a pure 2D translation between two 2D point sets.
+        /// </summary>
+        /// <remarks>
+        ///  It computes
+        ///  \f[
+        ///  \begin{bmatrix}
+        ///  x\\
+        ///  y
+        ///  \end{bmatrix}
+        ///  =
+        ///  \begin{bmatrix}
+        ///  1 & 0\\
+        ///  0 & 1
+        ///  \end{bmatrix}
+        ///  \begin{bmatrix}
+        ///  X\\
+        ///  Y
+        ///  \end{bmatrix}
+        ///  +
+        ///  \begin{bmatrix}
+        ///  t_x\\
+        ///  t_y
+        ///  \end{bmatrix}.
+        ///  \f]
+        /// </remarks>
+        /// <param name="from">
+        /// First input 2D point set containing \f$(X,Y)\f$.
+        /// </param>
+        /// <param name="to">
+        /// Second input 2D point set containing \f$(x,y)\f$.
+        /// </param>
+        /// <param name="inliers">
+        /// Output vector indicating which points are inliers (1-inlier, 0-outlier).
+        /// </param>
+        /// <param name="method">
+        /// Robust method used to compute the transformation. The following methods are possible:
+        ///  -   @ref RANSAC - RANSAC-based robust method
+        ///  -   @ref LMEDS - Least-Median robust method
+        ///  RANSAC is the default method.
+        /// </param>
+        /// <param name="ransacReprojThreshold">
+        /// Maximum reprojection error in the RANSAC algorithm to consider
+        ///  a point as an inlier. Applies only to RANSAC.
+        /// </param>
+        /// <param name="maxIters">
+        /// The maximum number of robust method iterations.
+        /// </param>
+        /// <param name="confidence">
+        /// Confidence level, between 0 and 1, for the estimated transformation. Anything
+        ///  between 0.95 and 0.99 is usually good enough. Values too close to 1 can slow down the estimation
+        ///  significantly. Values lower than 0.8–0.9 can result in an incorrectly estimated transformation.
+        /// </param>
+        /// <param name="refineIters">
+        /// Maximum number of iterations of the refining algorithm. For pure translation
+        ///  the least-squares solution on inliers is closed-form, so passing 0 is recommended (no additional refine).
+        /// </param>
+        /// <returns>
+        ///  A 2D translation vector \f$[t_x, t_y]^T\f$ as `cv::Vec2d`. If the translation could not be
+        ///  estimated, both components are set to NaN and, if @p inliers is provided, the mask is filled with zeros.
+        /// </returns>
+        /// <remarks>
+        ///  \par Converting to a 2x3 transformation matrix:
+        ///  \f[
+        ///  \begin{bmatrix}
+        ///  1 & 0 & t_x\\
+        ///  0 & 1 & t_y
+        ///  \end{bmatrix}
+        ///  \f]
+        /// </remarks>
+        /// <code language="c++">
+        ///  cv::Vec2d t = cv::estimateTranslation2D(from, to, inliers);
+        ///  cv::Mat T = (cv::Mat_<double>(2,3) << 1,0,t[0], 0,1,t[1]);
+        /// </code>
+        /// <remarks>
+        ///  The function estimates a pure 2D translation between two 2D point sets using the selected robust
+        ///  algorithm. Inliers are determined by the reprojection error threshold.
+        ///  
+        ///  @note
+        ///  The RANSAC method can handle practically any ratio of outliers but needs a threshold to
+        ///  distinguish inliers from outliers. The method LMeDS does not need any threshold but works
+        ///  correctly only when there are more than 50% inliers.
+        ///  
+        ///  @sa estimateAffine2D, estimateAffinePartial2D, getAffineTransform
+        /// </remarks>
+        public static double[] estimateTranslation2D(Mat from, Mat to, Mat inliers, int method, double ransacReprojThreshold, long maxIters, double confidence)
+        {
+            if (from != null) from.ThrowIfDisposed();
+            if (to != null) to.ThrowIfDisposed();
+            if (inliers != null) inliers.ThrowIfDisposed();
+
+            double[] retVal = new double[2];
+            calib3d_Calib3d_estimateTranslation2D_11(from.nativeObj, to.nativeObj, inliers.nativeObj, method, ransacReprojThreshold, maxIters, confidence, retVal);
+
+            return retVal;
+        }
+
+        /// <summary>
+        ///  Computes a pure 2D translation between two 2D point sets.
+        /// </summary>
+        /// <remarks>
+        ///  It computes
+        ///  \f[
+        ///  \begin{bmatrix}
+        ///  x\\
+        ///  y
+        ///  \end{bmatrix}
+        ///  =
+        ///  \begin{bmatrix}
+        ///  1 & 0\\
+        ///  0 & 1
+        ///  \end{bmatrix}
+        ///  \begin{bmatrix}
+        ///  X\\
+        ///  Y
+        ///  \end{bmatrix}
+        ///  +
+        ///  \begin{bmatrix}
+        ///  t_x\\
+        ///  t_y
+        ///  \end{bmatrix}.
+        ///  \f]
+        /// </remarks>
+        /// <param name="from">
+        /// First input 2D point set containing \f$(X,Y)\f$.
+        /// </param>
+        /// <param name="to">
+        /// Second input 2D point set containing \f$(x,y)\f$.
+        /// </param>
+        /// <param name="inliers">
+        /// Output vector indicating which points are inliers (1-inlier, 0-outlier).
+        /// </param>
+        /// <param name="method">
+        /// Robust method used to compute the transformation. The following methods are possible:
+        ///  -   @ref RANSAC - RANSAC-based robust method
+        ///  -   @ref LMEDS - Least-Median robust method
+        ///  RANSAC is the default method.
+        /// </param>
+        /// <param name="ransacReprojThreshold">
+        /// Maximum reprojection error in the RANSAC algorithm to consider
+        ///  a point as an inlier. Applies only to RANSAC.
+        /// </param>
+        /// <param name="maxIters">
+        /// The maximum number of robust method iterations.
+        /// </param>
+        /// <param name="confidence">
+        /// Confidence level, between 0 and 1, for the estimated transformation. Anything
+        ///  between 0.95 and 0.99 is usually good enough. Values too close to 1 can slow down the estimation
+        ///  significantly. Values lower than 0.8–0.9 can result in an incorrectly estimated transformation.
+        /// </param>
+        /// <param name="refineIters">
+        /// Maximum number of iterations of the refining algorithm. For pure translation
+        ///  the least-squares solution on inliers is closed-form, so passing 0 is recommended (no additional refine).
+        /// </param>
+        /// <returns>
+        ///  A 2D translation vector \f$[t_x, t_y]^T\f$ as `cv::Vec2d`. If the translation could not be
+        ///  estimated, both components are set to NaN and, if @p inliers is provided, the mask is filled with zeros.
+        /// </returns>
+        /// <remarks>
+        ///  \par Converting to a 2x3 transformation matrix:
+        ///  \f[
+        ///  \begin{bmatrix}
+        ///  1 & 0 & t_x\\
+        ///  0 & 1 & t_y
+        ///  \end{bmatrix}
+        ///  \f]
+        /// </remarks>
+        /// <code language="c++">
+        ///  cv::Vec2d t = cv::estimateTranslation2D(from, to, inliers);
+        ///  cv::Mat T = (cv::Mat_<double>(2,3) << 1,0,t[0], 0,1,t[1]);
+        /// </code>
+        /// <remarks>
+        ///  The function estimates a pure 2D translation between two 2D point sets using the selected robust
+        ///  algorithm. Inliers are determined by the reprojection error threshold.
+        ///  
+        ///  @note
+        ///  The RANSAC method can handle practically any ratio of outliers but needs a threshold to
+        ///  distinguish inliers from outliers. The method LMeDS does not need any threshold but works
+        ///  correctly only when there are more than 50% inliers.
+        ///  
+        ///  @sa estimateAffine2D, estimateAffinePartial2D, getAffineTransform
+        /// </remarks>
+        public static double[] estimateTranslation2D(Mat from, Mat to, Mat inliers, int method, double ransacReprojThreshold, long maxIters)
+        {
+            if (from != null) from.ThrowIfDisposed();
+            if (to != null) to.ThrowIfDisposed();
+            if (inliers != null) inliers.ThrowIfDisposed();
+
+            double[] retVal = new double[2];
+            calib3d_Calib3d_estimateTranslation2D_12(from.nativeObj, to.nativeObj, inliers.nativeObj, method, ransacReprojThreshold, maxIters, retVal);
+
+            return retVal;
+        }
+
+        /// <summary>
+        ///  Computes a pure 2D translation between two 2D point sets.
+        /// </summary>
+        /// <remarks>
+        ///  It computes
+        ///  \f[
+        ///  \begin{bmatrix}
+        ///  x\\
+        ///  y
+        ///  \end{bmatrix}
+        ///  =
+        ///  \begin{bmatrix}
+        ///  1 & 0\\
+        ///  0 & 1
+        ///  \end{bmatrix}
+        ///  \begin{bmatrix}
+        ///  X\\
+        ///  Y
+        ///  \end{bmatrix}
+        ///  +
+        ///  \begin{bmatrix}
+        ///  t_x\\
+        ///  t_y
+        ///  \end{bmatrix}.
+        ///  \f]
+        /// </remarks>
+        /// <param name="from">
+        /// First input 2D point set containing \f$(X,Y)\f$.
+        /// </param>
+        /// <param name="to">
+        /// Second input 2D point set containing \f$(x,y)\f$.
+        /// </param>
+        /// <param name="inliers">
+        /// Output vector indicating which points are inliers (1-inlier, 0-outlier).
+        /// </param>
+        /// <param name="method">
+        /// Robust method used to compute the transformation. The following methods are possible:
+        ///  -   @ref RANSAC - RANSAC-based robust method
+        ///  -   @ref LMEDS - Least-Median robust method
+        ///  RANSAC is the default method.
+        /// </param>
+        /// <param name="ransacReprojThreshold">
+        /// Maximum reprojection error in the RANSAC algorithm to consider
+        ///  a point as an inlier. Applies only to RANSAC.
+        /// </param>
+        /// <param name="maxIters">
+        /// The maximum number of robust method iterations.
+        /// </param>
+        /// <param name="confidence">
+        /// Confidence level, between 0 and 1, for the estimated transformation. Anything
+        ///  between 0.95 and 0.99 is usually good enough. Values too close to 1 can slow down the estimation
+        ///  significantly. Values lower than 0.8–0.9 can result in an incorrectly estimated transformation.
+        /// </param>
+        /// <param name="refineIters">
+        /// Maximum number of iterations of the refining algorithm. For pure translation
+        ///  the least-squares solution on inliers is closed-form, so passing 0 is recommended (no additional refine).
+        /// </param>
+        /// <returns>
+        ///  A 2D translation vector \f$[t_x, t_y]^T\f$ as `cv::Vec2d`. If the translation could not be
+        ///  estimated, both components are set to NaN and, if @p inliers is provided, the mask is filled with zeros.
+        /// </returns>
+        /// <remarks>
+        ///  \par Converting to a 2x3 transformation matrix:
+        ///  \f[
+        ///  \begin{bmatrix}
+        ///  1 & 0 & t_x\\
+        ///  0 & 1 & t_y
+        ///  \end{bmatrix}
+        ///  \f]
+        /// </remarks>
+        /// <code language="c++">
+        ///  cv::Vec2d t = cv::estimateTranslation2D(from, to, inliers);
+        ///  cv::Mat T = (cv::Mat_<double>(2,3) << 1,0,t[0], 0,1,t[1]);
+        /// </code>
+        /// <remarks>
+        ///  The function estimates a pure 2D translation between two 2D point sets using the selected robust
+        ///  algorithm. Inliers are determined by the reprojection error threshold.
+        ///  
+        ///  @note
+        ///  The RANSAC method can handle practically any ratio of outliers but needs a threshold to
+        ///  distinguish inliers from outliers. The method LMeDS does not need any threshold but works
+        ///  correctly only when there are more than 50% inliers.
+        ///  
+        ///  @sa estimateAffine2D, estimateAffinePartial2D, getAffineTransform
+        /// </remarks>
+        public static double[] estimateTranslation2D(Mat from, Mat to, Mat inliers, int method, double ransacReprojThreshold)
+        {
+            if (from != null) from.ThrowIfDisposed();
+            if (to != null) to.ThrowIfDisposed();
+            if (inliers != null) inliers.ThrowIfDisposed();
+
+            double[] retVal = new double[2];
+            calib3d_Calib3d_estimateTranslation2D_13(from.nativeObj, to.nativeObj, inliers.nativeObj, method, ransacReprojThreshold, retVal);
+
+            return retVal;
+        }
+
+        /// <summary>
+        ///  Computes a pure 2D translation between two 2D point sets.
+        /// </summary>
+        /// <remarks>
+        ///  It computes
+        ///  \f[
+        ///  \begin{bmatrix}
+        ///  x\\
+        ///  y
+        ///  \end{bmatrix}
+        ///  =
+        ///  \begin{bmatrix}
+        ///  1 & 0\\
+        ///  0 & 1
+        ///  \end{bmatrix}
+        ///  \begin{bmatrix}
+        ///  X\\
+        ///  Y
+        ///  \end{bmatrix}
+        ///  +
+        ///  \begin{bmatrix}
+        ///  t_x\\
+        ///  t_y
+        ///  \end{bmatrix}.
+        ///  \f]
+        /// </remarks>
+        /// <param name="from">
+        /// First input 2D point set containing \f$(X,Y)\f$.
+        /// </param>
+        /// <param name="to">
+        /// Second input 2D point set containing \f$(x,y)\f$.
+        /// </param>
+        /// <param name="inliers">
+        /// Output vector indicating which points are inliers (1-inlier, 0-outlier).
+        /// </param>
+        /// <param name="method">
+        /// Robust method used to compute the transformation. The following methods are possible:
+        ///  -   @ref RANSAC - RANSAC-based robust method
+        ///  -   @ref LMEDS - Least-Median robust method
+        ///  RANSAC is the default method.
+        /// </param>
+        /// <param name="ransacReprojThreshold">
+        /// Maximum reprojection error in the RANSAC algorithm to consider
+        ///  a point as an inlier. Applies only to RANSAC.
+        /// </param>
+        /// <param name="maxIters">
+        /// The maximum number of robust method iterations.
+        /// </param>
+        /// <param name="confidence">
+        /// Confidence level, between 0 and 1, for the estimated transformation. Anything
+        ///  between 0.95 and 0.99 is usually good enough. Values too close to 1 can slow down the estimation
+        ///  significantly. Values lower than 0.8–0.9 can result in an incorrectly estimated transformation.
+        /// </param>
+        /// <param name="refineIters">
+        /// Maximum number of iterations of the refining algorithm. For pure translation
+        ///  the least-squares solution on inliers is closed-form, so passing 0 is recommended (no additional refine).
+        /// </param>
+        /// <returns>
+        ///  A 2D translation vector \f$[t_x, t_y]^T\f$ as `cv::Vec2d`. If the translation could not be
+        ///  estimated, both components are set to NaN and, if @p inliers is provided, the mask is filled with zeros.
+        /// </returns>
+        /// <remarks>
+        ///  \par Converting to a 2x3 transformation matrix:
+        ///  \f[
+        ///  \begin{bmatrix}
+        ///  1 & 0 & t_x\\
+        ///  0 & 1 & t_y
+        ///  \end{bmatrix}
+        ///  \f]
+        /// </remarks>
+        /// <code language="c++">
+        ///  cv::Vec2d t = cv::estimateTranslation2D(from, to, inliers);
+        ///  cv::Mat T = (cv::Mat_<double>(2,3) << 1,0,t[0], 0,1,t[1]);
+        /// </code>
+        /// <remarks>
+        ///  The function estimates a pure 2D translation between two 2D point sets using the selected robust
+        ///  algorithm. Inliers are determined by the reprojection error threshold.
+        ///  
+        ///  @note
+        ///  The RANSAC method can handle practically any ratio of outliers but needs a threshold to
+        ///  distinguish inliers from outliers. The method LMeDS does not need any threshold but works
+        ///  correctly only when there are more than 50% inliers.
+        ///  
+        ///  @sa estimateAffine2D, estimateAffinePartial2D, getAffineTransform
+        /// </remarks>
+        public static double[] estimateTranslation2D(Mat from, Mat to, Mat inliers, int method)
+        {
+            if (from != null) from.ThrowIfDisposed();
+            if (to != null) to.ThrowIfDisposed();
+            if (inliers != null) inliers.ThrowIfDisposed();
+
+            double[] retVal = new double[2];
+            calib3d_Calib3d_estimateTranslation2D_14(from.nativeObj, to.nativeObj, inliers.nativeObj, method, retVal);
+
+            return retVal;
+        }
+
+        /// <summary>
+        ///  Computes a pure 2D translation between two 2D point sets.
+        /// </summary>
+        /// <remarks>
+        ///  It computes
+        ///  \f[
+        ///  \begin{bmatrix}
+        ///  x\\
+        ///  y
+        ///  \end{bmatrix}
+        ///  =
+        ///  \begin{bmatrix}
+        ///  1 & 0\\
+        ///  0 & 1
+        ///  \end{bmatrix}
+        ///  \begin{bmatrix}
+        ///  X\\
+        ///  Y
+        ///  \end{bmatrix}
+        ///  +
+        ///  \begin{bmatrix}
+        ///  t_x\\
+        ///  t_y
+        ///  \end{bmatrix}.
+        ///  \f]
+        /// </remarks>
+        /// <param name="from">
+        /// First input 2D point set containing \f$(X,Y)\f$.
+        /// </param>
+        /// <param name="to">
+        /// Second input 2D point set containing \f$(x,y)\f$.
+        /// </param>
+        /// <param name="inliers">
+        /// Output vector indicating which points are inliers (1-inlier, 0-outlier).
+        /// </param>
+        /// <param name="method">
+        /// Robust method used to compute the transformation. The following methods are possible:
+        ///  -   @ref RANSAC - RANSAC-based robust method
+        ///  -   @ref LMEDS - Least-Median robust method
+        ///  RANSAC is the default method.
+        /// </param>
+        /// <param name="ransacReprojThreshold">
+        /// Maximum reprojection error in the RANSAC algorithm to consider
+        ///  a point as an inlier. Applies only to RANSAC.
+        /// </param>
+        /// <param name="maxIters">
+        /// The maximum number of robust method iterations.
+        /// </param>
+        /// <param name="confidence">
+        /// Confidence level, between 0 and 1, for the estimated transformation. Anything
+        ///  between 0.95 and 0.99 is usually good enough. Values too close to 1 can slow down the estimation
+        ///  significantly. Values lower than 0.8–0.9 can result in an incorrectly estimated transformation.
+        /// </param>
+        /// <param name="refineIters">
+        /// Maximum number of iterations of the refining algorithm. For pure translation
+        ///  the least-squares solution on inliers is closed-form, so passing 0 is recommended (no additional refine).
+        /// </param>
+        /// <returns>
+        ///  A 2D translation vector \f$[t_x, t_y]^T\f$ as `cv::Vec2d`. If the translation could not be
+        ///  estimated, both components are set to NaN and, if @p inliers is provided, the mask is filled with zeros.
+        /// </returns>
+        /// <remarks>
+        ///  \par Converting to a 2x3 transformation matrix:
+        ///  \f[
+        ///  \begin{bmatrix}
+        ///  1 & 0 & t_x\\
+        ///  0 & 1 & t_y
+        ///  \end{bmatrix}
+        ///  \f]
+        /// </remarks>
+        /// <code language="c++">
+        ///  cv::Vec2d t = cv::estimateTranslation2D(from, to, inliers);
+        ///  cv::Mat T = (cv::Mat_<double>(2,3) << 1,0,t[0], 0,1,t[1]);
+        /// </code>
+        /// <remarks>
+        ///  The function estimates a pure 2D translation between two 2D point sets using the selected robust
+        ///  algorithm. Inliers are determined by the reprojection error threshold.
+        ///  
+        ///  @note
+        ///  The RANSAC method can handle practically any ratio of outliers but needs a threshold to
+        ///  distinguish inliers from outliers. The method LMeDS does not need any threshold but works
+        ///  correctly only when there are more than 50% inliers.
+        ///  
+        ///  @sa estimateAffine2D, estimateAffinePartial2D, getAffineTransform
+        /// </remarks>
+        public static double[] estimateTranslation2D(Mat from, Mat to, Mat inliers)
+        {
+            if (from != null) from.ThrowIfDisposed();
+            if (to != null) to.ThrowIfDisposed();
+            if (inliers != null) inliers.ThrowIfDisposed();
+
+            double[] retVal = new double[2];
+            calib3d_Calib3d_estimateTranslation2D_15(from.nativeObj, to.nativeObj, inliers.nativeObj, retVal);
+
+            return retVal;
+        }
+
+        /// <summary>
+        ///  Computes a pure 2D translation between two 2D point sets.
+        /// </summary>
+        /// <remarks>
+        ///  It computes
+        ///  \f[
+        ///  \begin{bmatrix}
+        ///  x\\
+        ///  y
+        ///  \end{bmatrix}
+        ///  =
+        ///  \begin{bmatrix}
+        ///  1 & 0\\
+        ///  0 & 1
+        ///  \end{bmatrix}
+        ///  \begin{bmatrix}
+        ///  X\\
+        ///  Y
+        ///  \end{bmatrix}
+        ///  +
+        ///  \begin{bmatrix}
+        ///  t_x\\
+        ///  t_y
+        ///  \end{bmatrix}.
+        ///  \f]
+        /// </remarks>
+        /// <param name="from">
+        /// First input 2D point set containing \f$(X,Y)\f$.
+        /// </param>
+        /// <param name="to">
+        /// Second input 2D point set containing \f$(x,y)\f$.
+        /// </param>
+        /// <param name="inliers">
+        /// Output vector indicating which points are inliers (1-inlier, 0-outlier).
+        /// </param>
+        /// <param name="method">
+        /// Robust method used to compute the transformation. The following methods are possible:
+        ///  -   @ref RANSAC - RANSAC-based robust method
+        ///  -   @ref LMEDS - Least-Median robust method
+        ///  RANSAC is the default method.
+        /// </param>
+        /// <param name="ransacReprojThreshold">
+        /// Maximum reprojection error in the RANSAC algorithm to consider
+        ///  a point as an inlier. Applies only to RANSAC.
+        /// </param>
+        /// <param name="maxIters">
+        /// The maximum number of robust method iterations.
+        /// </param>
+        /// <param name="confidence">
+        /// Confidence level, between 0 and 1, for the estimated transformation. Anything
+        ///  between 0.95 and 0.99 is usually good enough. Values too close to 1 can slow down the estimation
+        ///  significantly. Values lower than 0.8–0.9 can result in an incorrectly estimated transformation.
+        /// </param>
+        /// <param name="refineIters">
+        /// Maximum number of iterations of the refining algorithm. For pure translation
+        ///  the least-squares solution on inliers is closed-form, so passing 0 is recommended (no additional refine).
+        /// </param>
+        /// <returns>
+        ///  A 2D translation vector \f$[t_x, t_y]^T\f$ as `cv::Vec2d`. If the translation could not be
+        ///  estimated, both components are set to NaN and, if @p inliers is provided, the mask is filled with zeros.
+        /// </returns>
+        /// <remarks>
+        ///  \par Converting to a 2x3 transformation matrix:
+        ///  \f[
+        ///  \begin{bmatrix}
+        ///  1 & 0 & t_x\\
+        ///  0 & 1 & t_y
+        ///  \end{bmatrix}
+        ///  \f]
+        /// </remarks>
+        /// <code language="c++">
+        ///  cv::Vec2d t = cv::estimateTranslation2D(from, to, inliers);
+        ///  cv::Mat T = (cv::Mat_<double>(2,3) << 1,0,t[0], 0,1,t[1]);
+        /// </code>
+        /// <remarks>
+        ///  The function estimates a pure 2D translation between two 2D point sets using the selected robust
+        ///  algorithm. Inliers are determined by the reprojection error threshold.
+        ///  
+        ///  @note
+        ///  The RANSAC method can handle practically any ratio of outliers but needs a threshold to
+        ///  distinguish inliers from outliers. The method LMeDS does not need any threshold but works
+        ///  correctly only when there are more than 50% inliers.
+        ///  
+        ///  @sa estimateAffine2D, estimateAffinePartial2D, getAffineTransform
+        /// </remarks>
+        public static double[] estimateTranslation2D(Mat from, Mat to)
+        {
+            if (from != null) from.ThrowIfDisposed();
+            if (to != null) to.ThrowIfDisposed();
+
+            double[] retVal = new double[2];
+            calib3d_Calib3d_estimateTranslation2D_16(from.nativeObj, to.nativeObj, retVal);
+
+            return retVal;
+        }
+
+
+        //
         // C++:  int cv::decomposeHomographyMat(Mat H, Mat K, vector_Mat& rotations, vector_Mat& translations, vector_Mat& normals)
         //
 
@@ -14935,7 +15621,7 @@ namespace OpenCVForUnity.Calib3dModule
 
 
         //
-        // C++:  void cv::undistortImagePoints(Mat src, Mat& dst, Mat cameraMatrix, Mat distCoeffs, TermCriteria arg1 = TermCriteria(TermCriteria::MAX_ITER + TermCriteria::EPS, 5, 0.01))
+        // C++:  void cv::undistortImagePoints(Mat src, Mat& dst, Mat cameraMatrix, Mat distCoeffs, TermCriteria arg1 = TermCriteria(TermCriteria::MAX_ITER, 5, 0.01))
         //
 
         /// <summary>
@@ -15448,7 +16134,7 @@ namespace OpenCVForUnity.Calib3dModule
         /// the new size
         /// </param>
         /// <remarks>
-        ///      The function transforms an image to compensate radial and tangential lens distortion.
+        ///      The function transforms an image to compensate radial lens distortion.
         ///  
         ///      The function is simply a combination of #fisheye::initUndistortRectifyMap (with unity R ) and #remap
         ///      (with bilinear interpolation). See the former function for details of the transformation being
@@ -15502,7 +16188,7 @@ namespace OpenCVForUnity.Calib3dModule
         /// the new size
         /// </param>
         /// <remarks>
-        ///      The function transforms an image to compensate radial and tangential lens distortion.
+        ///      The function transforms an image to compensate radial lens distortion.
         ///  
         ///      The function is simply a combination of #fisheye::initUndistortRectifyMap (with unity R ) and #remap
         ///      (with bilinear interpolation). See the former function for details of the transformation being
@@ -15556,7 +16242,7 @@ namespace OpenCVForUnity.Calib3dModule
         /// the new size
         /// </param>
         /// <remarks>
-        ///      The function transforms an image to compensate radial and tangential lens distortion.
+        ///      The function transforms an image to compensate radial lens distortion.
         ///  
         ///      The function is simply a combination of #fisheye::initUndistortRectifyMap (with unity R ) and #remap
         ///      (with bilinear interpolation). See the former function for details of the transformation being
@@ -16618,7 +17304,7 @@ namespace OpenCVForUnity.Calib3dModule
         //
 
         /// <summary>
-        ///  Finds an object pose from 3D-2D point correspondences for fisheye camera moodel.
+        ///  Finds an object pose from 3D-2D point correspondences for fisheye camera model.
         /// </summary>
         /// <param name="objectPoints">
         /// Array of object points in the object coordinate space, Nx3 1-channel or
@@ -16651,7 +17337,7 @@ namespace OpenCVForUnity.Calib3dModule
         /// </param>
         /// <param name="criteria">
         /// Termination criteria for internal undistortPoints call.
-        ///      The function interally undistorts points with @ref undistortPoints and call @ref cv::solvePnP,
+        ///      The function internally undistorts points with @ref undistortPoints and call @ref cv::solvePnP,
         ///      thus the input are very similar. More information about Perspective-n-Points is described in @ref calib3d_solvePnP
         ///      for more information.
         /// </param>
@@ -16670,7 +17356,7 @@ namespace OpenCVForUnity.Calib3dModule
         }
 
         /// <summary>
-        ///  Finds an object pose from 3D-2D point correspondences for fisheye camera moodel.
+        ///  Finds an object pose from 3D-2D point correspondences for fisheye camera model.
         /// </summary>
         /// <param name="objectPoints">
         /// Array of object points in the object coordinate space, Nx3 1-channel or
@@ -16703,7 +17389,7 @@ namespace OpenCVForUnity.Calib3dModule
         /// </param>
         /// <param name="criteria">
         /// Termination criteria for internal undistortPoints call.
-        ///      The function interally undistorts points with @ref undistortPoints and call @ref cv::solvePnP,
+        ///      The function internally undistorts points with @ref undistortPoints and call @ref cv::solvePnP,
         ///      thus the input are very similar. More information about Perspective-n-Points is described in @ref calib3d_solvePnP
         ///      for more information.
         /// </param>
@@ -16722,7 +17408,7 @@ namespace OpenCVForUnity.Calib3dModule
         }
 
         /// <summary>
-        ///  Finds an object pose from 3D-2D point correspondences for fisheye camera moodel.
+        ///  Finds an object pose from 3D-2D point correspondences for fisheye camera model.
         /// </summary>
         /// <param name="objectPoints">
         /// Array of object points in the object coordinate space, Nx3 1-channel or
@@ -16755,7 +17441,7 @@ namespace OpenCVForUnity.Calib3dModule
         /// </param>
         /// <param name="criteria">
         /// Termination criteria for internal undistortPoints call.
-        ///      The function interally undistorts points with @ref undistortPoints and call @ref cv::solvePnP,
+        ///      The function internally undistorts points with @ref undistortPoints and call @ref cv::solvePnP,
         ///      thus the input are very similar. More information about Perspective-n-Points is described in @ref calib3d_solvePnP
         ///      for more information.
         /// </param>
@@ -16774,7 +17460,7 @@ namespace OpenCVForUnity.Calib3dModule
         }
 
         /// <summary>
-        ///  Finds an object pose from 3D-2D point correspondences for fisheye camera moodel.
+        ///  Finds an object pose from 3D-2D point correspondences for fisheye camera model.
         /// </summary>
         /// <param name="objectPoints">
         /// Array of object points in the object coordinate space, Nx3 1-channel or
@@ -16807,7 +17493,7 @@ namespace OpenCVForUnity.Calib3dModule
         /// </param>
         /// <param name="criteria">
         /// Termination criteria for internal undistortPoints call.
-        ///      The function interally undistorts points with @ref undistortPoints and call @ref cv::solvePnP,
+        ///      The function internally undistorts points with @ref undistortPoints and call @ref cv::solvePnP,
         ///      thus the input are very similar. More information about Perspective-n-Points is described in @ref calib3d_solvePnP
         ///      for more information.
         /// </param>
@@ -18001,6 +18687,22 @@ namespace OpenCVForUnity.Calib3dModule
         [DllImport(LIBNAME)]
         private static extern IntPtr calib3d_Calib3d_estimateAffinePartial2D_16(IntPtr from_nativeObj, IntPtr to_nativeObj);
 
+        // C++:  Vec2d cv::estimateTranslation2D(Mat from, Mat to, Mat& inliers = Mat(), int method = RANSAC, double ransacReprojThreshold = 3, size_t maxIters = 2000, double confidence = 0.99, size_t refineIters = 0)
+        [DllImport(LIBNAME)]
+        private static extern void calib3d_Calib3d_estimateTranslation2D_10(IntPtr from_nativeObj, IntPtr to_nativeObj, IntPtr inliers_nativeObj, int method, double ransacReprojThreshold, long maxIters, double confidence, long refineIters, double[] retVal);
+        [DllImport(LIBNAME)]
+        private static extern void calib3d_Calib3d_estimateTranslation2D_11(IntPtr from_nativeObj, IntPtr to_nativeObj, IntPtr inliers_nativeObj, int method, double ransacReprojThreshold, long maxIters, double confidence, double[] retVal);
+        [DllImport(LIBNAME)]
+        private static extern void calib3d_Calib3d_estimateTranslation2D_12(IntPtr from_nativeObj, IntPtr to_nativeObj, IntPtr inliers_nativeObj, int method, double ransacReprojThreshold, long maxIters, double[] retVal);
+        [DllImport(LIBNAME)]
+        private static extern void calib3d_Calib3d_estimateTranslation2D_13(IntPtr from_nativeObj, IntPtr to_nativeObj, IntPtr inliers_nativeObj, int method, double ransacReprojThreshold, double[] retVal);
+        [DllImport(LIBNAME)]
+        private static extern void calib3d_Calib3d_estimateTranslation2D_14(IntPtr from_nativeObj, IntPtr to_nativeObj, IntPtr inliers_nativeObj, int method, double[] retVal);
+        [DllImport(LIBNAME)]
+        private static extern void calib3d_Calib3d_estimateTranslation2D_15(IntPtr from_nativeObj, IntPtr to_nativeObj, IntPtr inliers_nativeObj, double[] retVal);
+        [DllImport(LIBNAME)]
+        private static extern void calib3d_Calib3d_estimateTranslation2D_16(IntPtr from_nativeObj, IntPtr to_nativeObj, double[] retVal);
+
         // C++:  int cv::decomposeHomographyMat(Mat H, Mat K, vector_Mat& rotations, vector_Mat& translations, vector_Mat& normals)
         [DllImport(LIBNAME)]
         private static extern int calib3d_Calib3d_decomposeHomographyMat_10(IntPtr H_nativeObj, IntPtr K_nativeObj, IntPtr rotations_mat_nativeObj, IntPtr translations_mat_nativeObj, IntPtr normals_mat_nativeObj);
@@ -18045,7 +18747,7 @@ namespace OpenCVForUnity.Calib3dModule
         [DllImport(LIBNAME)]
         private static extern void calib3d_Calib3d_undistortPointsIter_10(IntPtr src_nativeObj, IntPtr dst_nativeObj, IntPtr cameraMatrix_nativeObj, IntPtr distCoeffs_nativeObj, IntPtr R_nativeObj, IntPtr P_nativeObj, int criteria_type, int criteria_maxCount, double criteria_epsilon);
 
-        // C++:  void cv::undistortImagePoints(Mat src, Mat& dst, Mat cameraMatrix, Mat distCoeffs, TermCriteria arg1 = TermCriteria(TermCriteria::MAX_ITER + TermCriteria::EPS, 5, 0.01))
+        // C++:  void cv::undistortImagePoints(Mat src, Mat& dst, Mat cameraMatrix, Mat distCoeffs, TermCriteria arg1 = TermCriteria(TermCriteria::MAX_ITER, 5, 0.01))
         [DllImport(LIBNAME)]
         private static extern void calib3d_Calib3d_undistortImagePoints_10(IntPtr src_nativeObj, IntPtr dst_nativeObj, IntPtr cameraMatrix_nativeObj, IntPtr distCoeffs_nativeObj, int arg1_type, int arg1_maxCount, double arg1_epsilon);
         [DllImport(LIBNAME)]

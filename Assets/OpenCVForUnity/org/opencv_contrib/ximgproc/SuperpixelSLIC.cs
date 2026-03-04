@@ -291,7 +291,7 @@ namespace OpenCVForUnity.XimgprocModule
         [DllImport(LIBNAME)]
         private static extern void ximgproc_SuperpixelSLIC_enforceLabelConnectivity_11(IntPtr nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void ximgproc_SuperpixelSLIC_delete(IntPtr nativeObj);
 

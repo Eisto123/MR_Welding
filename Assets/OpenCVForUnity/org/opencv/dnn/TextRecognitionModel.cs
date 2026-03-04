@@ -340,7 +340,7 @@ namespace OpenCVForUnity.DnnModule
         [DllImport(LIBNAME)]
         private static extern void dnn_TextRecognitionModel_recognize_11(IntPtr nativeObj, IntPtr frame_nativeObj, IntPtr roiRects_mat_nativeObj, IntPtr results_mat_nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void dnn_TextRecognitionModel_delete(IntPtr nativeObj);
 

@@ -280,7 +280,7 @@ namespace OpenCVForUnity.ObjdetectModule
         [return: MarshalAs(UnmanagedType.U1)]
         private static extern bool objdetect_CharucoBoard_checkCharucoCornersCollinear_10(IntPtr nativeObj, IntPtr charucoIds_nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void objdetect_CharucoBoard_delete(IntPtr nativeObj);
 

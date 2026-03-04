@@ -335,7 +335,7 @@ namespace OpenCVForUnity.ObjdetectModule
         [DllImport(LIBNAME)]
         private static extern void objdetect_Board_generateImage_12(IntPtr nativeObj, double outSize_width, double outSize_height, IntPtr img_nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void objdetect_Board_delete(IntPtr nativeObj);
 

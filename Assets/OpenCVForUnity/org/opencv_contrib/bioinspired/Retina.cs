@@ -2008,7 +2008,7 @@ namespace OpenCVForUnity.BioinspiredModule
         [DllImport(LIBNAME)]
         private static extern IntPtr bioinspired_Retina_create_15(double inputSize_width, double inputSize_height, [MarshalAs(UnmanagedType.U1)] bool colorMode);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void bioinspired_Retina_delete(IntPtr nativeObj);
 

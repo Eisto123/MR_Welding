@@ -108,7 +108,7 @@ namespace OpenCVForUnity.VideoModule
         ///  Sets the number of gaussian components in the background model.
         /// </summary>
         /// <remarks>
-        ///      The model needs to be reinitalized to reserve memory.
+        ///      The model needs to be reinitialized to reserve memory.
         /// </remarks>
         public void setNMixtures(int nmixtures)
         {
@@ -540,6 +540,71 @@ namespace OpenCVForUnity.VideoModule
         }
 
 
+        //
+        // C++:  void cv::BackgroundSubtractorMOG2::apply(Mat image, Mat knownForegroundMask, Mat& fgmask, double learningRate = -1)
+        //
+
+        /// <summary>
+        ///  Computes a foreground mask and skips known foreground in evaluation.
+        /// </summary>
+        /// <param name="image">
+        /// Next video frame. Floating point frame will be used without scaling and should be in range \f$[0,255]\f$.
+        /// </param>
+        /// <param name="fgmask">
+        /// The output foreground mask as an 8-bit binary image.
+        /// </param>
+        /// <param name="knownForegroundMask">
+        /// The mask for inputting already known foreground, allows model to ignore pixels.
+        /// </param>
+        /// <param name="learningRate">
+        /// The value between 0 and 1 that indicates how fast the background model is
+        ///      learnt. Negative parameter value makes the algorithm to use some automatically chosen learning
+        ///      rate. 0 means that the background model is not updated at all, 1 means that the background model
+        ///      is completely reinitialized from the last frame.
+        /// </param>
+        public override void apply(Mat image, Mat knownForegroundMask, Mat fgmask, double learningRate)
+        {
+            ThrowIfDisposed();
+            if (image != null) image.ThrowIfDisposed();
+            if (knownForegroundMask != null) knownForegroundMask.ThrowIfDisposed();
+            if (fgmask != null) fgmask.ThrowIfDisposed();
+
+            video_BackgroundSubtractorMOG2_apply_12(nativeObj, image.nativeObj, knownForegroundMask.nativeObj, fgmask.nativeObj, learningRate);
+
+
+        }
+
+        /// <summary>
+        ///  Computes a foreground mask and skips known foreground in evaluation.
+        /// </summary>
+        /// <param name="image">
+        /// Next video frame. Floating point frame will be used without scaling and should be in range \f$[0,255]\f$.
+        /// </param>
+        /// <param name="fgmask">
+        /// The output foreground mask as an 8-bit binary image.
+        /// </param>
+        /// <param name="knownForegroundMask">
+        /// The mask for inputting already known foreground, allows model to ignore pixels.
+        /// </param>
+        /// <param name="learningRate">
+        /// The value between 0 and 1 that indicates how fast the background model is
+        ///      learnt. Negative parameter value makes the algorithm to use some automatically chosen learning
+        ///      rate. 0 means that the background model is not updated at all, 1 means that the background model
+        ///      is completely reinitialized from the last frame.
+        /// </param>
+        public override void apply(Mat image, Mat knownForegroundMask, Mat fgmask)
+        {
+            ThrowIfDisposed();
+            if (image != null) image.ThrowIfDisposed();
+            if (knownForegroundMask != null) knownForegroundMask.ThrowIfDisposed();
+            if (fgmask != null) fgmask.ThrowIfDisposed();
+
+            video_BackgroundSubtractorMOG2_apply_13(nativeObj, image.nativeObj, knownForegroundMask.nativeObj, fgmask.nativeObj);
+
+
+        }
+
+
 #if (UNITY_IOS || UNITY_VISIONOS || UNITY_WEBGL) && !UNITY_EDITOR
         const string LIBNAME = "__Internal";
 #else
@@ -651,7 +716,13 @@ namespace OpenCVForUnity.VideoModule
         [DllImport(LIBNAME)]
         private static extern void video_BackgroundSubtractorMOG2_apply_11(IntPtr nativeObj, IntPtr image_nativeObj, IntPtr fgmask_nativeObj);
 
-        // native support for java finalize()
+        // C++:  void cv::BackgroundSubtractorMOG2::apply(Mat image, Mat knownForegroundMask, Mat& fgmask, double learningRate = -1)
+        [DllImport(LIBNAME)]
+        private static extern void video_BackgroundSubtractorMOG2_apply_12(IntPtr nativeObj, IntPtr image_nativeObj, IntPtr knownForegroundMask_nativeObj, IntPtr fgmask_nativeObj, double learningRate);
+        [DllImport(LIBNAME)]
+        private static extern void video_BackgroundSubtractorMOG2_apply_13(IntPtr nativeObj, IntPtr image_nativeObj, IntPtr knownForegroundMask_nativeObj, IntPtr fgmask_nativeObj);
+
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void video_BackgroundSubtractorMOG2_delete(IntPtr nativeObj);
 

@@ -112,11 +112,11 @@ namespace OpenCVForUnity.UnityIntegration.Helper.Source2Mat
             {
                 int flipCode = -1;
                 if (flipVertical && flipHorizontal)
-                    flipCode = 0;
+                    flipCode = -1;  // Flip both directions
                 else if (flipVertical)
-                    flipCode = 0;
+                    flipCode = 0;   // Flip vertically only
                 else if (flipHorizontal)
-                    flipCode = 1;
+                    flipCode = 1;   // Flip horizontally only
                 Core.flip(inputMat, inputMat, flipCode);
             }
 

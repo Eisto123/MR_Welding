@@ -125,7 +125,7 @@ namespace OpenCVForUnity.ImgprocModule
         [DllImport(LIBNAME)]
         private static extern int imgproc_GeneralizedHoughBallard_getVotesThreshold_10(IntPtr nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void imgproc_GeneralizedHoughBallard_delete(IntPtr nativeObj);
 

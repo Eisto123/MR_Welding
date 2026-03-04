@@ -115,7 +115,7 @@ namespace OpenCVForUnity.TrackingModule
         [DllImport(LIBNAME)]
         private static extern IntPtr tracking_TrackerKCF_create_11();
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void tracking_TrackerKCF_delete(IntPtr nativeObj);
 

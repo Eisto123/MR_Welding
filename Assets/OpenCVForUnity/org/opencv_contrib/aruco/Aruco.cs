@@ -1742,7 +1742,128 @@ namespace OpenCVForUnity.ArucoModule
         // C++:  void cv::aruco::drawCharucoDiamond(Ptr_Dictionary dictionary, Vec4i ids, int squareLength, int markerLength, Mat& img, int marginSize = 0, int borderBits = 1)
         //
 
-        // Unknown type 'Vec4i' (I), skipping the function
+        /// <summary>
+        ///  Draw a ChArUco Diamond marker
+        /// </summary>
+        /// <param name="dictionary">
+        /// dictionary of markers indicating the type of markers.
+        /// </param>
+        /// <param name="ids">
+        /// list of 4 ids for each ArUco marker in the ChArUco marker.
+        /// </param>
+        /// <param name="squareLength">
+        /// size of the chessboard squares in pixels.
+        /// </param>
+        /// <param name="markerLength">
+        /// size of the markers in pixels.
+        /// </param>
+        /// <param name="img">
+        /// output image with the marker. The size of this image will be
+        ///     3*squareLength + 2*marginSize,.
+        /// </param>
+        /// <param name="marginSize">
+        /// minimum margins (in pixels) of the marker in the output image
+        /// </param>
+        /// <param name="borderBits">
+        /// width of the marker borders.
+        /// </param>
+        /// <remarks>
+        ///     This function return the image of a ChArUco marker, ready to be printed.
+        ///    
+        ///     @deprecated Use CharucoBoard::generateImage()
+        /// </remarks>
+        [Obsolete("This method is deprecated.")]
+        public static void drawCharucoDiamond(Dictionary dictionary, int[] ids, int squareLength, int markerLength, Mat img, int marginSize, int borderBits)
+        {
+            if (dictionary != null) dictionary.ThrowIfDisposed();
+            if (img != null) img.ThrowIfDisposed();
+
+            aruco_Aruco_drawCharucoDiamond_10(dictionary.getNativeObjAddr(), ids[0], ids[1], ids[2], ids[3], squareLength, markerLength, img.nativeObj, marginSize, borderBits);
+
+
+        }
+
+        /// <summary>
+        ///  Draw a ChArUco Diamond marker
+        /// </summary>
+        /// <param name="dictionary">
+        /// dictionary of markers indicating the type of markers.
+        /// </param>
+        /// <param name="ids">
+        /// list of 4 ids for each ArUco marker in the ChArUco marker.
+        /// </param>
+        /// <param name="squareLength">
+        /// size of the chessboard squares in pixels.
+        /// </param>
+        /// <param name="markerLength">
+        /// size of the markers in pixels.
+        /// </param>
+        /// <param name="img">
+        /// output image with the marker. The size of this image will be
+        ///     3*squareLength + 2*marginSize,.
+        /// </param>
+        /// <param name="marginSize">
+        /// minimum margins (in pixels) of the marker in the output image
+        /// </param>
+        /// <param name="borderBits">
+        /// width of the marker borders.
+        /// </param>
+        /// <remarks>
+        ///     This function return the image of a ChArUco marker, ready to be printed.
+        ///    
+        ///     @deprecated Use CharucoBoard::generateImage()
+        /// </remarks>
+        [Obsolete("This method is deprecated.")]
+        public static void drawCharucoDiamond(Dictionary dictionary, int[] ids, int squareLength, int markerLength, Mat img, int marginSize)
+        {
+            if (dictionary != null) dictionary.ThrowIfDisposed();
+            if (img != null) img.ThrowIfDisposed();
+
+            aruco_Aruco_drawCharucoDiamond_11(dictionary.getNativeObjAddr(), ids[0], ids[1], ids[2], ids[3], squareLength, markerLength, img.nativeObj, marginSize);
+
+
+        }
+
+        /// <summary>
+        ///  Draw a ChArUco Diamond marker
+        /// </summary>
+        /// <param name="dictionary">
+        /// dictionary of markers indicating the type of markers.
+        /// </param>
+        /// <param name="ids">
+        /// list of 4 ids for each ArUco marker in the ChArUco marker.
+        /// </param>
+        /// <param name="squareLength">
+        /// size of the chessboard squares in pixels.
+        /// </param>
+        /// <param name="markerLength">
+        /// size of the markers in pixels.
+        /// </param>
+        /// <param name="img">
+        /// output image with the marker. The size of this image will be
+        ///     3*squareLength + 2*marginSize,.
+        /// </param>
+        /// <param name="marginSize">
+        /// minimum margins (in pixels) of the marker in the output image
+        /// </param>
+        /// <param name="borderBits">
+        /// width of the marker borders.
+        /// </param>
+        /// <remarks>
+        ///     This function return the image of a ChArUco marker, ready to be printed.
+        ///    
+        ///     @deprecated Use CharucoBoard::generateImage()
+        /// </remarks>
+        [Obsolete("This method is deprecated.")]
+        public static void drawCharucoDiamond(Dictionary dictionary, int[] ids, int squareLength, int markerLength, Mat img)
+        {
+            if (dictionary != null) dictionary.ThrowIfDisposed();
+            if (img != null) img.ThrowIfDisposed();
+
+            aruco_Aruco_drawCharucoDiamond_12(dictionary.getNativeObjAddr(), ids[0], ids[1], ids[2], ids[3], squareLength, markerLength, img.nativeObj);
+
+
+        }
 
 
 #if (UNITY_IOS || UNITY_VISIONOS || UNITY_WEBGL) && !UNITY_EDITOR
@@ -1873,6 +1994,14 @@ namespace OpenCVForUnity.ArucoModule
         private static extern void aruco_Aruco_detectCharucoDiamond_12(IntPtr image_nativeObj, IntPtr markerCorners_mat_nativeObj, IntPtr markerIds_nativeObj, float squareMarkerLengthRate, IntPtr diamondCorners_mat_nativeObj, IntPtr diamondIds_nativeObj, IntPtr cameraMatrix_nativeObj);
         [DllImport(LIBNAME)]
         private static extern void aruco_Aruco_detectCharucoDiamond_13(IntPtr image_nativeObj, IntPtr markerCorners_mat_nativeObj, IntPtr markerIds_nativeObj, float squareMarkerLengthRate, IntPtr diamondCorners_mat_nativeObj, IntPtr diamondIds_nativeObj);
+
+        // C++:  void cv::aruco::drawCharucoDiamond(Ptr_Dictionary dictionary, Vec4i ids, int squareLength, int markerLength, Mat& img, int marginSize = 0, int borderBits = 1)
+        [DllImport(LIBNAME)]
+        private static extern void aruco_Aruco_drawCharucoDiamond_10(IntPtr dictionary_nativeObj, int ids0, int ids1, int ids2, int ids3, int squareLength, int markerLength, IntPtr img_nativeObj, int marginSize, int borderBits);
+        [DllImport(LIBNAME)]
+        private static extern void aruco_Aruco_drawCharucoDiamond_11(IntPtr dictionary_nativeObj, int ids0, int ids1, int ids2, int ids3, int squareLength, int markerLength, IntPtr img_nativeObj, int marginSize);
+        [DllImport(LIBNAME)]
+        private static extern void aruco_Aruco_drawCharucoDiamond_12(IntPtr dictionary_nativeObj, int ids0, int ids1, int ids2, int ids3, int squareLength, int markerLength, IntPtr img_nativeObj);
 
     }
 }

@@ -97,7 +97,7 @@ namespace OpenCVForUnity.TrackingModule
         [DllImport(LIBNAME)]
         private static extern void tracking_legacy_1TrackerCSRT_setInitialMask_10(IntPtr nativeObj, IntPtr mask_nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void tracking_legacy_1TrackerCSRT_delete(IntPtr nativeObj);
 

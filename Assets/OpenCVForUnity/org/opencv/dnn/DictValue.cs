@@ -258,7 +258,7 @@ namespace OpenCVForUnity.DnnModule
         [DllImport(LIBNAME)]
         private static extern IntPtr dnn_DictValue_getStringValue_11(IntPtr nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void dnn_DictValue_delete(IntPtr nativeObj);
 

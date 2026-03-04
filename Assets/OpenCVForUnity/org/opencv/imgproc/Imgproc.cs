@@ -10781,6 +10781,125 @@ namespace OpenCVForUnity.ImgprocModule
 
 
         //
+        // C++:  Point2d cv::phaseCorrelateIterative(Mat src1, Mat src2, int L2size = 7, int maxIters = 10)
+        //
+
+        /// <summary>
+        ///  Detects translational shifts between two images.
+        /// </summary>
+        /// <remarks>
+        ///  This function extends the standard @ref phaseCorrelate method by improving sub-pixel accuracy
+        ///  through iterative shift refinement in the phase-correlation space, as described in
+        ///  @cite hrazdira2020iterative.
+        /// </remarks>
+        /// <param name="src1">
+        /// Source floating point array (CV_32FC1 or CV_64FC1)
+        /// </param>
+        /// <param name="src2">
+        /// Source floating point array (CV_32FC1 or CV_64FC1)
+        /// </param>
+        /// <param name="L2size">
+        /// The size of the correlation neighborhood used by the iterative shift refinement algorithm.
+        /// </param>
+        /// <param name="maxIters">
+        /// The maximum number of iterations the iterative refinement algorithm will run.
+        /// </param>
+        /// <returns>
+        ///  detected sub-pixel shift between the two arrays.
+        /// </returns>
+        /// <remarks>
+        ///  @sa phaseCorrelate, dft, idft, createHanningWindow
+        /// </remarks>
+        public static Point phaseCorrelateIterative(Mat src1, Mat src2, int L2size, int maxIters)
+        {
+            if (src1 != null) src1.ThrowIfDisposed();
+            if (src2 != null) src2.ThrowIfDisposed();
+
+            double[] tmpArray = new double[2];
+            imgproc_Imgproc_phaseCorrelateIterative_10(src1.nativeObj, src2.nativeObj, L2size, maxIters, tmpArray);
+            Point retVal = new Point(tmpArray);
+
+            return retVal;
+        }
+
+        /// <summary>
+        ///  Detects translational shifts between two images.
+        /// </summary>
+        /// <remarks>
+        ///  This function extends the standard @ref phaseCorrelate method by improving sub-pixel accuracy
+        ///  through iterative shift refinement in the phase-correlation space, as described in
+        ///  @cite hrazdira2020iterative.
+        /// </remarks>
+        /// <param name="src1">
+        /// Source floating point array (CV_32FC1 or CV_64FC1)
+        /// </param>
+        /// <param name="src2">
+        /// Source floating point array (CV_32FC1 or CV_64FC1)
+        /// </param>
+        /// <param name="L2size">
+        /// The size of the correlation neighborhood used by the iterative shift refinement algorithm.
+        /// </param>
+        /// <param name="maxIters">
+        /// The maximum number of iterations the iterative refinement algorithm will run.
+        /// </param>
+        /// <returns>
+        ///  detected sub-pixel shift between the two arrays.
+        /// </returns>
+        /// <remarks>
+        ///  @sa phaseCorrelate, dft, idft, createHanningWindow
+        /// </remarks>
+        public static Point phaseCorrelateIterative(Mat src1, Mat src2, int L2size)
+        {
+            if (src1 != null) src1.ThrowIfDisposed();
+            if (src2 != null) src2.ThrowIfDisposed();
+
+            double[] tmpArray = new double[2];
+            imgproc_Imgproc_phaseCorrelateIterative_11(src1.nativeObj, src2.nativeObj, L2size, tmpArray);
+            Point retVal = new Point(tmpArray);
+
+            return retVal;
+        }
+
+        /// <summary>
+        ///  Detects translational shifts between two images.
+        /// </summary>
+        /// <remarks>
+        ///  This function extends the standard @ref phaseCorrelate method by improving sub-pixel accuracy
+        ///  through iterative shift refinement in the phase-correlation space, as described in
+        ///  @cite hrazdira2020iterative.
+        /// </remarks>
+        /// <param name="src1">
+        /// Source floating point array (CV_32FC1 or CV_64FC1)
+        /// </param>
+        /// <param name="src2">
+        /// Source floating point array (CV_32FC1 or CV_64FC1)
+        /// </param>
+        /// <param name="L2size">
+        /// The size of the correlation neighborhood used by the iterative shift refinement algorithm.
+        /// </param>
+        /// <param name="maxIters">
+        /// The maximum number of iterations the iterative refinement algorithm will run.
+        /// </param>
+        /// <returns>
+        ///  detected sub-pixel shift between the two arrays.
+        /// </returns>
+        /// <remarks>
+        ///  @sa phaseCorrelate, dft, idft, createHanningWindow
+        /// </remarks>
+        public static Point phaseCorrelateIterative(Mat src1, Mat src2)
+        {
+            if (src1 != null) src1.ThrowIfDisposed();
+            if (src2 != null) src2.ThrowIfDisposed();
+
+            double[] tmpArray = new double[2];
+            imgproc_Imgproc_phaseCorrelateIterative_12(src1.nativeObj, src2.nativeObj, tmpArray);
+            Point retVal = new Point(tmpArray);
+
+            return retVal;
+        }
+
+
+        //
         // C++:  void cv::createHanningWindow(Mat& dst, Size winSize, int type)
         //
 
@@ -12809,6 +12928,7 @@ namespace OpenCVForUnity.ImgprocModule
         /// Implementation modfication flags. See #AlgorithmHint
         /// </param>
         /// <remarks>
+        ///  @note The source image (src) must be of an appropriate type for the desired color conversion. see ColorConversionCodes
         ///  @see @ref imgproc_color_conversions
         /// </remarks>
         public static void cvtColor(Mat src, Mat dst, int code, int dstCn, int hint)
@@ -12875,6 +12995,7 @@ namespace OpenCVForUnity.ImgprocModule
         /// Implementation modfication flags. See #AlgorithmHint
         /// </param>
         /// <remarks>
+        ///  @note The source image (src) must be of an appropriate type for the desired color conversion. see ColorConversionCodes
         ///  @see @ref imgproc_color_conversions
         /// </remarks>
         public static void cvtColor(Mat src, Mat dst, int code, int dstCn)
@@ -12941,6 +13062,7 @@ namespace OpenCVForUnity.ImgprocModule
         /// Implementation modfication flags. See #AlgorithmHint
         /// </param>
         /// <remarks>
+        ///  @note The source image (src) must be of an appropriate type for the desired color conversion. see ColorConversionCodes
         ///  @see @ref imgproc_color_conversions
         /// </remarks>
         public static void cvtColor(Mat src, Mat dst, int code)
@@ -13082,6 +13204,7 @@ namespace OpenCVForUnity.ImgprocModule
         ///  
         ///      #COLOR_BayerBG2BGRA , #COLOR_BayerGB2BGRA , #COLOR_BayerRG2BGRA , #COLOR_BayerGR2BGRA
         ///  
+        ///  @note The source image (src) must be of an appropriate type for the desired color conversion. see ColorConversionCodes
         ///  @sa cvtColor
         /// </remarks>
         public static void demosaicing(Mat src, Mat dst, int code, int dstCn)
@@ -13131,6 +13254,7 @@ namespace OpenCVForUnity.ImgprocModule
         ///  
         ///      #COLOR_BayerBG2BGRA , #COLOR_BayerGB2BGRA , #COLOR_BayerRG2BGRA , #COLOR_BayerGR2BGRA
         ///  
+        ///  @note The source image (src) must be of an appropriate type for the desired color conversion. see ColorConversionCodes
         ///  @sa cvtColor
         /// </remarks>
         public static void demosaicing(Mat src, Mat dst, int code)
@@ -13170,6 +13294,18 @@ namespace OpenCVForUnity.ImgprocModule
         ///  @note Only applicable to contour moments calculations from Python bindings: Note that the numpy
         ///  type for the input array should be either np.int32 or np.float32.
         ///  
+        ///  @note For contour-based moments, the zeroth-order moment \c m00 represents
+        ///  the contour area.
+        ///  
+        ///  If the input contour is degenerate (for example, a single point or all points
+        ///  are collinear), the area is zero and therefore \c m00 == 0.
+        ///  
+        ///  In this case, the centroid coordinates (\c m10/m00, \c m01/m00) are undefined
+        ///  and must be handled explicitly by the caller.
+        ///  
+        ///  A common workaround is to compute the center using cv::boundingRect() or by
+        ///  averaging the input points.
+        ///  
         ///  @sa  contourArea, arcLength
         /// </remarks>
         public static Moments moments(Mat array, bool binaryImage)
@@ -13204,6 +13340,18 @@ namespace OpenCVForUnity.ImgprocModule
         /// <remarks>
         ///  @note Only applicable to contour moments calculations from Python bindings: Note that the numpy
         ///  type for the input array should be either np.int32 or np.float32.
+        ///  
+        ///  @note For contour-based moments, the zeroth-order moment \c m00 represents
+        ///  the contour area.
+        ///  
+        ///  If the input contour is degenerate (for example, a single point or all points
+        ///  are collinear), the area is zero and therefore \c m00 == 0.
+        ///  
+        ///  In this case, the centroid coordinates (\c m10/m00, \c m01/m00) are undefined
+        ///  and must be handled explicitly by the caller.
+        ///  
+        ///  A common workaround is to compute the center using cv::boundingRect() or by
+        ///  averaging the input points.
         ///  
         ///  @sa  contourArea, arcLength
         /// </remarks>
@@ -13834,7 +13982,7 @@ namespace OpenCVForUnity.ImgprocModule
         /// </param>
         /// <param name="epsilon_percentage">
         /// defines the percentage of the maximum of additional area.
-        ///  If it equals -1, it is not used. Otherwise algorighm stops if additional area is greater than contourArea(_curve) * percentage.
+        ///  If it equals -1, it is not used. Otherwise algorithm stops if additional area is greater than contourArea(_curve) * percentage.
         ///  If additional area exceeds the limit, algorithm returns as many vertices as there were at the moment the limit was exceeded.
         /// </param>
         /// <param name="ensure_convex">
@@ -13873,7 +14021,7 @@ namespace OpenCVForUnity.ImgprocModule
         /// </param>
         /// <param name="epsilon_percentage">
         /// defines the percentage of the maximum of additional area.
-        ///  If it equals -1, it is not used. Otherwise algorighm stops if additional area is greater than contourArea(_curve) * percentage.
+        ///  If it equals -1, it is not used. Otherwise algorithm stops if additional area is greater than contourArea(_curve) * percentage.
         ///  If additional area exceeds the limit, algorithm returns as many vertices as there were at the moment the limit was exceeded.
         /// </param>
         /// <param name="ensure_convex">
@@ -13912,7 +14060,7 @@ namespace OpenCVForUnity.ImgprocModule
         /// </param>
         /// <param name="epsilon_percentage">
         /// defines the percentage of the maximum of additional area.
-        ///  If it equals -1, it is not used. Otherwise algorighm stops if additional area is greater than contourArea(_curve) * percentage.
+        ///  If it equals -1, it is not used. Otherwise algorithm stops if additional area is greater than contourArea(_curve) * percentage.
         ///  If additional area exceeds the limit, algorithm returns as many vertices as there were at the moment the limit was exceeded.
         /// </param>
         /// <param name="ensure_convex">
@@ -14119,7 +14267,8 @@ namespace OpenCVForUnity.ImgprocModule
         ///  in clockwise order starting from the point with greatest \f$y\f$. If two points have the
         ///  same \f$y\f$ coordinate the rightmost is the starting point. This function is useful to draw the
         ///  rectangle. In C++, instead of using this function, you can directly use RotatedRect::points method. Please
-        ///  visit the @ref tutorial_bounding_rotated_ellipses "tutorial on Creating Bounding rotated boxes and ellipses for contours" for more information.
+        ///  visit the @ref tutorial_bounding_rotated_ellipses "tutorial on Creating Bounding rotated boxes and ellipses
+        ///  for contours" for more information.
         /// </remarks>
         /// <param name="box">
         /// The input rotated rectangle. It may be the output of @ref minAreaRect.
@@ -14203,6 +14352,46 @@ namespace OpenCVForUnity.ImgprocModule
             if (triangle != null) triangle.ThrowIfDisposed();
 
             return imgproc_Imgproc_minEnclosingTriangle_10(points.nativeObj, triangle.nativeObj);
+
+
+        }
+
+
+        //
+        // C++:  double cv::minEnclosingConvexPolygon(Mat points, Mat& polygon, int k)
+        //
+
+        /// <summary>
+        ///  Finds a convex polygon of minimum area enclosing a 2D point set and returns its area.
+        /// </summary>
+        /// <remarks>
+        ///  This function takes a given set of 2D points and finds the enclosing polygon with k vertices and minimal
+        ///  area. It takes the set of points and the parameter k as input and returns the area of the minimal
+        ///  enclosing polygon.
+        ///  
+        ///  The Implementation is based on a paper by Aggarwal, Chang and Yap @cite Aggarwal1985. They
+        ///  provide a \f$\theta(n²log(n)log(k))\f$ algorithm for finding the minimal convex polygon with k
+        ///  vertices enclosing a 2D convex polygon with n vertices (k &lt; n). Since the #minEnclosingConvexPolygon
+        ///  function takes a 2D point set as input, an additional preprocessing step of computing the convex hull
+        ///  of the 2D point set is required. The complexity of the #convexHull function is \f$O(n log(n))\f$ which
+        ///  is lower than \f$\theta(n²log(n)log(k))\f$. Thus the overall complexity of the function is
+        ///  \f$O(n²log(n)log(k))\f$.
+        /// </remarks>
+        /// <param name="points">
+        /// Input vector of 2D points, stored in std::vector&lt;&gt; or Mat
+        /// </param>
+        /// <param name="polygon">
+        /// Output vector of 2D points defining the vertices of the enclosing polygon
+        /// </param>
+        /// <param name="k">
+        /// Number of vertices of the output polygon
+        /// </param>
+        public static double minEnclosingConvexPolygon(Mat points, Mat polygon, int k)
+        {
+            if (points != null) points.ThrowIfDisposed();
+            if (polygon != null) polygon.ThrowIfDisposed();
+
+            return imgproc_Imgproc_minEnclosingConvexPolygon_10(points.nativeObj, polygon.nativeObj, k);
 
 
         }
@@ -17901,6 +18090,14 @@ namespace OpenCVForUnity.ImgprocModule
         [DllImport(LIBNAME)]
         private static extern void imgproc_Imgproc_phaseCorrelate_12(IntPtr src1_nativeObj, IntPtr src2_nativeObj, double[] retVal);
 
+        // C++:  Point2d cv::phaseCorrelateIterative(Mat src1, Mat src2, int L2size = 7, int maxIters = 10)
+        [DllImport(LIBNAME)]
+        private static extern void imgproc_Imgproc_phaseCorrelateIterative_10(IntPtr src1_nativeObj, IntPtr src2_nativeObj, int L2size, int maxIters, double[] retVal);
+        [DllImport(LIBNAME)]
+        private static extern void imgproc_Imgproc_phaseCorrelateIterative_11(IntPtr src1_nativeObj, IntPtr src2_nativeObj, int L2size, double[] retVal);
+        [DllImport(LIBNAME)]
+        private static extern void imgproc_Imgproc_phaseCorrelateIterative_12(IntPtr src1_nativeObj, IntPtr src2_nativeObj, double[] retVal);
+
         // C++:  void cv::createHanningWindow(Mat& dst, Size winSize, int type)
         [DllImport(LIBNAME)]
         private static extern void imgproc_Imgproc_createHanningWindow_10(IntPtr dst_nativeObj, double winSize_width, double winSize_height, int type);
@@ -18134,6 +18331,10 @@ namespace OpenCVForUnity.ImgprocModule
         // C++:  double cv::minEnclosingTriangle(Mat points, Mat& triangle)
         [DllImport(LIBNAME)]
         private static extern double imgproc_Imgproc_minEnclosingTriangle_10(IntPtr points_nativeObj, IntPtr triangle_nativeObj);
+
+        // C++:  double cv::minEnclosingConvexPolygon(Mat points, Mat& polygon, int k)
+        [DllImport(LIBNAME)]
+        private static extern double imgproc_Imgproc_minEnclosingConvexPolygon_10(IntPtr points_nativeObj, IntPtr polygon_nativeObj, int k);
 
         // C++:  double cv::matchShapes(Mat contour1, Mat contour2, int method, double parameter)
         [DllImport(LIBNAME)]

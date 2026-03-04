@@ -264,7 +264,7 @@ namespace OpenCVForUnity.MlModule
         [DllImport(LIBNAME)]
         private static extern void ml_ParamGrid_set_1logStep_10(IntPtr nativeObj, double logStep);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void ml_ParamGrid_delete(IntPtr nativeObj);
 

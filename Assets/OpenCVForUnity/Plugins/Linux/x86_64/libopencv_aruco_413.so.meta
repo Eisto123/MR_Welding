@@ -1,0 +1,42 @@
+fileFormatVersion: 2
+guid: c7b6cb1406a19e74299504934fec89ee
+PluginImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  iconMap: {}
+  executionOrder: {}
+  defineConstraints: []
+  isPreloaded: 1
+  isOverridable: 0
+  isExplicitlyReferenced: 0
+  validateReferences: 1
+  platformData:
+  - first:
+      Any: 
+    second:
+      enabled: 0
+      settings: {}
+  - first:
+      Editor: Editor
+    second:
+      enabled: 1
+      settings:
+        CPU: x86_64
+        DefaultValueInitialized: true
+        OS: Linux
+  - first:
+      Standalone: Linux64
+    second:
+      enabled: 1
+      settings:
+        CPU: x86_64
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 21088
+  packageName: OpenCV for Unity
+  packageVersion: 3.0.2
+  assetPath: Assets/OpenCVForUnity/Plugins/Linux/x86_64/libopencv_aruco_413.so
+  uploadId: 846054

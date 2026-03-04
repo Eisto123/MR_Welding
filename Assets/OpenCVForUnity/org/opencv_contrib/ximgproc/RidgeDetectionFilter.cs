@@ -441,7 +441,7 @@ namespace OpenCVForUnity.XimgprocModule
         [DllImport(LIBNAME)]
         private static extern void ximgproc_RidgeDetectionFilter_getRidgeFilteredImage_10(IntPtr nativeObj, IntPtr _img_nativeObj, IntPtr _out_nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void ximgproc_RidgeDetectionFilter_delete(IntPtr nativeObj);
 

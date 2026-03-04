@@ -512,7 +512,7 @@ new Dictionary<BuildTarget, Dictionary<string, string>>() { {
         [MenuItem("Tools/OpenCV for Unity/Open OpenCV C++ API Reference", false, 36)]
         public static void OpenOpenCVAPIReference()
         {
-            Application.OpenURL("http://docs.opencv.org/4.12.0/index.html");
+            Application.OpenURL("http://docs.opencv.org/4.13.0/index.html");
         }
 
         // Private Methods

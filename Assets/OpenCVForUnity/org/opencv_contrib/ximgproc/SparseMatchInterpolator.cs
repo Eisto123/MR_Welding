@@ -95,7 +95,7 @@ namespace OpenCVForUnity.XimgprocModule
         [DllImport(LIBNAME)]
         private static extern void ximgproc_SparseMatchInterpolator_interpolate_10(IntPtr nativeObj, IntPtr from_image_nativeObj, IntPtr from_points_nativeObj, IntPtr to_image_nativeObj, IntPtr to_points_nativeObj, IntPtr dense_flow_nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void ximgproc_SparseMatchInterpolator_delete(IntPtr nativeObj);
 

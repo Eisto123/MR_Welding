@@ -32,6 +32,11 @@ namespace OpenCVForUnity.UnityIntegration.MOT.ByteTrack
         private TrackPool _trackPool;
         private TrackListPool _trackListPool;
 
+        // Store detection array and matching results from the last Update call
+        private BBox[] _lastDetections;
+        private int[] _lastMatchingTrackIds; // Matched TrackId (including newly created ones)
+        private int _lastDetectionCount;
+
         private bool _disposed = false;
 
         /// <summary>
@@ -88,6 +93,28 @@ namespace OpenCVForUnity.UnityIntegration.MOT.ByteTrack
             if (detections == null)
                 throw new ArgumentNullException(nameof(detections));
 
+            // Clear previous results
+            if (_lastDetections != null)
+            {
+                Array.Clear(_lastMatchingTrackIds, 0, _lastDetectionCount);
+            }
+
+            // Store new detection array
+#if NET_STANDARD_2_1
+            _lastDetections = detections.ToArray();
+#else
+            _lastDetections = new BBox[detections.Length];
+            Array.Copy(detections, _lastDetections, detections.Length);
+#endif
+            _lastDetectionCount = detections.Length;
+
+            // Initialize matching results array (-1 indicates unprocessed)
+            if (_lastMatchingTrackIds == null || _lastMatchingTrackIds.Length < _lastDetectionCount)
+            {
+                _lastMatchingTrackIds = new int[_lastDetectionCount];
+            }
+            Array.Fill(_lastMatchingTrackIds, -1, 0, _lastDetectionCount);
+
             // Reset frame ID processing
             // If the frame ID exceeds 1,000,000,000, reset the frame ID of all tracks
             if (_frameId >= 1_000_000_000)
@@ -132,6 +159,10 @@ namespace OpenCVForUnity.UnityIntegration.MOT.ByteTrack
                 {
                     ref readonly BBox detection = ref detections[i];
                     var track = _trackPool.Get(detection);
+
+                    // Record original detection index
+                    track.SetOriginalDetectionIndex(i);
+
                     if (detection.Score >= _trackThresh)
                     {
                         detTracks.Add(track);
@@ -173,6 +204,14 @@ namespace OpenCVForUnity.UnityIntegration.MOT.ByteTrack
                 {
                     var track = match.Item1;
                     var detection = match.Item2;
+
+                    // Record matched detection index
+                    int detectionIndex = detection.OriginalDetectionIndex;
+                    if (detectionIndex >= 0)
+                    {
+                        _lastMatchingTrackIds[detectionIndex] = track.TrackId;
+                    }
+
                     if (track.State == TrackState.Tracked)
                     {
                         track.Update(detection, _frameId);
@@ -208,6 +247,14 @@ namespace OpenCVForUnity.UnityIntegration.MOT.ByteTrack
                 {
                     var track = match.Item1;
                     var detection = match.Item2;
+
+                    // Record matched detection index
+                    int detectionIndex = detection.OriginalDetectionIndex;
+                    if (detectionIndex >= 0)
+                    {
+                        _lastMatchingTrackIds[detectionIndex] = track.TrackId;
+                    }
+
                     if (track.State == TrackState.Tracked)
                     {
                         track.Update(detection, _frameId);
@@ -247,6 +294,14 @@ namespace OpenCVForUnity.UnityIntegration.MOT.ByteTrack
                 {
                     var track = match.Item1;
                     var detection = match.Item2;
+
+                    // Record matched detection index
+                    int detectionIndex = detection.OriginalDetectionIndex;
+                    if (detectionIndex >= 0)
+                    {
+                        _lastMatchingTrackIds[detectionIndex] = track.TrackId;
+                    }
+
                     track.Update(detection, _frameId);
                     currentTrackedTracks.Add(track);
 
@@ -271,6 +326,13 @@ namespace OpenCVForUnity.UnityIntegration.MOT.ByteTrack
                     _trackIdCount++;
                     unmatchedRemainDetTrack.Activate(_frameId, _trackIdCount);
                     currentTrackedTracks.Add(unmatchedRemainDetTrack);
+
+                    // Newly created Track is always in New state, so set -1
+                    int detectionIndex = unmatchedRemainDetTrack.OriginalDetectionIndex;
+                    if (detectionIndex >= 0)
+                    {
+                        _lastMatchingTrackIds[detectionIndex] = -1; // Always -1 for New state
+                    }
                 }
 
                 confirmedMatches.Clear();
@@ -559,6 +621,45 @@ namespace OpenCVForUnity.UnityIntegration.MOT.ByteTrack
             trackingStatusStr.Append(_trackListPool.GetStatsString());
 
             Debug.Log(trackingStatusStr.ToString());
+        }
+
+        /// <summary>
+        /// Get the matching results from the last Update call
+        /// </summary>
+        /// <returns>Array of TrackIds corresponding to the last detection array. -1 indicates no match or low score.</returns>
+        public int[] GetLastMatchingTrackIds()
+        {
+            ThrowIfDisposed();
+
+            if (_lastMatchingTrackIds == null || _lastDetectionCount == 0)
+            {
+                return Array.Empty<int>();
+            }
+
+            var result = new int[_lastDetectionCount];
+            Array.Copy(_lastMatchingTrackIds, result, _lastDetectionCount);
+            return result;
+        }
+
+        /// <summary>
+        /// Get the matching results from the last Update call with detection information
+        /// </summary>
+        /// <returns>Array of tuples containing (detection, trackId). TrackId is -1 if no match or low score.</returns>
+        public (BBox detection, int trackId)[] GetLastMatchingResults()
+        {
+            ThrowIfDisposed();
+
+            if (_lastDetections == null || _lastDetectionCount == 0)
+            {
+                return Array.Empty<(BBox, int)>();
+            }
+
+            var result = new (BBox, int)[_lastDetectionCount];
+            for (int i = 0; i < _lastDetectionCount; i++)
+            {
+                result[i] = (_lastDetections[i], _lastMatchingTrackIds[i]);
+            }
+            return result;
         }
 
         public void Dispose()

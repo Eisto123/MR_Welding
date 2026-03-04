@@ -110,7 +110,7 @@ namespace OpenCVForUnity.Phase_unwrappingModule
         [DllImport(LIBNAME)]
         private static extern void phase_1unwrapping_PhaseUnwrapping_unwrapPhaseMap_11(IntPtr nativeObj, IntPtr wrappedPhaseMap_nativeObj, IntPtr unwrappedPhaseMap_nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void phase_1unwrapping_PhaseUnwrapping_delete(IntPtr nativeObj);
 

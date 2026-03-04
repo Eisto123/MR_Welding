@@ -330,7 +330,6 @@ namespace OpenCVForUnity.UnityIntegration
             int matCount = (int)mat.total();
             int matStride = (int)mat.elemSize();
 
-
             cancellationToken.ThrowIfCancellationRequested();
 
             if (graphicsBuffer == null)
@@ -479,8 +478,8 @@ namespace OpenCVForUnity.UnityIntegration
                 throw new ArgumentNullException(nameof(mat));
             mat.ThrowIfDisposed();
 
-            if (!SystemInfo.IsFormatSupported(renderTexture.graphicsFormat, UnityEngine.Experimental.Rendering.GraphicsFormatUsage.ReadPixels))
-                throw new NotSupportedException($"The graphics format '{renderTexture.graphicsFormat}' is not supported for AsyncGPUReadback.RequestAsync method.");
+            // if (!SystemInfo.IsFormatSupported(renderTexture.graphicsFormat, UnityEngine.Experimental.Rendering.GraphicsFormatUsage.ReadPixels))
+            //     throw new NotSupportedException($"The graphics format '{renderTexture.graphicsFormat}' is not supported for AsyncGPUReadback.RequestAsync method.");
 
             if (!renderTexture.enableRandomWrite)
                 throw new ArgumentException("renderTexture must have enableRandomWrite set to true.", nameof(renderTexture));
@@ -917,23 +916,30 @@ namespace OpenCVForUnity.UnityIntegration
 #else
                     GCHandle matDataHandle = GCHandle.Alloc(matData, GCHandleType.Pinned);
                     GCHandle graphicsBufferDataHandle = GCHandle.Alloc(graphicsBufferData, GCHandleType.Pinned);
-                    Mat matMat = new Mat(1, matCopyArrayLength / matChannels, matType, matDataHandle.AddrOfPinnedObject());
-                    Mat graphicsBufferMat = new Mat(1, graphicsBufferCopyArrayLength / graphicsBufferChannels, graphicsBufferType, graphicsBufferDataHandle.AddrOfPinnedObject());
-
-                    if (fromToMat == null)
+                    try
                     {
-                        matMat.copyTo(graphicsBufferMat);
+                        Mat matMat = new Mat(1, matCopyArrayLength / matChannels, matType, matDataHandle.AddrOfPinnedObject());
+                        Mat graphicsBufferMat = new Mat(1, graphicsBufferCopyArrayLength / graphicsBufferChannels, graphicsBufferType, graphicsBufferDataHandle.AddrOfPinnedObject());
+
+                        if (fromToMat == null)
+                        {
+                            matMat.copyTo(graphicsBufferMat);
+                        }
+                        else
+                        {
+                            PartialCopyUsingMixChannels(matMat, graphicsBufferMat, fromToMat);
+                        }
+
+                        matMat.Dispose();
+                        graphicsBufferMat.Dispose();
                     }
-                    else
+                    finally
                     {
-                        PartialCopyUsingMixChannels(matMat, graphicsBufferMat, fromToMat);
+                        if (matDataHandle.IsAllocated)
+                            matDataHandle.Free();
+                        if (graphicsBufferDataHandle.IsAllocated)
+                            graphicsBufferDataHandle.Free();
                     }
-
-                    matMat.Dispose();
-                    graphicsBufferMat.Dispose();
-
-                    matDataHandle.Free();
-                    graphicsBufferDataHandle.Free();
 #endif
 
                     graphicsBuffer.SetData(graphicsBufferData, 0, i * graphicsBufferChunkArrayLength, graphicsBufferCopyArrayLength);
@@ -1313,23 +1319,30 @@ namespace OpenCVForUnity.UnityIntegration
 #else
                     GCHandle matDataHandle = GCHandle.Alloc(matData, GCHandleType.Pinned);
                     GCHandle graphicsBufferDataHandle = GCHandle.Alloc(graphicsBufferData, GCHandleType.Pinned);
-                    Mat matMat = new Mat(1, matCopyArrayLength / matChannels, matType, matDataHandle.AddrOfPinnedObject());
-                    Mat graphicsBufferMat = new Mat(1, graphicsBufferCopyArrayLength / graphicsBufferChannels, graphicsBufferType, graphicsBufferDataHandle.AddrOfPinnedObject());
-
-                    if (fromToMat == null)
+                    try
                     {
-                        graphicsBufferMat.copyTo(matMat);
+                        Mat matMat = new Mat(1, matCopyArrayLength / matChannels, matType, matDataHandle.AddrOfPinnedObject());
+                        Mat graphicsBufferMat = new Mat(1, graphicsBufferCopyArrayLength / graphicsBufferChannels, graphicsBufferType, graphicsBufferDataHandle.AddrOfPinnedObject());
+
+                        if (fromToMat == null)
+                        {
+                            graphicsBufferMat.copyTo(matMat);
+                        }
+                        else
+                        {
+                            PartialCopyUsingMixChannels(graphicsBufferMat, matMat, fromToMat);
+                        }
+
+                        matMat.Dispose();
+                        graphicsBufferMat.Dispose();
                     }
-                    else
+                    finally
                     {
-                        PartialCopyUsingMixChannels(graphicsBufferMat, matMat, fromToMat);
+                        if (matDataHandle.IsAllocated)
+                            matDataHandle.Free();
+                        if (graphicsBufferDataHandle.IsAllocated)
+                            graphicsBufferDataHandle.Free();
                     }
-
-                    matMat.Dispose();
-                    graphicsBufferMat.Dispose();
-
-                    matDataHandle.Free();
-                    graphicsBufferDataHandle.Free();
 #endif
 
                     mat.put<T>(CalcIndices(mat, i * chunkCount), matData, matCopyArrayLength);
@@ -1575,7 +1588,6 @@ namespace OpenCVForUnity.UnityIntegration
                 mat.put<T>(0, 0, data);
 #endif
             }
-
         }
 
 #endif

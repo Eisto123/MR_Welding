@@ -214,7 +214,7 @@ namespace OpenCVForUnity.XimgprocModule
         [DllImport(LIBNAME)]
         private static extern int ximgproc_ContourFitting_getFDSize_10(IntPtr nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void ximgproc_ContourFitting_delete(IntPtr nativeObj);
 

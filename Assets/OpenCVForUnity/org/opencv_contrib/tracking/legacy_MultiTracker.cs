@@ -134,10 +134,20 @@ namespace OpenCVForUnity.TrackingModule
 
 
         //
-        // C++: static Ptr_MultiTracker cv::legacy::MultiTracker::create()
+        // C++: static Ptr_legacy_MultiTracker cv::legacy::MultiTracker::create()
         //
 
-        // Return type 'Ptr_MultiTracker' is not supported, skipping the function
+        /// <remarks>
+        ///    \brief Returns a pointer to a new instance of MultiTracker
+        /// </remarks>
+        public static legacy_MultiTracker create()
+        {
+
+
+            return legacy_MultiTracker.__fromPtr__(DisposableObject.ThrowIfNullIntPtr(tracking_legacy_1MultiTracker_create_10()));
+
+
+        }
 
 
 #if (UNITY_IOS || UNITY_VISIONOS || UNITY_WEBGL) && !UNITY_EDITOR
@@ -166,7 +176,11 @@ namespace OpenCVForUnity.TrackingModule
         [DllImport(LIBNAME)]
         private static extern IntPtr tracking_legacy_1MultiTracker_getObjects_10(IntPtr nativeObj);
 
-        // native support for java finalize()
+        // C++: static Ptr_legacy_MultiTracker cv::legacy::MultiTracker::create()
+        [DllImport(LIBNAME)]
+        private static extern IntPtr tracking_legacy_1MultiTracker_create_10();
+
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void tracking_legacy_1MultiTracker_delete(IntPtr nativeObj);
 

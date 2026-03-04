@@ -411,7 +411,7 @@ namespace OpenCVForUnity.VideoModule
         [DllImport(LIBNAME)]
         private static extern IntPtr video_VariationalRefinement_create_10();
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void video_VariationalRefinement_delete(IntPtr nativeObj);
 

@@ -111,32 +111,32 @@ namespace OpenCVForUnity.Features2dModule
 
 
         //
-        // C++: static Ptr_GFTTDetector cv::GFTTDetector::create(int maxCorners, double qualityLevel, double minDistance, int blockSize, int gradiantSize, bool useHarrisDetector = false, double k = 0.04)
+        // C++: static Ptr_GFTTDetector cv::GFTTDetector::create(int maxCorners, double qualityLevel, double minDistance, int blockSize, int gradientSize, bool useHarrisDetector = false, double k = 0.04)
         //
 
-        public static GFTTDetector create(int maxCorners, double qualityLevel, double minDistance, int blockSize, int gradiantSize, bool useHarrisDetector, double k)
+        public static GFTTDetector create(int maxCorners, double qualityLevel, double minDistance, int blockSize, int gradientSize, bool useHarrisDetector, double k)
         {
 
 
-            return GFTTDetector.__fromPtr__(DisposableObject.ThrowIfNullIntPtr(features2d_GFTTDetector_create_17(maxCorners, qualityLevel, minDistance, blockSize, gradiantSize, useHarrisDetector, k)));
+            return GFTTDetector.__fromPtr__(DisposableObject.ThrowIfNullIntPtr(features2d_GFTTDetector_create_17(maxCorners, qualityLevel, minDistance, blockSize, gradientSize, useHarrisDetector, k)));
 
 
         }
 
-        public static GFTTDetector create(int maxCorners, double qualityLevel, double minDistance, int blockSize, int gradiantSize, bool useHarrisDetector)
+        public static GFTTDetector create(int maxCorners, double qualityLevel, double minDistance, int blockSize, int gradientSize, bool useHarrisDetector)
         {
 
 
-            return GFTTDetector.__fromPtr__(DisposableObject.ThrowIfNullIntPtr(features2d_GFTTDetector_create_18(maxCorners, qualityLevel, minDistance, blockSize, gradiantSize, useHarrisDetector)));
+            return GFTTDetector.__fromPtr__(DisposableObject.ThrowIfNullIntPtr(features2d_GFTTDetector_create_18(maxCorners, qualityLevel, minDistance, blockSize, gradientSize, useHarrisDetector)));
 
 
         }
 
-        public static GFTTDetector create(int maxCorners, double qualityLevel, double minDistance, int blockSize, int gradiantSize)
+        public static GFTTDetector create(int maxCorners, double qualityLevel, double minDistance, int blockSize, int gradientSize)
         {
 
 
-            return GFTTDetector.__fromPtr__(DisposableObject.ThrowIfNullIntPtr(features2d_GFTTDetector_create_19(maxCorners, qualityLevel, minDistance, blockSize, gradiantSize)));
+            return GFTTDetector.__fromPtr__(DisposableObject.ThrowIfNullIntPtr(features2d_GFTTDetector_create_19(maxCorners, qualityLevel, minDistance, blockSize, gradientSize)));
 
 
         }
@@ -378,13 +378,13 @@ namespace OpenCVForUnity.Features2dModule
         [DllImport(LIBNAME)]
         private static extern IntPtr features2d_GFTTDetector_create_16();
 
-        // C++: static Ptr_GFTTDetector cv::GFTTDetector::create(int maxCorners, double qualityLevel, double minDistance, int blockSize, int gradiantSize, bool useHarrisDetector = false, double k = 0.04)
+        // C++: static Ptr_GFTTDetector cv::GFTTDetector::create(int maxCorners, double qualityLevel, double minDistance, int blockSize, int gradientSize, bool useHarrisDetector = false, double k = 0.04)
         [DllImport(LIBNAME)]
-        private static extern IntPtr features2d_GFTTDetector_create_17(int maxCorners, double qualityLevel, double minDistance, int blockSize, int gradiantSize, [MarshalAs(UnmanagedType.U1)] bool useHarrisDetector, double k);
+        private static extern IntPtr features2d_GFTTDetector_create_17(int maxCorners, double qualityLevel, double minDistance, int blockSize, int gradientSize, [MarshalAs(UnmanagedType.U1)] bool useHarrisDetector, double k);
         [DllImport(LIBNAME)]
-        private static extern IntPtr features2d_GFTTDetector_create_18(int maxCorners, double qualityLevel, double minDistance, int blockSize, int gradiantSize, [MarshalAs(UnmanagedType.U1)] bool useHarrisDetector);
+        private static extern IntPtr features2d_GFTTDetector_create_18(int maxCorners, double qualityLevel, double minDistance, int blockSize, int gradientSize, [MarshalAs(UnmanagedType.U1)] bool useHarrisDetector);
         [DllImport(LIBNAME)]
-        private static extern IntPtr features2d_GFTTDetector_create_19(int maxCorners, double qualityLevel, double minDistance, int blockSize, int gradiantSize);
+        private static extern IntPtr features2d_GFTTDetector_create_19(int maxCorners, double qualityLevel, double minDistance, int blockSize, int gradientSize);
 
         // C++:  void cv::GFTTDetector::setMaxFeatures(int maxFeatures)
         [DllImport(LIBNAME)]
@@ -447,7 +447,7 @@ namespace OpenCVForUnity.Features2dModule
         [DllImport(LIBNAME)]
         private static extern IntPtr features2d_GFTTDetector_getDefaultName_10(IntPtr nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void features2d_GFTTDetector_delete(IntPtr nativeObj);
 

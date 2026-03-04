@@ -14,6 +14,7 @@ namespace OpenCVForUnity.UnityIntegration.MOT.ByteTrack
         private int _frameId;
         private int _startFrameId;
         private int _trackletLength;
+        private int _originalDetectionIndex;
         private bool _disposed = false;
 
         public Track(in BBox bbox)
@@ -28,6 +29,7 @@ namespace OpenCVForUnity.UnityIntegration.MOT.ByteTrack
             _frameId = 0;
             _startFrameId = 0;
             _trackletLength = 0;
+            _originalDetectionIndex = -1;
         }
 
         public void Activate(int frameId, int trackId)
@@ -116,6 +118,7 @@ namespace OpenCVForUnity.UnityIntegration.MOT.ByteTrack
             _frameId = 0;
             _startFrameId = 0;
             _trackletLength = 0;
+            _originalDetectionIndex = -1;
         }
 
         public void ResetFrameIds(int newStartFrameId, int newFrameId)
@@ -139,6 +142,13 @@ namespace OpenCVForUnity.UnityIntegration.MOT.ByteTrack
         public int FrameId => _frameId;
         public int StartFrameId => _startFrameId;
         public int TrackletLength => _trackletLength;
+        internal int OriginalDetectionIndex => _originalDetectionIndex;
+
+        internal void SetOriginalDetectionIndex(int index)
+        {
+            ThrowIfDisposed();
+            _originalDetectionIndex = index;
+        }
 
         public override string ToString()
         {

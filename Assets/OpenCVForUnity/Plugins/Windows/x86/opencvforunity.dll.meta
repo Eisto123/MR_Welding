@@ -1,15 +1,8 @@
 fileFormatVersion: 2
 guid: 8f2f75603801fdf40ad8d4a7e218f8fb
-AssetOrigin:
-  serializedVersion: 1
-  productId: 21088
-  packageName: OpenCV for Unity
-  packageVersion: 3.0.0
-  assetPath: Assets/OpenCVForUnity/Plugins/Windows/x86/opencvforunity.dll
-  uploadId: 796640
 PluginImporter:
   externalObjects: {}
-  serializedVersion: 3
+  serializedVersion: 2
   iconMap: {}
   executionOrder: {}
   defineConstraints: []
@@ -18,15 +11,13 @@ PluginImporter:
   isExplicitlyReferenced: 0
   validateReferences: 1
   platformData:
-    Android:
-      enabled: 0
-      settings:
-        CPU: ARMv7
-    Any:
+  - first:
+      : Any
+    second:
       enabled: 0
       settings:
         Exclude Android: 1
-        Exclude Editor: 1
+        Exclude Editor: 0
         Exclude Linux: 1
         Exclude Linux64: 1
         Exclude LinuxUniversal: 1
@@ -38,29 +29,89 @@ PluginImporter:
         Exclude Win64: 1
         Exclude WindowsStoreApps: 1
         Exclude iOS: 1
-    Editor:
+  - first:
+      : Editor
+    second:
+      enabled: 0
+      settings:
+        CPU: x86
+        OS: Windows
+  - first:
+      Android: Android
+    second:
+      enabled: 0
+      settings:
+        CPU: ARMv7
+  - first:
+      Any: 
+    second:
+      enabled: 0
+      settings: {}
+  - first:
+      Editor: Editor
+    second:
       enabled: 1
       settings:
         CPU: x86
         DefaultValueInitialized: true
         OS: Windows
-    Linux64:
+  - first:
+      Facebook: Win
+    second:
+      enabled: 1
+      settings:
+        CPU: AnyCPU
+  - first:
+      Facebook: Win64
+    second:
       enabled: 0
       settings:
         CPU: AnyCPU
-    OSXUniversal:
+  - first:
+      Standalone: Linux
+    second:
+      enabled: 0
+      settings:
+        CPU: x86
+  - first:
+      Standalone: Linux64
+    second:
+      enabled: 0
+      settings:
+        CPU: AnyCPU
+  - first:
+      Standalone: OSXIntel
+    second:
+      enabled: 0
+      settings:
+        CPU: AnyCPU
+  - first:
+      Standalone: OSXIntel64
+    second:
+      enabled: 0
+      settings:
+        CPU: AnyCPU
+  - first:
+      Standalone: OSXUniversal
+    second:
       enabled: 0
       settings:
         CPU: None
-    Win:
+  - first:
+      Standalone: Win
+    second:
       enabled: 1
       settings:
         CPU: x86
-    Win64:
+  - first:
+      Standalone: Win64
+    second:
       enabled: 0
       settings:
         CPU: AnyCPU
-    WindowsStoreApps:
+  - first:
+      Windows Store Apps: WindowsStoreApps
+    second:
       enabled: 0
       settings:
         CPU: AnyCPU
@@ -68,7 +119,9 @@ PluginImporter:
         PlaceholderPath: 
         SDK: AnySDK
         ScriptingBackend: AnyScriptingBackend
-    iOS:
+  - first:
+      iPhone: iOS
+    second:
       enabled: 0
       settings:
         AddToEmbeddedBinaries: false
@@ -78,3 +131,10 @@ PluginImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 21088
+  packageName: OpenCV for Unity
+  packageVersion: 3.0.2
+  assetPath: Assets/OpenCVForUnity/Plugins/Windows/x86/opencvforunity.dll
+  uploadId: 846054

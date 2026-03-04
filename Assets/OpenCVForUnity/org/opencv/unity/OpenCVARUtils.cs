@@ -18,7 +18,7 @@ namespace OpenCVForUnity.UnityIntegration
         }
 
         /// <summary>
-        /// Convertes rvec value to rotation transform.
+        /// Converts rvec value to rotation transform.
         /// </summary>
         /// <param name="tvec">Rvec.</param>
         /// <returns>Rotation.</returns>
@@ -38,7 +38,7 @@ namespace OpenCVForUnity.UnityIntegration
         }
 
         /// <summary>
-        /// Convertes rvec value to rotation transform.
+        /// Converts rvec value to rotation transform.
         /// </summary>
         /// <param name="tvec">Rvec.</param>
         /// <returns>Rotation.</returns>
@@ -47,10 +47,10 @@ namespace OpenCVForUnity.UnityIntegration
             if (rvec != null) rvec.ThrowIfDisposed();
             if (!rvec.isContinuous())
                 throw new ArgumentException("rvec is not continuous");
-            if (rvec.total() < 3)
-                throw new ArgumentException("rvec.total() < 3");
-            if (rvec.type() != CvType.CV_64FC1)
-                throw new ArgumentException("rvec.type() != CvType.CV_64FC1");
+            if (rvec.total() * rvec.channels() < 3)
+                throw new ArgumentException("rvec.total() * rvec.channels() < 3");
+            if (rvec.type() != CvType.CV_64FC(rvec.channels()))
+                throw new ArgumentException("rvec.type() != CvType.CV_64FC(rvec.channels())");
 
 #if NET_STANDARD_2_1 && !OPENCV_DONT_USE_UNSAFE_CODE
             ReadOnlySpan<double> rvecSpan = rvec.AsSpan<double>();
@@ -68,7 +68,7 @@ namespace OpenCVForUnity.UnityIntegration
         }
 
         /// <summary>
-        /// Convertes tvec value to position transform.
+        /// Converts tvec value to position transform.
         /// </summary>
         /// <param name="tvec">Tvec.</param>
         /// <returns>Position.</returns>
@@ -83,7 +83,7 @@ namespace OpenCVForUnity.UnityIntegration
         }
 
         /// <summary>
-        /// Convertes tvec value to position transform.
+        /// Converts tvec value to position transform.
         /// </summary>
         /// <param name="tvec">Tvec.</param>
         /// <returns>Position.</returns>
@@ -92,10 +92,10 @@ namespace OpenCVForUnity.UnityIntegration
             if (tvec != null) tvec.ThrowIfDisposed();
             if (!tvec.isContinuous())
                 throw new ArgumentException("tvec is not continuous");
-            if (tvec.total() < 3)
-                throw new ArgumentException("tvec.total() < 3");
-            if (tvec.type() != CvType.CV_64FC1)
-                throw new ArgumentException("tvec.type() != CvType.CV_64FC1");
+            if (tvec.total() * tvec.channels() < 3)
+                throw new ArgumentException("tvec.total() * tvec.channels() < 3");
+            if (tvec.type() != CvType.CV_64FC(tvec.channels()))
+                throw new ArgumentException("tvec.type() != CvType.CV_64FC(tvec.channels())");
 
 #if NET_STANDARD_2_1 && !OPENCV_DONT_USE_UNSAFE_CODE
             ReadOnlySpan<double> tvecSpan = tvec.AsSpan<double>();
@@ -108,7 +108,7 @@ namespace OpenCVForUnity.UnityIntegration
         }
 
         /// <summary>
-        /// Convertes rvec and tvec value to PoseData.
+        /// Converts rvec and tvec value to PoseData.
         /// </summary>
         /// <param name="tvec">Rvec.</param>
         /// <param name="tvec">Tvec.</param>
@@ -123,7 +123,7 @@ namespace OpenCVForUnity.UnityIntegration
         }
 
         /// <summary>
-        /// Convertes rvec and tvec value to PoseData.
+        /// Converts rvec and tvec value to PoseData.
         /// </summary>
         /// <param name="tvec">Rvec.</param>
         /// <param name="tvec">Tvec.</param>
@@ -141,10 +141,15 @@ namespace OpenCVForUnity.UnityIntegration
         private static Matrix4x4 invertYMatrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, new Vector3(1, -1, 1));
 
         /// <summary>
-        /// Convertes PoseData to transform matrix.
+        /// Converts PoseData to transform matrix.
         /// </summary>
-        /// <param name="posedata">PoseData.</param>
-        /// <param name="toLeftHandCoordinateSystem">Determines if convert the transformation matrix to the left-hand coordinate system.</param>
+        /// <param name="poseData">PoseData.</param>
+        /// <param name="toLeftHandCoordinateSystem">
+        /// When true, converts the transformation matrix from OpenCV's right-handed coordinate system
+        /// to Unity's left-handed coordinate system by inverting the Y-axis.
+        /// This option must be enabled (set to true) when applying a pose calculated by OpenCV to a Unity object.
+        /// When false (default), returns the matrix without coordinate system conversion.
+        /// </param>
         /// <returns>Transform matrix.</returns>
         public static Matrix4x4 ConvertPoseDataToMatrix(ref PoseData poseData, bool toLeftHandCoordinateSystem = false)
         {
@@ -159,7 +164,7 @@ namespace OpenCVForUnity.UnityIntegration
         }
 
         /// <summary>
-        /// Convertes transform matrix to PoseData.
+        /// Converts transform matrix to PoseData.
         /// </summary>
         /// <param name="matrix">Transform matrix.</param>
         /// <returns>PoseData.</returns>
@@ -234,6 +239,25 @@ namespace OpenCVForUnity.UnityIntegration
         }
 
         /// <summary>
+        /// Performs smoothing filter on the position and rotation in newPose using exponential moving average.
+        /// </summary>
+        /// <param name="oldPose">Old PoseData.</param>
+        /// <param name="newPose">New PoseData.</param>
+        /// <param name="positionSmoothingFactor">Position smoothing factor (0.0 = no filtering, 1.0 = maximum filtering).</param>
+        /// <param name="rotationSmoothingFactor">Rotation smoothing factor (0.0 = no filtering, 1.0 = maximum filtering).</param>
+        public static void SmoothingFilterPoseData(ref PoseData oldPose, ref PoseData newPose, float positionSmoothingFactor, float rotationSmoothingFactor)
+        {
+            // Apply exponential moving average filtering for position
+            // Standard EMA formula: smoothed = alpha * new + (1 - alpha) * previous
+            // where alpha = (1 - smoothingFactor)
+            // 0.0 = no filtering (immediate response), 1.0 = maximum filtering (no movement)
+            newPose.Pos = Vector3.Lerp(newPose.Pos, oldPose.Pos, positionSmoothingFactor);
+
+            // Apply exponential moving average filtering for rotation
+            newPose.Rot = Quaternion.Lerp(newPose.Rot, oldPose.Rot, rotationSmoothingFactor);
+        }
+
+        /// <summary>
         /// Performs a lowpass check on the position and rotation of each marker in newDict, comparing them to those in oldDict.
         /// </summary>
         /// <param name="oldDict">Old dictionary.</param>
@@ -275,6 +299,38 @@ namespace OpenCVForUnity.UnityIntegration
             }
         }
 
+        /// <summary>
+        /// Performs smoothing filter on the position and rotation of each marker in newDict using exponential moving average.
+        /// </summary>
+        /// <param name="oldDict">Old dictionary.</param>
+        /// <param name="newDict">New dictionary.</param>
+        /// <param name="positionSmoothingFactor">Position smoothing factor (0.0 = no filtering, 1.0 = maximum filtering).</param>
+        /// <param name="rotationSmoothingFactor">Rotation smoothing factor (0.0 = no filtering, 1.0 = maximum filtering).</param>
+        public static void SmoothingFilterPoseDataDict(Dictionary<int, PoseData> oldDict, Dictionary<int, PoseData> newDict, float positionSmoothingFactor, float rotationSmoothingFactor)
+        {
+            if (oldDict == null)
+                throw new ArgumentNullException("oldDict");
+            if (newDict == null)
+                throw new ArgumentNullException("newDict");
+
+            List<int> keys = new List<int>(newDict.Keys);
+            foreach (int key in keys)
+            {
+                if (!oldDict.ContainsKey(key))
+                    continue;
+
+                PoseData oldPose = oldDict[key];
+                PoseData newPose = newDict[key];
+
+                // Apply exponential moving average filtering for position
+                newPose.Pos = Vector3.Lerp(newPose.Pos, oldPose.Pos, positionSmoothingFactor);
+
+                // Apply exponential moving average filtering for rotation
+                newPose.Rot = Quaternion.Lerp(newPose.Rot, oldPose.Rot, rotationSmoothingFactor);
+
+                newDict[key] = newPose;
+            }
+        }
 
         /// <summary>
         /// Extract translation from transform matrix.
@@ -380,52 +436,92 @@ namespace OpenCVForUnity.UnityIntegration
         }
 
         /// <summary>
-        /// Calculate projection matrix from camera matrix values. (OpenCV coordinate system to OpenGL coordinate system)
+        /// Calculates a projection matrix from OpenCV-style camera intrinsic parameters,
+        /// suitable for use as <see cref="Camera.projectionMatrix"/> in Unity.
+        /// <para>
+        /// Converts from the right-handed OpenCV camera coordinate system (Z-forward, Y-down)
+        /// to Unity's left-handed camera coordinate system (Z-forward, Y-up).
+        /// </para>
+        /// <para>
+        /// The resulting matrix can be directly assigned to <see cref="Camera.projectionMatrix"/>,
+        /// regardless of the rendering backend (OpenGL ES, Vulkan, or DirectX).
+        /// </para>
+        /// <para>
+        /// This effectively reverses the operation performed by
+        /// <see cref="CalculateCameraMatrixValuesFromProjectionMatrix"/>.
+        /// </para>
         /// </summary>
-        /// <param name="fx">Focal length x.</param>
-        /// <param name="fy">Focal length y.</param>
-        /// <param name="cx">Image center point x.(principal point x)</param>
-        /// <param name="cy">Image center point y.(principal point y)</param>
-        /// <param name="width">Image width.</param>
-        /// <param name="height">Image height.</param>
-        /// <param name="near">The near clipping plane distance.</param>
-        /// <param name="far">The far clipping plane distance.</param>
+        /// <param name="fx">Focal length in pixels along the X axis.</param>
+        /// <param name="fy">Focal length in pixels along the Y axis.</param>
+        /// <param name="cx">Principal point (image center) X coordinate in pixels.</param>
+        /// <param name="cy">Principal point (image center) Y coordinate in pixels.</param>
+        /// <param name="width">Image width in pixels.</param>
+        /// <param name="height">Image height in pixels.</param>
+        /// <param name="near">Near clipping plane distance.</param>
+        /// <param name="far">Far clipping plane distance.</param>
         /// <returns>
-        /// Projection matrix.
+        /// A 4×4 projection matrix compatible with Unity’s <see cref="Camera"/> component.
         /// </returns>
-        public static Matrix4x4 CalculateProjectionMatrixFromCameraMatrixValues(float fx, float fy, float cx, float cy, float width, float height, float near, float far)
+        public static Matrix4x4 CalculateProjectionMatrixFromCameraMatrixValues(
+            float fx, float fy, float cx, float cy,
+            float width, float height,
+            float near = 0.01f, float far = 2000f)
         {
+            // Construct a projection matrix from OpenCV intrinsics.
+            // OpenCV origin: top-left (Y down)
+            // Unity origin: bottom-left (Y up)
+            // => Flip Y-axis when mapping principal point.
             Matrix4x4 projectionMatrix = new Matrix4x4();
+
             projectionMatrix.m00 = 2.0f * fx / width;
             projectionMatrix.m02 = 1.0f - 2.0f * cx / width;
+
             projectionMatrix.m11 = 2.0f * fy / height;
-            projectionMatrix.m12 = -1.0f + 2.0f * cy / height;
+            projectionMatrix.m12 = -1.0f + 2.0f * cy / height; // flip Y
+
             projectionMatrix.m22 = -(far + near) / (far - near);
             projectionMatrix.m23 = -2.0f * far * near / (far - near);
             projectionMatrix.m32 = -1.0f;
+            projectionMatrix.m33 = 0.0f;
 
             return projectionMatrix;
         }
 
         /// <summary>
-        /// Calculate camera matrix values from projection matrix. (OpenGL coordinate system to OpenCV coordinate system)
+        /// Calculates OpenCV-style intrinsic camera parameters (camera matrix values)
+        /// from a Unity-compatible projection matrix.
+        /// <para>
+        /// Converts from Unity's left-handed camera coordinate system (Z-forward, Y-up)
+        /// (used by <see cref="Camera.projectionMatrix"/>) to
+        /// OpenCV's right-handed camera coordinate system (Z-forward, Y-down).
+        /// </para>
+        /// <para>
+        /// This effectively reverses the operation performed by
+        /// <see cref="CalculateProjectionMatrixFromCameraMatrixValues"/>.
+        /// </para>
         /// </summary>
-        /// <param name="projectionMatrix">Projection matrix.</param>
-        /// <param name="width">Image width.</param>
-        /// <param name="height">Image height.</param>
-        /// <param name="fovV">Vertical field of view.</param>
+        /// <param name="projectionMatrix">A Unity camera projection matrix.</param>
+        /// <param name="width">Image width in pixels.</param>
+        /// <param name="height">Image height in pixels.</param>
         /// <returns>
-        /// Camera matrix values. (fx = matrx.m00, fy = matrx.m11, cx = matrx.m02, cy = matrx.m12)
+        /// A 3×3-style camera matrix where:
+        /// <br/> fx = m00, fy = m11, cx = m02, cy = m12
         /// </returns>
-        public static Matrix4x4 CameraMatrixValuesFromCalculateProjectionMatrix(Matrix4x4 projectionMatrix, float width, float height, float fovV)
+        public static Matrix4x4 CalculateCameraMatrixValuesFromProjectionMatrix(
+            Matrix4x4 projectionMatrix,
+            float width,
+            float height)
         {
-            float fovH = 2.0f * Mathf.Atan(width / height * Mathf.Tan(fovV * Mathf.Deg2Rad / 2.0f)) * Mathf.Rad2Deg;
-
+            // Construct an OpenCV-style intrinsic matrix (K matrix)
+            // OpenCV origin: top-left (Y down)
+            // Unity origin: bottom-left (Y up)
+            // => Y-axis must be flipped when recovering principal point.
             Matrix4x4 cameraMatrix = new Matrix4x4();
-            cameraMatrix.m00 = CalculateDistance(width, fovH);
-            cameraMatrix.m02 = -((projectionMatrix.m02 * width - width) / 2);
-            cameraMatrix.m11 = CalculateDistance(height, fovV);
-            cameraMatrix.m12 = (projectionMatrix.m12 * height + height) / 2;
+
+            cameraMatrix.m00 = (projectionMatrix.m00 * width) / 2.0f; // fx
+            cameraMatrix.m11 = (projectionMatrix.m11 * height) / 2.0f; // fy
+            cameraMatrix.m02 = width * (1.0f - projectionMatrix.m02) / 2.0f; // cx
+            cameraMatrix.m12 = height * (1.0f + projectionMatrix.m12) / 2.0f; // cy (flip Y)
             cameraMatrix.m22 = 1.0f;
 
             return cameraMatrix;
@@ -510,10 +606,10 @@ namespace OpenCVForUnity.UnityIntegration
             if (tvec != null) tvec.ThrowIfDisposed();
             if (!tvec.isContinuous())
                 throw new ArgumentException("tvec is not continuous");
-            if (tvec.total() < 3)
-                throw new ArgumentException("tvec.total() < 3");
-            if (tvec.type() != CvType.CV_64FC1)
-                throw new ArgumentException("tvec.type() != CvType.CV_64FC1");
+            if (tvec.total() * tvec.channels() < 3)
+                throw new ArgumentException("tvec.total() * tvec.channels() < 3");
+            if (tvec.type() != CvType.CV_64FC(tvec.channels()))
+                throw new ArgumentException("tvec.type() != CvType.CV_64FC(tvec.channels())");
 
             // drawFrameAxes() may hang or crash when the projected points are result in NaN/INF due to zero or near-zero Z component in tvec.
 #if NET_STANDARD_2_1 && !OPENCV_DONT_USE_UNSAFE_CODE

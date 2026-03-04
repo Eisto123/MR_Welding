@@ -341,7 +341,7 @@ namespace OpenCVForUnity.ImgprocModule
         [DllImport(LIBNAME)]
         private static extern int imgproc_LineSegmentDetector_compareSegments_11(IntPtr nativeObj, double size_width, double size_height, IntPtr lines1_nativeObj, IntPtr lines2_nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void imgproc_LineSegmentDetector_delete(IntPtr nativeObj);
 

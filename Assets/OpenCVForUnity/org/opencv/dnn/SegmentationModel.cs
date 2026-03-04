@@ -156,7 +156,7 @@ namespace OpenCVForUnity.DnnModule
         [DllImport(LIBNAME)]
         private static extern void dnn_SegmentationModel_segment_10(IntPtr nativeObj, IntPtr frame_nativeObj, IntPtr mask_nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void dnn_SegmentationModel_delete(IntPtr nativeObj);
 

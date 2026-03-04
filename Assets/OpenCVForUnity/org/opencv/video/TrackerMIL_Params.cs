@@ -325,7 +325,7 @@ namespace OpenCVForUnity.VideoModule
         [DllImport(LIBNAME)]
         private static extern void video_TrackerMIL_1Params_set_1featureSetNumFeatures_10(IntPtr nativeObj, int featureSetNumFeatures);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void video_TrackerMIL_1Params_delete(IntPtr nativeObj);
 

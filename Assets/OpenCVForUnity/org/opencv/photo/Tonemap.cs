@@ -115,7 +115,7 @@ namespace OpenCVForUnity.PhotoModule
         [DllImport(LIBNAME)]
         private static extern void photo_Tonemap_setGamma_10(IntPtr nativeObj, float gamma);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void photo_Tonemap_delete(IntPtr nativeObj);
 

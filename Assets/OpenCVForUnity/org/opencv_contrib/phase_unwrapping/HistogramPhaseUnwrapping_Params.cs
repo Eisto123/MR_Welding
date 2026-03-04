@@ -268,7 +268,7 @@ namespace OpenCVForUnity.Phase_unwrappingModule
         [DllImport(LIBNAME)]
         private static extern void phase_1unwrapping_HistogramPhaseUnwrapping_1Params_set_1nbrOfLargeBins_10(IntPtr nativeObj, int nbrOfLargeBins);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void phase_1unwrapping_HistogramPhaseUnwrapping_1Params_delete(IntPtr nativeObj);
 

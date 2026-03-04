@@ -351,7 +351,7 @@ namespace OpenCVForUnity.CoreModule
         [DllImport(LIBNAME)]
         private static extern void core_TickMeter_reset_10(IntPtr nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void core_TickMeter_delete(IntPtr nativeObj);
 

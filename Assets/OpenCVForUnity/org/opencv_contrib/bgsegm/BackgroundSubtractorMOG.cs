@@ -47,6 +47,128 @@ namespace OpenCVForUnity.BgsegmModule
         public static new BackgroundSubtractorMOG __fromPtr__(IntPtr addr) { return new BackgroundSubtractorMOG(addr); }
 
         //
+        // C++:  void cv::bgsegm::BackgroundSubtractorMOG::apply(Mat image, Mat& fgmask, double learningRate = -1)
+        //
+
+        /// <summary>
+        ///  Computes a foreground mask.
+        /// </summary>
+        /// <param name="image">
+        /// Next video frame of type CV_8UC(n),CV_8SC(n),CV_16UC(n),CV_16SC(n),CV_32SC(n),CV_32FC(n),CV_64FC(n), where n is 1,2,3,4.
+        /// </param>
+        /// <param name="fgmask">
+        /// The output foreground mask as an 8-bit binary image.
+        /// </param>
+        /// <param name="learningRate">
+        /// The value between 0 and 1 that indicates how fast the background model is
+        ///      learnt. Negative parameter value makes the algorithm to use some automatically chosen learning
+        ///      rate. 0 means that the background model is not updated at all, 1 means that the background model
+        ///      is completely reinitialized from the last frame.
+        /// </param>
+        public override void apply(Mat image, Mat fgmask, double learningRate)
+        {
+            ThrowIfDisposed();
+            if (image != null) image.ThrowIfDisposed();
+            if (fgmask != null) fgmask.ThrowIfDisposed();
+
+            bgsegm_BackgroundSubtractorMOG_apply_10(nativeObj, image.nativeObj, fgmask.nativeObj, learningRate);
+
+
+        }
+
+        /// <summary>
+        ///  Computes a foreground mask.
+        /// </summary>
+        /// <param name="image">
+        /// Next video frame of type CV_8UC(n),CV_8SC(n),CV_16UC(n),CV_16SC(n),CV_32SC(n),CV_32FC(n),CV_64FC(n), where n is 1,2,3,4.
+        /// </param>
+        /// <param name="fgmask">
+        /// The output foreground mask as an 8-bit binary image.
+        /// </param>
+        /// <param name="learningRate">
+        /// The value between 0 and 1 that indicates how fast the background model is
+        ///      learnt. Negative parameter value makes the algorithm to use some automatically chosen learning
+        ///      rate. 0 means that the background model is not updated at all, 1 means that the background model
+        ///      is completely reinitialized from the last frame.
+        /// </param>
+        public override void apply(Mat image, Mat fgmask)
+        {
+            ThrowIfDisposed();
+            if (image != null) image.ThrowIfDisposed();
+            if (fgmask != null) fgmask.ThrowIfDisposed();
+
+            bgsegm_BackgroundSubtractorMOG_apply_11(nativeObj, image.nativeObj, fgmask.nativeObj);
+
+
+        }
+
+
+        //
+        // C++:  void cv::bgsegm::BackgroundSubtractorMOG::apply(Mat image, Mat knownForegroundMask, Mat& fgmask, double learningRate = -1)
+        //
+
+        /// <summary>
+        ///  Computes a foreground mask and skips known foreground in evaluation.
+        /// </summary>
+        /// <param name="image">
+        /// Next video frame of type CV_8UC(n),CV_8SC(n),CV_16UC(n),CV_16SC(n),CV_32SC(n),CV_32FC(n),CV_64FC(n), where n is 1,2,3,4.
+        /// </param>
+        /// <param name="fgmask">
+        /// The output foreground mask as an 8-bit binary image.
+        /// </param>
+        /// <param name="knownForegroundMask">
+        /// The mask for inputting already known foreground, allows model to ignore learning known pixels.
+        /// </param>
+        /// <param name="learningRate">
+        /// The value between 0 and 1 that indicates how fast the background model is
+        ///      learnt. Negative parameter value makes the algorithm to use some automatically chosen learning
+        ///      rate. 0 means that the background model is not updated at all, 1 means that the background model
+        ///      is completely reinitialized from the last frame.
+        /// </param>
+        public override void apply(Mat image, Mat knownForegroundMask, Mat fgmask, double learningRate)
+        {
+            ThrowIfDisposed();
+            if (image != null) image.ThrowIfDisposed();
+            if (knownForegroundMask != null) knownForegroundMask.ThrowIfDisposed();
+            if (fgmask != null) fgmask.ThrowIfDisposed();
+
+            bgsegm_BackgroundSubtractorMOG_apply_12(nativeObj, image.nativeObj, knownForegroundMask.nativeObj, fgmask.nativeObj, learningRate);
+
+
+        }
+
+        /// <summary>
+        ///  Computes a foreground mask and skips known foreground in evaluation.
+        /// </summary>
+        /// <param name="image">
+        /// Next video frame of type CV_8UC(n),CV_8SC(n),CV_16UC(n),CV_16SC(n),CV_32SC(n),CV_32FC(n),CV_64FC(n), where n is 1,2,3,4.
+        /// </param>
+        /// <param name="fgmask">
+        /// The output foreground mask as an 8-bit binary image.
+        /// </param>
+        /// <param name="knownForegroundMask">
+        /// The mask for inputting already known foreground, allows model to ignore learning known pixels.
+        /// </param>
+        /// <param name="learningRate">
+        /// The value between 0 and 1 that indicates how fast the background model is
+        ///      learnt. Negative parameter value makes the algorithm to use some automatically chosen learning
+        ///      rate. 0 means that the background model is not updated at all, 1 means that the background model
+        ///      is completely reinitialized from the last frame.
+        /// </param>
+        public override void apply(Mat image, Mat knownForegroundMask, Mat fgmask)
+        {
+            ThrowIfDisposed();
+            if (image != null) image.ThrowIfDisposed();
+            if (knownForegroundMask != null) knownForegroundMask.ThrowIfDisposed();
+            if (fgmask != null) fgmask.ThrowIfDisposed();
+
+            bgsegm_BackgroundSubtractorMOG_apply_13(nativeObj, image.nativeObj, knownForegroundMask.nativeObj, fgmask.nativeObj);
+
+
+        }
+
+
+        //
         // C++:  int cv::bgsegm::BackgroundSubtractorMOG::getHistory()
         //
 
@@ -166,6 +288,18 @@ namespace OpenCVForUnity.BgsegmModule
 
 
 
+        // C++:  void cv::bgsegm::BackgroundSubtractorMOG::apply(Mat image, Mat& fgmask, double learningRate = -1)
+        [DllImport(LIBNAME)]
+        private static extern void bgsegm_BackgroundSubtractorMOG_apply_10(IntPtr nativeObj, IntPtr image_nativeObj, IntPtr fgmask_nativeObj, double learningRate);
+        [DllImport(LIBNAME)]
+        private static extern void bgsegm_BackgroundSubtractorMOG_apply_11(IntPtr nativeObj, IntPtr image_nativeObj, IntPtr fgmask_nativeObj);
+
+        // C++:  void cv::bgsegm::BackgroundSubtractorMOG::apply(Mat image, Mat knownForegroundMask, Mat& fgmask, double learningRate = -1)
+        [DllImport(LIBNAME)]
+        private static extern void bgsegm_BackgroundSubtractorMOG_apply_12(IntPtr nativeObj, IntPtr image_nativeObj, IntPtr knownForegroundMask_nativeObj, IntPtr fgmask_nativeObj, double learningRate);
+        [DllImport(LIBNAME)]
+        private static extern void bgsegm_BackgroundSubtractorMOG_apply_13(IntPtr nativeObj, IntPtr image_nativeObj, IntPtr knownForegroundMask_nativeObj, IntPtr fgmask_nativeObj);
+
         // C++:  int cv::bgsegm::BackgroundSubtractorMOG::getHistory()
         [DllImport(LIBNAME)]
         private static extern int bgsegm_BackgroundSubtractorMOG_getHistory_10(IntPtr nativeObj);
@@ -198,7 +332,7 @@ namespace OpenCVForUnity.BgsegmModule
         [DllImport(LIBNAME)]
         private static extern void bgsegm_BackgroundSubtractorMOG_setNoiseSigma_10(IntPtr nativeObj, double noiseSigma);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void bgsegm_BackgroundSubtractorMOG_delete(IntPtr nativeObj);
 

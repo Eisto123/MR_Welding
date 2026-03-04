@@ -187,7 +187,7 @@ namespace OpenCVForUnity.MlModule
         [DllImport(LIBNAME)]
         private static extern IntPtr ml_NormalBayesClassifier_load_11(string filepath);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void ml_NormalBayesClassifier_delete(IntPtr nativeObj);
 

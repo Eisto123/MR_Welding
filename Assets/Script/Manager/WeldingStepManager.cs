@@ -6,7 +6,8 @@ using UnityEngine;
 public enum WeldingStepType
 {
     PlacePlate,
-    PlaceIron,
+    AutoPlacement,
+    Alignment,
     Tacking,
     Completed
 }
@@ -27,16 +28,43 @@ public class WeldingStepManager : MonoBehaviour
 {
     public List<WeldingStep> weldingSteps;
     public WeldingStep currentStep;
-    public PassthroughCameraRenderer passthroughCameraRenderer;
+    public QuestCamera Scanner;
     public ObjectEventSO onProgressToNextStep;
     public DataProcessor dataProcessor;
     public LineGraph lineGraph;
-    
+    public BeadPaint beadPaint;
+    public InstructionPanelManager instructionPanelManager; // <-- add this
 
     void Start()
     {
+        if (Scanner != null)
+        {
+            Scanner.OnAutoPlacementObjectFound += HandleAutoPlacementObjectFound;
+        }
+
         SetCurrentStep(0);
-        
+    }
+
+    private void OnDestroy()
+    {
+        if (Scanner != null)
+        {
+            Scanner.OnAutoPlacementObjectFound -= HandleAutoPlacementObjectFound;
+        }
+    }
+
+    private void HandleAutoPlacementObjectFound()
+    {
+        if (currentStep != null && currentStep.stepType == WeldingStepType.AutoPlacement)
+        {
+            if (beadPaint != null && Scanner != null && Scanner.LastAutoPlacementTarget != null)
+            {
+                beadPaint.AlignToTrackedObject(Scanner.LastAutoPlacementTarget);
+            }
+
+            Debug.Log("AutoPlacement: object found. Progressing to next step.");
+            progressToNextStep();
+        }
     }
 
     public void SetCurrentStep(int index)
@@ -45,7 +73,13 @@ public class WeldingStepManager : MonoBehaviour
         {
             currentStep = weldingSteps[index];
             Debug.Log($"Current welding step set to: {currentStep.stepType}");
+
             ProcessCurrentStep();
+
+            if (instructionPanelManager != null)
+            {
+                instructionPanelManager.SetInstruction(currentStep.stepType);
+            }
         }
         else
         {
@@ -75,20 +109,34 @@ public class WeldingStepManager : MonoBehaviour
         {
             case WeldingStepType.PlacePlate:
                 Debug.Log("Processing Plate Placement Step");
-                passthroughCameraRenderer.enabled = true;
+                if (Scanner != null) Scanner.StopAutoPlacementScan();
+                if (beadPaint != null) beadPaint.ResetToDefaultAndClear();
                 break;
 
-            case WeldingStepType.PlaceIron:
-                Debug.Log("Processing Iron Placement Step");
-                passthroughCameraRenderer.enabled = false;
+            case WeldingStepType.AutoPlacement:
+                Debug.Log("Processing Auto Placement Step");
+                if (Scanner != null)
+                {
+                    Scanner.StartAutoPlacementScan();
+                }
+                else
+                {
+                    Debug.LogWarning("Scanner reference is missing. Cannot run AutoPlacement scan.");
+                }
+                break;
 
+            case WeldingStepType.Alignment:
+                Debug.Log("Processing Alignment Step");
+                if (Scanner != null) Scanner.StopAutoPlacementScan();
                 break;
 
             case WeldingStepType.Tacking:
                 Debug.Log("Processing Tacking Step");
-                // enable tracking data from the welding gun
+                if (Scanner != null) Scanner.StopAutoPlacementScan();
+                
                 break;
             case WeldingStepType.Completed:
+                if (Scanner != null) Scanner.StopAutoPlacementScan();
                 Debug.Log("Welding Completed!");
                 dataProcessor.ProcessData();
                 var graphData = dataProcessor.GetProcessedData();

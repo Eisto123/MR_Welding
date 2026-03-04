@@ -109,6 +109,44 @@ namespace OpenCVForUnity.VideoModule
 
 
         //
+        // C++:  void cv::DISOpticalFlow::setCoarsestScale(int val)
+        //
+
+        /// <summary>
+        ///  Sets the coarsest scale
+        /// </summary>
+        /// <param name="val">
+        /// Coarsest level of the Gaussian pyramid on which the flow is computed.
+        ///      If set to -1, the auto-computed coarsest scale will be used.
+        /// </param>
+        public void setCoarsestScale(int val)
+        {
+            ThrowIfDisposed();
+
+            video_DISOpticalFlow_setCoarsestScale_10(nativeObj, val);
+
+
+        }
+
+
+        //
+        // C++:  int cv::DISOpticalFlow::getCoarsestScale()
+        //
+
+        /// <summary>
+        ///  Gets the coarsest scale
+        /// </summary>
+        public int getCoarsestScale()
+        {
+            ThrowIfDisposed();
+
+            return video_DISOpticalFlow_getCoarsestScale_10(nativeObj);
+
+
+        }
+
+
+        //
         // C++:  int cv::DISOpticalFlow::getPatchSize()
         //
 
@@ -520,6 +558,14 @@ namespace OpenCVForUnity.VideoModule
         [DllImport(LIBNAME)]
         private static extern void video_DISOpticalFlow_setFinestScale_10(IntPtr nativeObj, int val);
 
+        // C++:  void cv::DISOpticalFlow::setCoarsestScale(int val)
+        [DllImport(LIBNAME)]
+        private static extern void video_DISOpticalFlow_setCoarsestScale_10(IntPtr nativeObj, int val);
+
+        // C++:  int cv::DISOpticalFlow::getCoarsestScale()
+        [DllImport(LIBNAME)]
+        private static extern int video_DISOpticalFlow_getCoarsestScale_10(IntPtr nativeObj);
+
         // C++:  int cv::DISOpticalFlow::getPatchSize()
         [DllImport(LIBNAME)]
         private static extern int video_DISOpticalFlow_getPatchSize_10(IntPtr nativeObj);
@@ -608,7 +654,7 @@ namespace OpenCVForUnity.VideoModule
         [DllImport(LIBNAME)]
         private static extern IntPtr video_DISOpticalFlow_create_11();
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void video_DISOpticalFlow_delete(IntPtr nativeObj);
 

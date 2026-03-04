@@ -1051,7 +1051,7 @@ namespace OpenCVForUnity.TrackingModule
         [DllImport(LIBNAME)]
         private static extern void tracking_TrackerCSRT_1Params_set_1psr_1threshold_10(IntPtr nativeObj, float psr_threshold);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void tracking_TrackerCSRT_1Params_delete(IntPtr nativeObj);
 

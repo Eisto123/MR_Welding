@@ -505,7 +505,7 @@ namespace OpenCVForUnity.XimgprocModule
         [DllImport(LIBNAME)]
         private static extern void ximgproc_SelectiveSearchSegmentation_process_10(IntPtr nativeObj, IntPtr rects_mat_nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void ximgproc_SelectiveSearchSegmentation_delete(IntPtr nativeObj);
 

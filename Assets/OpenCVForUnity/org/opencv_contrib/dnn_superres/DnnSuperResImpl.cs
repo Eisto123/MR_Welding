@@ -296,7 +296,7 @@ namespace OpenCVForUnity.Dnn_superresModule
         [DllImport(LIBNAME)]
         private static extern IntPtr dnn_1superres_DnnSuperResImpl_getAlgorithm_10(IntPtr nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void dnn_1superres_DnnSuperResImpl_delete(IntPtr nativeObj);
 

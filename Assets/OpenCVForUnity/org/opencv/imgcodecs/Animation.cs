@@ -325,7 +325,7 @@ namespace OpenCVForUnity.ImgcodecsModule
         [DllImport(LIBNAME)]
         private static extern void imgcodecs_Animation_set_1still_1image_10(IntPtr nativeObj, IntPtr still_image_nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void imgcodecs_Animation_delete(IntPtr nativeObj);
 

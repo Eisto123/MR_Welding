@@ -557,7 +557,7 @@ namespace OpenCVForUnity.XimgprocModule
         [DllImport(LIBNAME)]
         private static extern void ximgproc_EdgeDrawing_1Params_set_1MaxErrorThreshold_10(IntPtr nativeObj, double MaxErrorThreshold);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void ximgproc_EdgeDrawing_1Params_delete(IntPtr nativeObj);
 

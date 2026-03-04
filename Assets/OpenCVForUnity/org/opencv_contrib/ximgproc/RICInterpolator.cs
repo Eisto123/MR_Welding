@@ -849,7 +849,7 @@ namespace OpenCVForUnity.XimgprocModule
         [DllImport(LIBNAME)]
         private static extern float ximgproc_RICInterpolator_getFGSSigma_10(IntPtr nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void ximgproc_RICInterpolator_delete(IntPtr nativeObj);
 

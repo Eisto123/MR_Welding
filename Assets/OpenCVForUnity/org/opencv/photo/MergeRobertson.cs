@@ -95,7 +95,7 @@ namespace OpenCVForUnity.PhotoModule
         [DllImport(LIBNAME)]
         private static extern void photo_MergeRobertson_process_11(IntPtr nativeObj, IntPtr src_mat_nativeObj, IntPtr dst_nativeObj, IntPtr times_nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void photo_MergeRobertson_delete(IntPtr nativeObj);
 

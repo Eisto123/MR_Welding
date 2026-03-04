@@ -59,7 +59,7 @@ namespace OpenCVForUnity.Xfeatures2dModule
 
 
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void xfeatures2d_AffineFeature2D_delete(IntPtr nativeObj);
 

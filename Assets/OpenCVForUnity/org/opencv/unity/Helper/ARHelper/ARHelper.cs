@@ -122,7 +122,9 @@ namespace OpenCVForUnity.UnityIntegration.Helper.AR
         }
 
         /// <summary>
-        /// Calculates the ARMatrix for ARGameObjects based on the settings of the registered ARCamera and ARGameObjects.
+        /// Calculate ARMatrix for ARGameObjects based on the settings of the registered ARCamera and ARGameObjects.
+        /// This method updates the ARMatrix that is used by the UpdateTransform() method.
+        /// This method should be called before UpdateTransform().
         /// </summary>
         public virtual void CalculateARMatrix()
         {
@@ -145,7 +147,9 @@ namespace OpenCVForUnity.UnityIntegration.Helper.AR
         }
 
         /// <summary>
-        /// Updates the Transform of the specified UpdateTarget using the ARMatrix of ARGameObjects.
+        /// Update the Transform of the specified UpdateTarget using the ARMatrix of ARGameObjects.
+        /// This method uses the ARMatrix calculated by the CalculateARMatrix() method.
+        /// This method assumes that the CalculateARMatrix() method has been called before this method.
         /// </summary>
         public virtual void UpdateTransform()
         {

@@ -445,7 +445,7 @@ namespace OpenCVForUnity.TextModule
         [DllImport(LIBNAME)]
         private static extern IntPtr text_OCRTesseract_create_15();
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void text_OCRTesseract_delete(IntPtr nativeObj);
 

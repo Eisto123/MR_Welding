@@ -1363,7 +1363,7 @@ namespace OpenCVForUnity.MlModule
         [DllImport(LIBNAME)]
         private static extern IntPtr ml_SVM_load_10(string filepath);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void ml_SVM_delete(IntPtr nativeObj);
 

@@ -137,7 +137,7 @@ namespace OpenCVForUnity.VideoModule
         [DllImport(LIBNAME)]
         private static extern void video_SparseOpticalFlow_calc_11(IntPtr nativeObj, IntPtr prevImg_nativeObj, IntPtr nextImg_nativeObj, IntPtr prevPts_nativeObj, IntPtr nextPts_nativeObj, IntPtr status_nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void video_SparseOpticalFlow_delete(IntPtr nativeObj);
 

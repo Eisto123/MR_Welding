@@ -377,7 +377,7 @@ namespace OpenCVForUnity.ObjdetectModule
         [DllImport(LIBNAME)]
         private static extern IntPtr objdetect_BarcodeDetector_setGradientThreshold_10(IntPtr nativeObj, double thresh);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void objdetect_BarcodeDetector_delete(IntPtr nativeObj);
 

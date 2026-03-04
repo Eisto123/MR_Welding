@@ -127,7 +127,7 @@ namespace OpenCVForUnity.PhotoModule
         [DllImport(LIBNAME)]
         private static extern void photo_TonemapMantiuk_setSaturation_10(IntPtr nativeObj, float saturation);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void photo_TonemapMantiuk_delete(IntPtr nativeObj);
 

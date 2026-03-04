@@ -543,7 +543,7 @@ namespace OpenCVForUnity.FaceModule
         [DllImport(LIBNAME)]
         private static extern IntPtr face_FaceRecognizer_getLabelsByString_10(IntPtr nativeObj, string str);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void face_FaceRecognizer_delete(IntPtr nativeObj);
 

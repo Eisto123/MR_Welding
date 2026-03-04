@@ -517,7 +517,7 @@ namespace OpenCVForUnity.MlModule
         [DllImport(LIBNAME)]
         private static extern void ml_SVMSGD_setTermCriteria_10(IntPtr nativeObj, int val_type, int val_maxCount, double val_epsilon);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void ml_SVMSGD_delete(IntPtr nativeObj);
 

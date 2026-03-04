@@ -603,7 +603,7 @@ namespace OpenCVForUnity.VideoModule
         [DllImport(LIBNAME)]
         private static extern void video_KalmanFilter_set_1errorCovPost_10(IntPtr nativeObj, IntPtr errorCovPost_nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void video_KalmanFilter_delete(IntPtr nativeObj);
 

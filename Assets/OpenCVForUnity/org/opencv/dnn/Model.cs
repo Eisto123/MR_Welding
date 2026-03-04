@@ -574,7 +574,7 @@ namespace OpenCVForUnity.DnnModule
         [DllImport(LIBNAME)]
         private static extern IntPtr dnn_Model_enableWinograd_10(IntPtr nativeObj, [MarshalAs(UnmanagedType.U1)] bool useWinograd);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void dnn_Model_delete(IntPtr nativeObj);
 

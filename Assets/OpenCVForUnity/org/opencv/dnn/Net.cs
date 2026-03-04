@@ -539,7 +539,24 @@ namespace OpenCVForUnity.DnnModule
         // C++:  void cv::dnn::Net::forward(vector_vector_Mat& outputBlobs, vector_String outBlobNames)
         //
 
-        // Unknown type 'vector_vector_Mat' (O), skipping the function
+        /// <summary>
+        ///  Runs forward pass to compute outputs of layers listed in @p outBlobNames.
+        /// </summary>
+        /// <param name="outputBlobs">
+        /// contains all output blobs for each layer specified in @p outBlobNames.
+        /// </param>
+        /// <param name="outBlobNames">
+        /// names for layers which outputs are needed to get
+        /// </param>
+        public void forwardAndRetrieve(List<List<Mat>> outputBlobs, List<string> outBlobNames)
+        {
+            ThrowIfDisposed();
+            using Mat outputBlobs_mat = new Mat();
+            using Mat outBlobNames_mat = Converters.vector_String_to_Mat(outBlobNames);
+            dnn_Net_forwardAndRetrieve_10(nativeObj, outputBlobs_mat.nativeObj, outBlobNames_mat.nativeObj);
+            Converters.Mat_to_vector_vector_Mat(outputBlobs_mat, outputBlobs);
+
+        }
 
 
         //
@@ -1014,14 +1031,60 @@ namespace OpenCVForUnity.DnnModule
         // C++:  void cv::dnn::Net::getLayersShapes(vector_MatShape netInputShapes, vector_int& layersIds, vector_vector_MatShape& inLayersShapes, vector_vector_MatShape& outLayersShapes)
         //
 
-        // Unknown type 'vector_vector_MatShape' (O), skipping the function
+        /// <summary>
+        ///  Returns input and output shapes for all layers in loaded model;
+        ///              preliminary inferencing isn't necessary.
+        /// </summary>
+        /// <param name="netInputShapes">
+        /// shapes for all input blobs in net input layer.
+        /// </param>
+        /// <param name="layersIds">
+        /// output parameter for layer IDs.
+        /// </param>
+        /// <param name="inLayersShapes">
+        /// output parameter for input layers shapes;
+        ///             order is the same as in layersIds
+        /// </param>
+        /// <param name="outLayersShapes">
+        /// output parameter for output layers shapes;
+        ///             order is the same as in layersIds
+        /// </param>
+        public void getLayersShapes(List<MatOfInt> netInputShapes, MatOfInt layersIds, List<List<MatOfInt>> inLayersShapes, List<List<MatOfInt>> outLayersShapes)
+        {
+            ThrowIfDisposed();
+            if (layersIds != null) layersIds.ThrowIfDisposed();
+            using Mat netInputShapes_mat = Converters.vector_MatShape_to_Mat(netInputShapes);
+            Mat layersIds_mat = layersIds;
+            using Mat inLayersShapes_mat = new Mat();
+            using Mat outLayersShapes_mat = new Mat();
+            dnn_Net_getLayersShapes_10(nativeObj, netInputShapes_mat.nativeObj, layersIds_mat.nativeObj, inLayersShapes_mat.nativeObj, outLayersShapes_mat.nativeObj);
+            Converters.Mat_to_vector_vector_MatShape(inLayersShapes_mat, inLayersShapes);
+            Converters.Mat_to_vector_vector_MatShape(outLayersShapes_mat, outLayersShapes);
+
+        }
 
 
         //
         // C++:  void cv::dnn::Net::getLayersShapes(MatShape netInputShape, vector_int& layersIds, vector_vector_MatShape& inLayersShapes, vector_vector_MatShape& outLayersShapes)
         //
 
-        // Unknown type 'vector_vector_MatShape' (O), skipping the function
+        /// <remarks>
+        ///  @overload
+        /// </remarks>
+        public void getLayersShapes(MatOfInt netInputShape, MatOfInt layersIds, List<List<MatOfInt>> inLayersShapes, List<List<MatOfInt>> outLayersShapes)
+        {
+            ThrowIfDisposed();
+            if (netInputShape != null) netInputShape.ThrowIfDisposed();
+            if (layersIds != null) layersIds.ThrowIfDisposed();
+            Mat netInputShape_mat = netInputShape;
+            Mat layersIds_mat = layersIds;
+            using Mat inLayersShapes_mat = new Mat();
+            using Mat outLayersShapes_mat = new Mat();
+            dnn_Net_getLayersShapes_11(nativeObj, netInputShape_mat.nativeObj, layersIds_mat.nativeObj, inLayersShapes_mat.nativeObj, outLayersShapes_mat.nativeObj);
+            Converters.Mat_to_vector_vector_MatShape(inLayersShapes_mat, inLayersShapes);
+            Converters.Mat_to_vector_vector_MatShape(outLayersShapes_mat, outLayersShapes);
+
+        }
 
 
         //
@@ -1363,6 +1426,10 @@ namespace OpenCVForUnity.DnnModule
         [DllImport(LIBNAME)]
         private static extern void dnn_Net_forward_14(IntPtr nativeObj, IntPtr outputBlobs_mat_nativeObj, IntPtr outBlobNames_mat_nativeObj);
 
+        // C++:  void cv::dnn::Net::forward(vector_vector_Mat& outputBlobs, vector_String outBlobNames)
+        [DllImport(LIBNAME)]
+        private static extern void dnn_Net_forwardAndRetrieve_10(IntPtr nativeObj, IntPtr outputBlobs_mat_nativeObj, IntPtr outBlobNames_mat_nativeObj);
+
         // C++:  Net cv::dnn::Net::quantize(vector_Mat calibData, int inputsDtype, int outputsDtype, bool perChannel = true)
         [DllImport(LIBNAME)]
         private static extern IntPtr dnn_Net_quantize_10(IntPtr nativeObj, IntPtr calibData_mat_nativeObj, int inputsDtype, int outputsDtype, [MarshalAs(UnmanagedType.U1)] bool perChannel);
@@ -1427,6 +1494,14 @@ namespace OpenCVForUnity.DnnModule
         [DllImport(LIBNAME)]
         private static extern IntPtr dnn_Net_getUnconnectedOutLayersNames_10(IntPtr nativeObj);
 
+        // C++:  void cv::dnn::Net::getLayersShapes(vector_MatShape netInputShapes, vector_int& layersIds, vector_vector_MatShape& inLayersShapes, vector_vector_MatShape& outLayersShapes)
+        [DllImport(LIBNAME)]
+        private static extern void dnn_Net_getLayersShapes_10(IntPtr nativeObj, IntPtr netInputShapes_mat_nativeObj, IntPtr layersIds_mat_nativeObj, IntPtr inLayersShapes_mat_nativeObj, IntPtr outLayersShapes_mat_nativeObj);
+
+        // C++:  void cv::dnn::Net::getLayersShapes(MatShape netInputShape, vector_int& layersIds, vector_vector_MatShape& inLayersShapes, vector_vector_MatShape& outLayersShapes)
+        [DllImport(LIBNAME)]
+        private static extern void dnn_Net_getLayersShapes_11(IntPtr nativeObj, IntPtr netInputShape_mat_nativeObj, IntPtr layersIds_mat_nativeObj, IntPtr inLayersShapes_mat_nativeObj, IntPtr outLayersShapes_mat_nativeObj);
+
         // C++:  int64 cv::dnn::Net::getFLOPS(vector_MatShape netInputShapes)
         [DllImport(LIBNAME)]
         private static extern long dnn_Net_getFLOPS_10(IntPtr nativeObj, IntPtr netInputShapes_mat_nativeObj);
@@ -1475,7 +1550,7 @@ namespace OpenCVForUnity.DnnModule
         [DllImport(LIBNAME)]
         private static extern long dnn_Net_getPerfProfile_10(IntPtr nativeObj, IntPtr timings_mat_nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void dnn_Net_delete(IntPtr nativeObj);
 

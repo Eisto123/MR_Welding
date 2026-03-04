@@ -262,7 +262,7 @@ namespace OpenCVForUnity.ObjdetectModule
         ///  detect aruco markers and interpolate position of ChArUco board corners
         /// </summary>
         /// <param name="image">
-        /// input image necesary for corner refinement. Note that markers are not detected and
+        /// input image necessary for corner refinement. Note that markers are not detected and
         ///         should be sent in corners and ids parameters.
         /// </param>
         /// <param name="charucoCorners">
@@ -311,7 +311,7 @@ namespace OpenCVForUnity.ObjdetectModule
         ///  detect aruco markers and interpolate position of ChArUco board corners
         /// </summary>
         /// <param name="image">
-        /// input image necesary for corner refinement. Note that markers are not detected and
+        /// input image necessary for corner refinement. Note that markers are not detected and
         ///         should be sent in corners and ids parameters.
         /// </param>
         /// <param name="charucoCorners">
@@ -359,7 +359,7 @@ namespace OpenCVForUnity.ObjdetectModule
         ///  detect aruco markers and interpolate position of ChArUco board corners
         /// </summary>
         /// <param name="image">
-        /// input image necesary for corner refinement. Note that markers are not detected and
+        /// input image necessary for corner refinement. Note that markers are not detected and
         ///         should be sent in corners and ids parameters.
         /// </param>
         /// <param name="charucoCorners">
@@ -603,7 +603,7 @@ namespace OpenCVForUnity.ObjdetectModule
         [DllImport(LIBNAME)]
         private static extern void objdetect_CharucoDetector_detectDiamonds_12(IntPtr nativeObj, IntPtr image_nativeObj, IntPtr diamondCorners_mat_nativeObj, IntPtr diamondIds_nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void objdetect_CharucoDetector_delete(IntPtr nativeObj);
 

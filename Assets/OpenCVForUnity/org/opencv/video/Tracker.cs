@@ -119,7 +119,7 @@ namespace OpenCVForUnity.VideoModule
         [return: MarshalAs(UnmanagedType.U1)]
         private static extern bool video_Tracker_update_10(IntPtr nativeObj, IntPtr image_nativeObj, double[] boundingBox_out);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void video_Tracker_delete(IntPtr nativeObj);
 

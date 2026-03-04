@@ -178,7 +178,7 @@ PlayerSettings:
   overrideDefaultApplicationIdentifier: 1
   AndroidBundleVersionCode: 1
   AndroidMinSdkVersion: 32
-  AndroidTargetSdkVersion: 32
+  AndroidTargetSdkVersion: 34
   AndroidPreferredInstallLocation: 0
   aotOptions: 
   stripEngineCode: 1
@@ -841,7 +841,9 @@ PlayerSettings:
   webGLWebAssemblyBigInt: 0
   webGLCloseOnQuit: 0
   webWasm2023: 0
-  scriptingDefineSymbols: {}
+  scriptingDefineSymbols:
+    Android: OVR_DISABLE_HAND_PINCH_BUTTON_MAPPING
+    Standalone: OVR_DISABLE_HAND_PINCH_BUTTON_MAPPING
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:

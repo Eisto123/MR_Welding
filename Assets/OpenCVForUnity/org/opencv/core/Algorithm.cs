@@ -173,7 +173,7 @@ namespace OpenCVForUnity.CoreModule
         [DllImport(LIBNAME)]
         private static extern IntPtr core_Algorithm_getDefaultName_10(IntPtr nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void core_Algorithm_delete(IntPtr nativeObj);
 

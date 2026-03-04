@@ -55,7 +55,7 @@ namespace OpenCVForUnity.TextModule
 
 
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void text_ERFilter_delete(IntPtr nativeObj);
 

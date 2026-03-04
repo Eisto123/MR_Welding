@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: 57201919d04b5df47a873faa5f8383c9
+TextScriptImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 21088
+  packageName: OpenCV for Unity
+  packageVersion: 3.0.0
+  assetPath: Assets/OpenCVForUnity/StreamingAssets/OpenCVForUnityExamples/objdetect/haarcascade_frontalface_alt.xml
+  uploadId: 796640

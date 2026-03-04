@@ -154,9 +154,19 @@ namespace OpenCVForUnity.ImgprocModule
 
 
         //
+        // C++:   cv::Subdiv2D::Subdiv2D(Rect2f rect2f)
+        //
+
+        // Unknown type 'Rect2f' (I), skipping the function
+
+
+        //
         // C++:  void cv::Subdiv2D::initDelaunay(Rect rect)
         //
 
+        /// <remarks>
+        ///  @overload
+        /// </remarks>
         /// <summary>
         ///  Creates a new empty Delaunay subdivision
         /// </summary>
@@ -171,6 +181,13 @@ namespace OpenCVForUnity.ImgprocModule
 
 
         }
+
+
+        //
+        // C++:  void cv::Subdiv2D::initDelaunay(Rect2f rect)
+        //
+
+        // Unknown type 'Rect2f' (I), skipping the function
 
 
         //
@@ -775,7 +792,7 @@ namespace OpenCVForUnity.ImgprocModule
         [DllImport(LIBNAME)]
         private static extern int imgproc_Subdiv2D_edgeDst_11(IntPtr nativeObj, int edge);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void imgproc_Subdiv2D_delete(IntPtr nativeObj);
 

@@ -479,7 +479,7 @@ namespace OpenCVForUnity.ImgprocModule
         [DllImport(LIBNAME)]
         private static extern void imgproc_IntelligentScissorsMB_getContour_11(IntPtr nativeObj, double targetPt_x, double targetPt_y, IntPtr contour_nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void imgproc_IntelligentScissorsMB_delete(IntPtr nativeObj);
 

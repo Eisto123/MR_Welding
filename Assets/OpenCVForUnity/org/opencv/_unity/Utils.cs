@@ -31,7 +31,7 @@ namespace OpenCVForUnity.UnityUtils
         /// </returns>
         public static string getVersion()
         {
-            return "3.0.0";
+            return "3.0.1";
         }
 
         #region metToTexture2D

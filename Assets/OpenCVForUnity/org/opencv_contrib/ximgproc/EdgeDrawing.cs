@@ -271,7 +271,7 @@ namespace OpenCVForUnity.XimgprocModule
         [DllImport(LIBNAME)]
         private static extern void ximgproc_EdgeDrawing_setParams_10(IntPtr nativeObj, IntPtr parameters_nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void ximgproc_EdgeDrawing_delete(IntPtr nativeObj);
 

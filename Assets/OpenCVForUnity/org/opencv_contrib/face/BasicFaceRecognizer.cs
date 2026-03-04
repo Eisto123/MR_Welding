@@ -223,7 +223,7 @@ namespace OpenCVForUnity.FaceModule
         [DllImport(LIBNAME)]
         private static extern IntPtr face_BasicFaceRecognizer_getMean_10(IntPtr nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void face_BasicFaceRecognizer_delete(IntPtr nativeObj);
 

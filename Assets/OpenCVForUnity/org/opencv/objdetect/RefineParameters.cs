@@ -227,7 +227,7 @@ namespace OpenCVForUnity.ObjdetectModule
         [DllImport(LIBNAME)]
         private static extern void objdetect_RefineParameters_set_1checkAllOrders_10(IntPtr nativeObj, [MarshalAs(UnmanagedType.U1)] bool checkAllOrders);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void objdetect_RefineParameters_delete(IntPtr nativeObj);
 

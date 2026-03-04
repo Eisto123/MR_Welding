@@ -796,7 +796,7 @@ namespace OpenCVForUnity.Features2dModule
         [DllImport(LIBNAME)]
         private static extern void features2d_SimpleBlobDetector_1Params_set_1collectContours_10(IntPtr nativeObj, [MarshalAs(UnmanagedType.U1)] bool collectContours);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void features2d_SimpleBlobDetector_1Params_delete(IntPtr nativeObj);
 

@@ -142,7 +142,7 @@ namespace OpenCVForUnity.FaceModule
         [return: MarshalAs(UnmanagedType.U1)]
         private static extern bool face_Facemark_fit_10(IntPtr nativeObj, IntPtr image_nativeObj, IntPtr faces_mat_nativeObj, IntPtr landmarks_mat_nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void face_Facemark_delete(IntPtr nativeObj);
 

@@ -143,7 +143,7 @@ namespace OpenCVForUnity.FaceModule
         [DllImport(LIBNAME)]
         private static extern IntPtr face_StandardCollector_create_11();
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void face_StandardCollector_delete(IntPtr nativeObj);
 

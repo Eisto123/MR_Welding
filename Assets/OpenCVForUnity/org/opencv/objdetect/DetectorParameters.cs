@@ -1311,7 +1311,7 @@ namespace OpenCVForUnity.ObjdetectModule
         [DllImport(LIBNAME)]
         private static extern void objdetect_DetectorParameters_set_1minMarkerLengthRatioOriginalImg_10(IntPtr nativeObj, float minMarkerLengthRatioOriginalImg);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void objdetect_DetectorParameters_delete(IntPtr nativeObj);
 

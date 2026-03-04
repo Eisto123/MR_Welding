@@ -254,7 +254,7 @@ namespace OpenCVForUnity.ObjdetectModule
         [DllImport(LIBNAME)]
         private static extern void objdetect_CharucoParameters_set_1checkMarkers_10(IntPtr nativeObj, [MarshalAs(UnmanagedType.U1)] bool checkMarkers);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void objdetect_CharucoParameters_delete(IntPtr nativeObj);
 

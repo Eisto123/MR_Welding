@@ -10,6 +10,8 @@ using OpenCVForUnity.UnityIntegration;
 using OpenCVForUnity.UnityIntegration.Helper.Source2Mat;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Rendering;
+using static OpenCVForUnity.UnityIntegration.Helper.Source2Mat.MultiSource2MatHelper;
 using UnityEngine.SceneManagement;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
@@ -116,6 +118,14 @@ namespace OpenCVForUnityExample
             _fpsMonitor = GetComponent<FpsMonitor>();
 
             _multiSource2MatHelper = gameObject.GetComponent<MultiSource2MatHelper>();
+
+            // WebCamTexture2MatHelper does not work on WebGPU, so use WebCamTexture2MatAsyncGPUHelper instead.
+#if UNITY_6000_0_OR_NEWER
+            if (SystemInfo.graphicsDeviceType == GraphicsDeviceType.WebGPU && _multiSource2MatHelper.RequestedSource2MatHelperClassName == MultiSource2MatHelperClassName.WebCamTexture2MatHelper)
+            {
+                _multiSource2MatHelper.RequestedSource2MatHelperClassName = MultiSource2MatHelperClassName.WebCamTexture2MatAsyncGPUHelper;
+            }
+#endif
 
             // Asynchronously retrieves the readable file path from the StreamingAssets directory.
             if (_fpsMonitor != null)
@@ -309,10 +319,15 @@ namespace OpenCVForUnityExample
             }
         }
 
+        private void OnEnable()
+        {
+#if ENABLE_INPUT_SYSTEM
+            EnhancedTouchSupport.Enable();
+#endif
+        }
+
         private void OnDisable()
         {
-            _cts?.Dispose();
-
 #if ENABLE_INPUT_SYSTEM
             EnhancedTouchSupport.Disable();
 #endif
@@ -325,6 +340,8 @@ namespace OpenCVForUnityExample
             if (_texture != null) Texture2D.Destroy(_texture); _texture = null;
 
             _tracker?.Dispose();
+
+            _cts?.Dispose();
         }
 
         // Public Methods
@@ -483,13 +500,6 @@ namespace OpenCVForUnityExample
         {
             return new Rect(r.x - r.width / 2, r.y - r.height / 2, r.width, r.height);
         }
-
-#if ENABLE_INPUT_SYSTEM
-        private void OnEnable()
-        {
-            EnhancedTouchSupport.Enable();
-        }
-#endif
     }
 
 

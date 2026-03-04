@@ -198,7 +198,7 @@ namespace OpenCVForUnity.XimgprocModule
         [DllImport(LIBNAME)]
         private static extern void ximgproc_ScanSegment_getLabelContourMask_11(IntPtr nativeObj, IntPtr image_nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void ximgproc_ScanSegment_delete(IntPtr nativeObj);
 

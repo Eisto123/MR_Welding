@@ -236,7 +236,7 @@ namespace OpenCVForUnity.XphotoModule
         [DllImport(LIBNAME)]
         private static extern void xphoto_LearningBasedWB_setHistBinNum_10(IntPtr nativeObj, int val);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void xphoto_LearningBasedWB_delete(IntPtr nativeObj);
 

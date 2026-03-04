@@ -226,7 +226,7 @@ namespace OpenCVForUnity.BioinspiredModule
         [DllImport(LIBNAME)]
         private static extern IntPtr bioinspired_RetinaFastToneMapping_create_10(double inputSize_width, double inputSize_height);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void bioinspired_RetinaFastToneMapping_delete(IntPtr nativeObj);
 

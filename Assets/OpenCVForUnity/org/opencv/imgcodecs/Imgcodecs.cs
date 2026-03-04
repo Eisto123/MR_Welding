@@ -37,7 +37,12 @@ namespace OpenCVForUnity.ImgcodecsModule
         /// <summary>
         /// C++: enum ImageMetadataType (cv.ImageMetadataType)
         /// </summary>
-        public const int IMAGE_METADATA_MAX = 2;
+        public const int IMAGE_METADATA_CICP = 3;
+
+        /// <summary>
+        /// C++: enum ImageMetadataType (cv.ImageMetadataType)
+        /// </summary>
+        public const int IMAGE_METADATA_MAX = 3;
 
 
         /// <summary>
@@ -114,6 +119,17 @@ namespace OpenCVForUnity.ImgcodecsModule
         /// C++: enum ImreadModes (cv.ImreadModes)
         /// </summary>
         public const int IMREAD_COLOR_RGB = 256;
+
+
+        /// <summary>
+        /// C++: enum ImwriteBMPCompressionFlags (cv.ImwriteBMPCompressionFlags)
+        /// </summary>
+        public const int IMWRITE_BMP_COMPRESSION_RGB = 0;
+
+        /// <summary>
+        /// C++: enum ImwriteBMPCompressionFlags (cv.ImwriteBMPCompressionFlags)
+        /// </summary>
+        public const int IMWRITE_BMP_COMPRESSION_BITFIELDS = 3;
 
 
         /// <summary>
@@ -236,6 +252,11 @@ namespace OpenCVForUnity.ImgcodecsModule
         /// <summary>
         /// C++: enum ImwriteFlags (cv.ImwriteFlags)
         /// </summary>
+        public const int IMWRITE_PNG_ZLIBBUFFER_SIZE = 20;
+
+        /// <summary>
+        /// C++: enum ImwriteFlags (cv.ImwriteFlags)
+        /// </summary>
         public const int IMWRITE_PXM_BINARY = 32;
 
         /// <summary>
@@ -337,6 +358,11 @@ namespace OpenCVForUnity.ImgcodecsModule
         /// C++: enum ImwriteFlags (cv.ImwriteFlags)
         /// </summary>
         public const int IMWRITE_JPEGXL_DECODING_SPEED = 643;
+
+        /// <summary>
+        /// C++: enum ImwriteFlags (cv.ImwriteFlags)
+        /// </summary>
+        public const int IMWRITE_BMP_COMPRESSION = 768;
 
         /// <summary>
         /// C++: enum ImwriteFlags (cv.ImwriteFlags)
@@ -722,6 +748,22 @@ namespace OpenCVForUnity.ImgcodecsModule
         public const int IMWRITE_TIFF_PREDICTOR_FLOATINGPOINT = 3;
 
 
+        /// <summary>
+        /// C++: enum ImwriteTiffResolutionUnitFlags (cv.ImwriteTiffResolutionUnitFlags)
+        /// </summary>
+        public const int IMWRITE_TIFF_RESOLUTION_UNIT_NONE = 1;
+
+        /// <summary>
+        /// C++: enum ImwriteTiffResolutionUnitFlags (cv.ImwriteTiffResolutionUnitFlags)
+        /// </summary>
+        public const int IMWRITE_TIFF_RESOLUTION_UNIT_INCH = 2;
+
+        /// <summary>
+        /// C++: enum ImwriteTiffResolutionUnitFlags (cv.ImwriteTiffResolutionUnitFlags)
+        /// </summary>
+        public const int IMWRITE_TIFF_RESOLUTION_UNIT_CENTIMETER = 3;
+
+
         //
         // C++:  Mat cv::imread(String filename, int flags = IMREAD_COLOR_BGR)
         //
@@ -781,7 +823,7 @@ namespace OpenCVForUnity.ImgcodecsModule
         /// Name of the file to be loaded.
         /// </param>
         /// <param name="flags">
-        /// Flag that can take values of `cv::ImreadModes`.
+        /// Flag that can take values of cv::ImreadModes, default with cv::IMREAD_COLOR_BGR.
         /// </param>
         public static Mat imread(string filename, int flags)
         {
@@ -847,7 +889,7 @@ namespace OpenCVForUnity.ImgcodecsModule
         /// Name of the file to be loaded.
         /// </param>
         /// <param name="flags">
-        /// Flag that can take values of `cv::ImreadModes`.
+        /// Flag that can take values of cv::ImreadModes, default with cv::IMREAD_COLOR_BGR.
         /// </param>
         public static Mat imread(string filename)
         {
@@ -876,7 +918,7 @@ namespace OpenCVForUnity.ImgcodecsModule
         /// object in which the image will be loaded.
         /// </param>
         /// <param name="flags">
-        /// Flag that can take values of cv::ImreadModes
+        /// Flag that can take values of cv::ImreadModes, default with cv::IMREAD_COLOR_BGR.
         ///  @note
         ///  The image passing through the img parameter can be pre-allocated. The memory is reused if the shape and the type match with the load image.
         /// </param>
@@ -902,7 +944,7 @@ namespace OpenCVForUnity.ImgcodecsModule
         /// object in which the image will be loaded.
         /// </param>
         /// <param name="flags">
-        /// Flag that can take values of cv::ImreadModes
+        /// Flag that can take values of cv::ImreadModes, default with cv::IMREAD_COLOR_BGR.
         ///  @note
         ///  The image passing through the img parameter can be pre-allocated. The memory is reused if the shape and the type match with the load image.
         /// </param>
@@ -921,23 +963,30 @@ namespace OpenCVForUnity.ImgcodecsModule
         //
 
         /// <summary>
-        ///  Reads an image from a file together with associated metadata.
+        ///  Reads an image from a file along with associated metadata.
         /// </summary>
         /// <remarks>
-        ///  The function imreadWithMetadata reads image from the specified file. It does the same thing as imread, but additionally reads metadata if the corresponding file contains any.
+        ///  This function behaves similarly to cv::imread(), loading an image from the specified file.
+        ///  In addition to the image pixel data, it also attempts to extract any available metadata
+        ///  embedded in the file (such as EXIF, XMP, etc.), depending on file format support.
+        ///  
+        ///  @note In the case of color images, the decoded images will have the channels stored in **B G R** order.
         /// </remarks>
         /// <param name="filename">
         /// Name of the file to be loaded.
         /// </param>
         /// <param name="metadataTypes">
-        /// Output vector with types of metadata chucks returned in metadata, see ImageMetadataType.
+        /// Output vector with types of metadata chunks returned in metadata, see ImageMetadataType.
         /// </param>
         /// <param name="metadata">
-        /// Output vector of vectors or vector of matrices to store the retrieved metadata
+        /// Output vector of vectors or vector of matrices to store the retrieved metadata.
         /// </param>
         /// <param name="flags">
-        /// Flag that can take values of cv::ImreadModes
+        /// Flag that can take values of cv::ImreadModes, default with cv::IMREAD_ANYCOLOR.
         /// </param>
+        /// <returns>
+        ///  The loaded image as a cv::Mat object. If the image cannot be read, the function returns an empty matrix.
+        /// </returns>
         public static Mat imreadWithMetadata(string filename, MatOfInt metadataTypes, List<Mat> metadata, int flags)
         {
             if (metadataTypes != null) metadataTypes.ThrowIfDisposed();
@@ -949,23 +998,30 @@ namespace OpenCVForUnity.ImgcodecsModule
         }
 
         /// <summary>
-        ///  Reads an image from a file together with associated metadata.
+        ///  Reads an image from a file along with associated metadata.
         /// </summary>
         /// <remarks>
-        ///  The function imreadWithMetadata reads image from the specified file. It does the same thing as imread, but additionally reads metadata if the corresponding file contains any.
+        ///  This function behaves similarly to cv::imread(), loading an image from the specified file.
+        ///  In addition to the image pixel data, it also attempts to extract any available metadata
+        ///  embedded in the file (such as EXIF, XMP, etc.), depending on file format support.
+        ///  
+        ///  @note In the case of color images, the decoded images will have the channels stored in **B G R** order.
         /// </remarks>
         /// <param name="filename">
         /// Name of the file to be loaded.
         /// </param>
         /// <param name="metadataTypes">
-        /// Output vector with types of metadata chucks returned in metadata, see ImageMetadataType.
+        /// Output vector with types of metadata chunks returned in metadata, see ImageMetadataType.
         /// </param>
         /// <param name="metadata">
-        /// Output vector of vectors or vector of matrices to store the retrieved metadata
+        /// Output vector of vectors or vector of matrices to store the retrieved metadata.
         /// </param>
         /// <param name="flags">
-        /// Flag that can take values of cv::ImreadModes
+        /// Flag that can take values of cv::ImreadModes, default with cv::IMREAD_ANYCOLOR.
         /// </param>
+        /// <returns>
+        ///  The loaded image as a cv::Mat object. If the image cannot be read, the function returns an empty matrix.
+        /// </returns>
         public static Mat imreadWithMetadata(string filename, MatOfInt metadataTypes, List<Mat> metadata)
         {
             if (metadataTypes != null) metadataTypes.ThrowIfDisposed();
@@ -1503,7 +1559,12 @@ namespace OpenCVForUnity.ImgcodecsModule
         ///  single-channel or 3-channel (with 'BGR' channel order) images
         ///  can be saved using this function, with these exceptions:
         ///  
-        ///  - With OpenEXR encoder, only 32-bit float (CV_32F) images can be saved.
+        ///  - With BMP encoder, 8-bit unsigned (CV_8U) images can be saved.
+        ///    - BMP images with an alpha channel can be saved using this function.
+        ///      To achieve this, create an 8-bit 4-channel (CV_8UC4) BGRA image, ensuring the alpha channel is the last component.
+        ///      Fully transparent pixels should have an alpha value of 0, while fully opaque pixels should have an alpha value of 255.
+        ///      OpenCV v4.13.0 or later use BI_BITFIELDS compression as default. See IMWRITE_BMP_COMPRESSION.
+        ///  - With OpenEXR encoder, only 32-bit float (CV_32F) images can be saved. More than 4 channels can be saved. (imread can load it then.)
         ///    - 8-bit unsigned (CV_8U) images are not supported.
         ///  - With Radiance HDR encoder, non 64-bit float (CV_64F) images can be saved.
         ///    - All images will be converted to 32-bit float (CV_32F).
@@ -1530,6 +1591,11 @@ namespace OpenCVForUnity.ImgcodecsModule
         ///      To achieve this, create an 8-bit 4-channel (CV_8UC4) BGRA image, ensuring the alpha channel is the last component.
         ///      Fully transparent pixels should have an alpha value of 0, while fully opaque pixels should have an alpha value of 255.
         ///    - 8-bit single-channel images (CV_8UC1) are not supported due to GIF's limitation to indexed color formats.
+        ///  - With AVIF encoder, 8-bit unsigned (CV_8U) and 16-bit unsigned (CV_16U) images can be saved.
+        ///    - CV_16U images can be saved as only 10-bit or 12-bit (not 16-bit). See IMWRITE_AVIF_DEPTH.
+        ///    - AVIF images with an alpha channel can be saved using this function.
+        ///      To achieve this, create an 8-bit 4-channel (CV_8UC4) / 16-bit 4-channel (CV_16UC4) BGRA image, ensuring the alpha channel is the last component.
+        ///      Fully transparent pixels should have an alpha value of 0, while fully opaque pixels should have an alpha value of 255 (8-bit) / 1023 (10-bit) / 4095 (12-bit) (see the code sample below).
         ///  
         ///  If the image format is not supported, the image will be converted to 8-bit unsigned (CV_8U) and saved that way.
         ///  
@@ -1550,6 +1616,9 @@ namespace OpenCVForUnity.ImgcodecsModule
         /// <param name="params">
         /// Format-specific parameters encoded as pairs (paramId_1, paramValue_1, paramId_2, paramValue_2, ... .) see cv::ImwriteFlags
         /// </param>
+        /// <returns>
+        ///  true if the image is successfully written to the specified file; false otherwise.
+        /// </returns>
         public static bool imwrite(string filename, Mat img, MatOfInt _params)
         {
             if (img != null) img.ThrowIfDisposed();
@@ -1569,7 +1638,12 @@ namespace OpenCVForUnity.ImgcodecsModule
         ///  single-channel or 3-channel (with 'BGR' channel order) images
         ///  can be saved using this function, with these exceptions:
         ///  
-        ///  - With OpenEXR encoder, only 32-bit float (CV_32F) images can be saved.
+        ///  - With BMP encoder, 8-bit unsigned (CV_8U) images can be saved.
+        ///    - BMP images with an alpha channel can be saved using this function.
+        ///      To achieve this, create an 8-bit 4-channel (CV_8UC4) BGRA image, ensuring the alpha channel is the last component.
+        ///      Fully transparent pixels should have an alpha value of 0, while fully opaque pixels should have an alpha value of 255.
+        ///      OpenCV v4.13.0 or later use BI_BITFIELDS compression as default. See IMWRITE_BMP_COMPRESSION.
+        ///  - With OpenEXR encoder, only 32-bit float (CV_32F) images can be saved. More than 4 channels can be saved. (imread can load it then.)
         ///    - 8-bit unsigned (CV_8U) images are not supported.
         ///  - With Radiance HDR encoder, non 64-bit float (CV_64F) images can be saved.
         ///    - All images will be converted to 32-bit float (CV_32F).
@@ -1596,6 +1670,11 @@ namespace OpenCVForUnity.ImgcodecsModule
         ///      To achieve this, create an 8-bit 4-channel (CV_8UC4) BGRA image, ensuring the alpha channel is the last component.
         ///      Fully transparent pixels should have an alpha value of 0, while fully opaque pixels should have an alpha value of 255.
         ///    - 8-bit single-channel images (CV_8UC1) are not supported due to GIF's limitation to indexed color formats.
+        ///  - With AVIF encoder, 8-bit unsigned (CV_8U) and 16-bit unsigned (CV_16U) images can be saved.
+        ///    - CV_16U images can be saved as only 10-bit or 12-bit (not 16-bit). See IMWRITE_AVIF_DEPTH.
+        ///    - AVIF images with an alpha channel can be saved using this function.
+        ///      To achieve this, create an 8-bit 4-channel (CV_8UC4) / 16-bit 4-channel (CV_16UC4) BGRA image, ensuring the alpha channel is the last component.
+        ///      Fully transparent pixels should have an alpha value of 0, while fully opaque pixels should have an alpha value of 255 (8-bit) / 1023 (10-bit) / 4095 (12-bit) (see the code sample below).
         ///  
         ///  If the image format is not supported, the image will be converted to 8-bit unsigned (CV_8U) and saved that way.
         ///  
@@ -1616,6 +1695,9 @@ namespace OpenCVForUnity.ImgcodecsModule
         /// <param name="params">
         /// Format-specific parameters encoded as pairs (paramId_1, paramValue_1, paramId_2, paramValue_2, ... .) see cv::ImwriteFlags
         /// </param>
+        /// <returns>
+        ///  true if the image is successfully written to the specified file; false otherwise.
+        /// </returns>
         public static bool imwrite(string filename, Mat img)
         {
             if (img != null) img.ThrowIfDisposed();
@@ -1740,7 +1822,7 @@ namespace OpenCVForUnity.ImgcodecsModule
         /// Input array or vector of bytes.
         /// </param>
         /// <param name="flags">
-        /// The same flags as in cv::imread, see cv::ImreadModes.
+        /// Flag that can take values of cv::ImreadModes.
         /// </param>
         public static Mat imdecode(Mat buf, int flags)
         {
@@ -1757,10 +1839,10 @@ namespace OpenCVForUnity.ImgcodecsModule
         //
 
         /// <summary>
-        ///  Reads an image from a buffer in memory together with associated metadata.
+        ///  Reads an image from a memory buffer and extracts associated metadata.
         /// </summary>
         /// <remarks>
-        ///  The function imdecode reads an image from the specified buffer in the memory. If the buffer is too short or
+        ///  This function decodes an image from the specified memory buffer. If the buffer is too short or
         ///  contains invalid data, the function returns an empty matrix ( Mat::data==NULL ).
         ///  
         ///  See cv::imread for the list of supported formats and flags description.
@@ -1768,17 +1850,20 @@ namespace OpenCVForUnity.ImgcodecsModule
         ///  @note In the case of color images, the decoded images will have the channels stored in **B G R** order.
         /// </remarks>
         /// <param name="buf">
-        /// Input array or vector of bytes.
+        /// Input array or vector of bytes containing the encoded image data.
         /// </param>
         /// <param name="metadataTypes">
-        /// Output vector with types of metadata chucks returned in metadata, see ImageMetadataType.
+        /// Output vector with types of metadata chucks returned in metadata, see cv::ImageMetadataType
         /// </param>
         /// <param name="metadata">
         /// Output vector of vectors or vector of matrices to store the retrieved metadata
         /// </param>
         /// <param name="flags">
-        /// The same flags as in cv::imread, see cv::ImreadModes.
+        /// Flag that can take values of cv::ImreadModes, default with cv::IMREAD_ANYCOLOR.
         /// </param>
+        /// <returns>
+        ///  The decoded image as a cv::Mat object. If decoding fails, the function returns an empty matrix.
+        /// </returns>
         public static Mat imdecodeWithMetadata(Mat buf, MatOfInt metadataTypes, List<Mat> metadata, int flags)
         {
             if (buf != null) buf.ThrowIfDisposed();
@@ -1791,10 +1876,10 @@ namespace OpenCVForUnity.ImgcodecsModule
         }
 
         /// <summary>
-        ///  Reads an image from a buffer in memory together with associated metadata.
+        ///  Reads an image from a memory buffer and extracts associated metadata.
         /// </summary>
         /// <remarks>
-        ///  The function imdecode reads an image from the specified buffer in the memory. If the buffer is too short or
+        ///  This function decodes an image from the specified memory buffer. If the buffer is too short or
         ///  contains invalid data, the function returns an empty matrix ( Mat::data==NULL ).
         ///  
         ///  See cv::imread for the list of supported formats and flags description.
@@ -1802,17 +1887,20 @@ namespace OpenCVForUnity.ImgcodecsModule
         ///  @note In the case of color images, the decoded images will have the channels stored in **B G R** order.
         /// </remarks>
         /// <param name="buf">
-        /// Input array or vector of bytes.
+        /// Input array or vector of bytes containing the encoded image data.
         /// </param>
         /// <param name="metadataTypes">
-        /// Output vector with types of metadata chucks returned in metadata, see ImageMetadataType.
+        /// Output vector with types of metadata chucks returned in metadata, see cv::ImageMetadataType
         /// </param>
         /// <param name="metadata">
         /// Output vector of vectors or vector of matrices to store the retrieved metadata
         /// </param>
         /// <param name="flags">
-        /// The same flags as in cv::imread, see cv::ImreadModes.
+        /// Flag that can take values of cv::ImreadModes, default with cv::IMREAD_ANYCOLOR.
         /// </param>
+        /// <returns>
+        ///  The decoded image as a cv::Mat object. If decoding fails, the function returns an empty matrix.
+        /// </returns>
         public static Mat imdecodeWithMetadata(Mat buf, MatOfInt metadataTypes, List<Mat> metadata)
         {
             if (buf != null) buf.ThrowIfDisposed();
@@ -1844,7 +1932,7 @@ namespace OpenCVForUnity.ImgcodecsModule
         /// Input array or vector of bytes.
         /// </param>
         /// <param name="flags">
-        /// The same flags as in cv::imread, see cv::ImreadModes.
+        /// Flag that can take values of cv::ImreadModes.
         /// </param>
         /// <param name="mats">
         /// A vector of Mat objects holding each page, if more than one.
@@ -1876,7 +1964,7 @@ namespace OpenCVForUnity.ImgcodecsModule
         /// Input array or vector of bytes.
         /// </param>
         /// <param name="flags">
-        /// The same flags as in cv::imread, see cv::ImreadModes.
+        /// Flag that can take values of cv::ImreadModes.
         /// </param>
         /// <param name="mats">
         /// A vector of Mat objects holding each page, if more than one.

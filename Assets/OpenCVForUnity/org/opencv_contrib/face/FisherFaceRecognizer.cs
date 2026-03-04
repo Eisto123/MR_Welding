@@ -188,7 +188,7 @@ namespace OpenCVForUnity.FaceModule
         [DllImport(LIBNAME)]
         private static extern IntPtr face_FisherFaceRecognizer_create_12();
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void face_FisherFaceRecognizer_delete(IntPtr nativeObj);
 

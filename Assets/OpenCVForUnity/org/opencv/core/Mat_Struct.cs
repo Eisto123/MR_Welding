@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace OpenCVForUnity.CoreModule
 {
-    public partial class Mat : DisposableOpenCVObject
+    public partial class Mat : CleanableMat
     {
 
         //
@@ -29,7 +29,7 @@ namespace OpenCVForUnity.CoreModule
         /// Array type. Use CV_8UC1, ..., CV_64FC4 to create 1-4 channel matrices, or
         /// CV_8UC(n), ..., CV_64FC(n) to create multi-channel(up to CV_CN_MAX channels) matrices.
         /// </param>
-        public Mat(in Vec2d size, int type)
+        public Mat(in Vec2d size, int type) : base(IntPtr.Zero)
         {
 
             nativeObj = DisposableObject.ThrowIfNullIntPtr(core_Mat_n_1Mat__DDI(size.Item1, size.Item2, type));
@@ -61,7 +61,7 @@ namespace OpenCVForUnity.CoreModule
         /// the particular value after the construction, use the assignment operator
         /// Mat::operator=(const Scalar&amp; value) .
         /// </param>
-        public Mat(int rows, int cols, int type, in Vec4d s)
+        public Mat(int rows, int cols, int type, in Vec4d s) : base(IntPtr.Zero)
         {
 
             nativeObj = DisposableObject.ThrowIfNullIntPtr(core_Mat_n_1Mat__IIIDDDD(rows, cols, type, s.Item1, s.Item2, s.Item3, s.Item4));
@@ -91,7 +91,7 @@ namespace OpenCVForUnity.CoreModule
         /// the particular value after the construction, use the assignment operator
         /// Mat::operator=(const Scalar&amp; value) .
         /// </param>
-        public Mat(in Vec2d size, int type, in Vec4d s)
+        public Mat(in Vec2d size, int type, in Vec4d s) : base(IntPtr.Zero)
         {
 
             nativeObj = DisposableObject.ThrowIfNullIntPtr(core_Mat_n_1Mat__DDIDDDD(size.Item1, size.Item2, type, s.Item1, s.Item2, s.Item3, s.Item4));
@@ -120,7 +120,7 @@ namespace OpenCVForUnity.CoreModule
         /// the particular value after the construction, use the assignment operator
         /// Mat::operator=(const Scalar&amp; value) .
         /// </param>
-        public Mat(int[] sizes, int type, in Vec4d s)
+        public Mat(int[] sizes, int type, in Vec4d s) : base(IntPtr.Zero)
         {
 
             nativeObj = DisposableObject.ThrowIfNullIntPtr(core_Mat_n_1Mat__I_3IIDDDD(sizes.Length, sizes, sizes.Length, type, s.Item1, s.Item2, s.Item3, s.Item4));
@@ -151,7 +151,7 @@ namespace OpenCVForUnity.CoreModule
         /// <param name="colRange">
         /// colRange Range of the m columns to take. Use Range::all() to take all the columns.
         /// </param>
-        public Mat(Mat m, in Vec2i rowRange, in Vec2i colRange)
+        public Mat(Mat m, in Vec2i rowRange, in Vec2i colRange) : base(IntPtr.Zero)
         {
             if (m != null)
                 m.ThrowIfDisposed();
@@ -177,7 +177,7 @@ namespace OpenCVForUnity.CoreModule
         /// Range of the m rows to take. As usual, the range start is inclusive and the range
         /// end is exclusive.Use Range::all() to take all the rows.
         /// </param>
-        public Mat(Mat m, in Vec2i rowRange)
+        public Mat(Mat m, in Vec2i rowRange) : base(IntPtr.Zero)
         {
             if (m != null)
                 m.ThrowIfDisposed();
@@ -206,7 +206,7 @@ namespace OpenCVForUnity.CoreModule
         /// <param name="ranges">
         /// Array of selected ranges of m along each dimensionality.
         /// </param>
-        public Mat(Mat m, in Vec2i[] ranges)
+        public Mat(Mat m, in Vec2i[] ranges) : base(IntPtr.Zero)
         {
             if (m != null)
                 m.ThrowIfDisposed();
@@ -242,7 +242,7 @@ namespace OpenCVForUnity.CoreModule
         /// <param name="roi">
         /// Region of interest.
         /// </param>
-        public Mat(Mat m, in Vec4i roi)
+        public Mat(Mat m, in Vec4i roi) : base(IntPtr.Zero)
         {
             if (m != null)
                 m.ThrowIfDisposed();
@@ -281,7 +281,7 @@ namespace OpenCVForUnity.CoreModule
         /// the end of each row, if any.If the parameter is missing(set to AUTO_STEP ), no padding is assumed
         /// and the actual step is calculated as cols* elemSize(). See Mat::elemSize.
         /// </param>
-        public Mat(in Vec2d size, int type, IntPtr data, long step = AUTO_STEP)
+        public Mat(in Vec2d size, int type, IntPtr data, long step = AUTO_STEP) : base(IntPtr.Zero)
         {
 
             nativeObj = DisposableObject.ThrowIfNullIntPtr(core_Mat_n_1Mat__DDIVL(size.Item1, size.Item2, type, data, step));

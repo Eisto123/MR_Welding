@@ -22,7 +22,7 @@ namespace OpenCVForUnity.UnityIntegration
         /// </returns>
         public static string GetVersion()
         {
-            return "3.0.0";
+            return "3.0.2";
         }
 
 

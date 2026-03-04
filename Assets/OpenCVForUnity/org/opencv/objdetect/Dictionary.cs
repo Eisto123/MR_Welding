@@ -241,8 +241,20 @@ namespace OpenCVForUnity.ObjdetectModule
 
 
         //
-        // C++: static Mat cv::aruco::Dictionary::getBitsFromByteList(Mat byteList, int markerSize)
+        // C++: static Mat cv::aruco::Dictionary::getBitsFromByteList(Mat byteList, int markerSize, int rotationId = 0)
         //
+
+        /// <summary>
+        ///  Transform list of bytes to matrix of bits
+        /// </summary>
+        public static Mat getBitsFromByteList(Mat byteList, int markerSize, int rotationId)
+        {
+            if (byteList != null) byteList.ThrowIfDisposed();
+
+            return new Mat(DisposableObject.ThrowIfNullIntPtr(objdetect_Dictionary_getBitsFromByteList_10(byteList.nativeObj, markerSize, rotationId)));
+
+
+        }
 
         /// <summary>
         ///  Transform list of bytes to matrix of bits
@@ -251,7 +263,7 @@ namespace OpenCVForUnity.ObjdetectModule
         {
             if (byteList != null) byteList.ThrowIfDisposed();
 
-            return new Mat(DisposableObject.ThrowIfNullIntPtr(objdetect_Dictionary_getBitsFromByteList_10(byteList.nativeObj, markerSize)));
+            return new Mat(DisposableObject.ThrowIfNullIntPtr(objdetect_Dictionary_getBitsFromByteList_11(byteList.nativeObj, markerSize)));
 
 
         }
@@ -381,9 +393,11 @@ namespace OpenCVForUnity.ObjdetectModule
         [DllImport(LIBNAME)]
         private static extern IntPtr objdetect_Dictionary_getByteListFromBits_10(IntPtr bits_nativeObj);
 
-        // C++: static Mat cv::aruco::Dictionary::getBitsFromByteList(Mat byteList, int markerSize)
+        // C++: static Mat cv::aruco::Dictionary::getBitsFromByteList(Mat byteList, int markerSize, int rotationId = 0)
         [DllImport(LIBNAME)]
-        private static extern IntPtr objdetect_Dictionary_getBitsFromByteList_10(IntPtr byteList_nativeObj, int markerSize);
+        private static extern IntPtr objdetect_Dictionary_getBitsFromByteList_10(IntPtr byteList_nativeObj, int markerSize, int rotationId);
+        [DllImport(LIBNAME)]
+        private static extern IntPtr objdetect_Dictionary_getBitsFromByteList_11(IntPtr byteList_nativeObj, int markerSize);
 
         // C++: Mat Dictionary::bytesList
         [DllImport(LIBNAME)]
@@ -409,7 +423,7 @@ namespace OpenCVForUnity.ObjdetectModule
         [DllImport(LIBNAME)]
         private static extern void objdetect_Dictionary_set_1maxCorrectionBits_10(IntPtr nativeObj, int maxCorrectionBits);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void objdetect_Dictionary_delete(IntPtr nativeObj);
 

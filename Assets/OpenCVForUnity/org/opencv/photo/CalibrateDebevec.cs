@@ -164,7 +164,7 @@ namespace OpenCVForUnity.PhotoModule
         [DllImport(LIBNAME)]
         private static extern void photo_CalibrateDebevec_setRandom_10(IntPtr nativeObj, [MarshalAs(UnmanagedType.U1)] bool random);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void photo_CalibrateDebevec_delete(IntPtr nativeObj);
 

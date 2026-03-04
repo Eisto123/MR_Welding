@@ -921,7 +921,7 @@ namespace OpenCVForUnity.MlModule
         [DllImport(LIBNAME)]
         private static extern IntPtr ml_ANN_1MLP_load_10(string filepath);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void ml_ANN_1MLP_delete(IntPtr nativeObj);
 

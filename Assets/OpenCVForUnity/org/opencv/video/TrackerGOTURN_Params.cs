@@ -149,7 +149,7 @@ namespace OpenCVForUnity.VideoModule
         [DllImport(LIBNAME)]
         private static extern void video_TrackerGOTURN_1Params_set_1modelBin_10(IntPtr nativeObj, string modelBin);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void video_TrackerGOTURN_1Params_delete(IntPtr nativeObj);
 

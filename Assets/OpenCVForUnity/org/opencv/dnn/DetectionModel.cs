@@ -298,7 +298,7 @@ namespace OpenCVForUnity.DnnModule
         [DllImport(LIBNAME)]
         private static extern void dnn_DetectionModel_detect_12(IntPtr nativeObj, IntPtr frame_nativeObj, IntPtr classIds_mat_nativeObj, IntPtr confidences_mat_nativeObj, IntPtr boxes_mat_nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void dnn_DetectionModel_delete(IntPtr nativeObj);
 

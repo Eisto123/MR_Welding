@@ -71,7 +71,7 @@ namespace OpenCVForUnity.Img_hashModule
         [DllImport(LIBNAME)]
         private static extern IntPtr img_1hash_ColorMomentHash_create_10();
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void img_1hash_ColorMomentHash_delete(IntPtr nativeObj);
 

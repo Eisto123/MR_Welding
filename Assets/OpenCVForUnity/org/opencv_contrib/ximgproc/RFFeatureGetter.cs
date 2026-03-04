@@ -73,7 +73,7 @@ namespace OpenCVForUnity.XimgprocModule
         [DllImport(LIBNAME)]
         private static extern void ximgproc_RFFeatureGetter_getFeatures_10(IntPtr nativeObj, IntPtr src_nativeObj, IntPtr features_nativeObj, int gnrmRad, int gsmthRad, int shrink, int outNum, int gradNum);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void ximgproc_RFFeatureGetter_delete(IntPtr nativeObj);
 

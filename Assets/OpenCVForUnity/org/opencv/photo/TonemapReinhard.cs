@@ -164,7 +164,7 @@ namespace OpenCVForUnity.PhotoModule
         [DllImport(LIBNAME)]
         private static extern void photo_TonemapReinhard_setColorAdaptation_10(IntPtr nativeObj, float color_adapt);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void photo_TonemapReinhard_delete(IntPtr nativeObj);
 

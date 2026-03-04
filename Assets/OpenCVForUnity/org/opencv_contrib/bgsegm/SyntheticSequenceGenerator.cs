@@ -122,7 +122,7 @@ namespace OpenCVForUnity.BgsegmModule
         [DllImport(LIBNAME)]
         private static extern void bgsegm_SyntheticSequenceGenerator_getNextFrame_10(IntPtr nativeObj, IntPtr frame_nativeObj, IntPtr gtMask_nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void bgsegm_SyntheticSequenceGenerator_delete(IntPtr nativeObj);
 

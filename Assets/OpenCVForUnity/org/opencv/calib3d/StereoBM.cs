@@ -539,7 +539,7 @@ namespace OpenCVForUnity.Calib3dModule
         [DllImport(LIBNAME)]
         private static extern IntPtr calib3d_StereoBM_create_12();
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void calib3d_StereoBM_delete(IntPtr nativeObj);
 

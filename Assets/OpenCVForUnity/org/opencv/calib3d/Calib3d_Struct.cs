@@ -333,7 +333,7 @@ namespace OpenCVForUnity.Calib3dModule
         ///  border and the background is dark, the outer black squares cannot be segmented properly and so the
         ///  square grouping and ordering algorithm fails.
         ///  
-        ///  Use the `gen_pattern.py` Python script (@ref tutorial_camera_calibration_pattern)
+        ///  Use the `generate_pattern.py` Python script (@ref tutorial_camera_calibration_pattern)
         ///  to create the desired checkerboard pattern.
         /// </remarks>
         public static bool findChessboardCorners(Mat image, in Vec2d patternSize, MatOfPoint2f corners, int flags)
@@ -410,7 +410,7 @@ namespace OpenCVForUnity.Calib3dModule
         ///  border and the background is dark, the outer black squares cannot be segmented properly and so the
         ///  square grouping and ordering algorithm fails.
         ///  
-        ///  Use the `gen_pattern.py` Python script (@ref tutorial_camera_calibration_pattern)
+        ///  Use the `generate_pattern.py` Python script (@ref tutorial_camera_calibration_pattern)
         ///  to create the desired checkerboard pattern.
         /// </remarks>
         public static bool findChessboardCorners(Mat image, in Vec2d patternSize, MatOfPoint2f corners)
@@ -465,7 +465,7 @@ namespace OpenCVForUnity.Calib3dModule
         ///  This should be used if an accurate camera calibration is required.
         /// </param>
         /// <param name="meta">
-        /// Optional output arrray of detected corners (CV_8UC1 and size = cv::Size(columns,rows)).
+        /// Optional output array of detected corners (CV_8UC1 and size = cv::Size(columns,rows)).
         ///  Each entry stands for one corner of the pattern and can have one of the following values:
         ///  -   0 = no meta data attached
         ///  -   1 = left-top corner of a black cell
@@ -500,7 +500,7 @@ namespace OpenCVForUnity.Calib3dModule
         ///  a sample checkerboard optimized for the detection. However, any other checkerboard
         ///  can be used as well.
         ///  
-        ///  Use the `gen_pattern.py` Python script (@ref tutorial_camera_calibration_pattern)
+        ///  Use the `generate_pattern.py` Python script (@ref tutorial_camera_calibration_pattern)
         ///  to create the corresponding checkerboard pattern:
         ///  \image html pics/checkerboard_radon.png width=60%
         /// </remarks>
@@ -4778,7 +4778,7 @@ namespace OpenCVForUnity.Calib3dModule
 
 
         //
-        // C++:  void cv::undistortImagePoints(Mat src, Mat& dst, Mat cameraMatrix, Mat distCoeffs, TermCriteria arg1 = TermCriteria(TermCriteria::MAX_ITER + TermCriteria::EPS, 5, 0.01))
+        // C++:  void cv::undistortImagePoints(Mat src, Mat& dst, Mat cameraMatrix, Mat distCoeffs, TermCriteria arg1 = TermCriteria(TermCriteria::MAX_ITER, 5, 0.01))
         //
 
         /// <summary>
@@ -4931,7 +4931,7 @@ namespace OpenCVForUnity.Calib3dModule
         /// the new size
         /// </param>
         /// <remarks>
-        ///      The function transforms an image to compensate radial and tangential lens distortion.
+        ///      The function transforms an image to compensate radial lens distortion.
         ///  
         ///      The function is simply a combination of #fisheye::initUndistortRectifyMap (with unity R ) and #remap
         ///      (with bilinear interpolation). See the former function for details of the transformation being
@@ -5994,7 +5994,7 @@ namespace OpenCVForUnity.Calib3dModule
         //
 
         /// <summary>
-        ///  Finds an object pose from 3D-2D point correspondences for fisheye camera moodel.
+        ///  Finds an object pose from 3D-2D point correspondences for fisheye camera model.
         /// </summary>
         /// <param name="objectPoints">
         /// Array of object points in the object coordinate space, Nx3 1-channel or
@@ -6027,7 +6027,7 @@ namespace OpenCVForUnity.Calib3dModule
         /// </param>
         /// <param name="criteria">
         /// Termination criteria for internal undistortPoints call.
-        ///      The function interally undistorts points with @ref undistortPoints and call @ref cv::solvePnP,
+        ///      The function internally undistorts points with @ref undistortPoints and call @ref cv::solvePnP,
         ///      thus the input are very similar. More information about Perspective-n-Points is described in @ref calib3d_solvePnP
         ///      for more information.
         /// </param>

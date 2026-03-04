@@ -217,7 +217,7 @@ namespace OpenCVForUnity.DnnModule
         [DllImport(LIBNAME)]
         private static extern float dnn_TextDetectionModel_1EAST_getNMSThreshold_10(IntPtr nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void dnn_TextDetectionModel_1EAST_delete(IntPtr nativeObj);
 

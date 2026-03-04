@@ -63,7 +63,7 @@ namespace OpenCVForUnity.TextModule
 
 
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void text_OCRHMMDecoder_1ClassifierCallback_delete(IntPtr nativeObj);
 

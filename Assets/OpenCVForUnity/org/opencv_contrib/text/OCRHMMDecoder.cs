@@ -334,7 +334,7 @@ namespace OpenCVForUnity.TextModule
         [DllImport(LIBNAME)]
         private static extern IntPtr text_OCRHMMDecoder_create_14(string filename, string vocabulary, IntPtr transition_probabilities_table_nativeObj, IntPtr emission_probabilities_table_nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void text_OCRHMMDecoder_delete(IntPtr nativeObj);
 

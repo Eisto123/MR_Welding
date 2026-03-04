@@ -52,7 +52,7 @@ namespace OpenCVForUnity.XimgprocModule
 
 
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void ximgproc_SelectiveSearchSegmentationStrategySize_delete(IntPtr nativeObj);
 

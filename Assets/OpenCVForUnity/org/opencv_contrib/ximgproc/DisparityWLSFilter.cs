@@ -272,7 +272,7 @@ namespace OpenCVForUnity.XimgprocModule
         [DllImport(LIBNAME)]
         private static extern void ximgproc_DisparityWLSFilter_getROI_10(IntPtr nativeObj, double[] retVal);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void ximgproc_DisparityWLSFilter_delete(IntPtr nativeObj);
 

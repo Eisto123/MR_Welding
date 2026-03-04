@@ -185,7 +185,7 @@ namespace OpenCVForUnity.FaceModule
         [DllImport(LIBNAME)]
         private static extern IntPtr face_EigenFaceRecognizer_create_12();
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void face_EigenFaceRecognizer_delete(IntPtr nativeObj);
 

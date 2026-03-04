@@ -259,7 +259,7 @@ namespace OpenCVForUnity.VideoModule
         [DllImport(LIBNAME)]
         private static extern void video_TrackerDaSiamRPN_1Params_set_1target_10(IntPtr nativeObj, int target);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void video_TrackerDaSiamRPN_1Params_delete(IntPtr nativeObj);
 

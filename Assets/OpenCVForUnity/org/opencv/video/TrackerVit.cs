@@ -251,7 +251,7 @@ namespace OpenCVForUnity.VideoModule
         [DllImport(LIBNAME)]
         private static extern float video_TrackerVit_getTrackingScore_10(IntPtr nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void video_TrackerVit_delete(IntPtr nativeObj);
 

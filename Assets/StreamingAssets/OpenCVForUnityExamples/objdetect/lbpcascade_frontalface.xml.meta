@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 5a6820fbcdcc0364eafe9190c4eeddda
+timeCreated: 1433693866
+licenseType: Store
+TextScriptImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 21088
+  packageName: OpenCV for Unity
+  packageVersion: 3.0.0
+  assetPath: Assets/OpenCVForUnity/StreamingAssets/OpenCVForUnityExamples/objdetect/lbpcascade_frontalface.xml
+  uploadId: 796640

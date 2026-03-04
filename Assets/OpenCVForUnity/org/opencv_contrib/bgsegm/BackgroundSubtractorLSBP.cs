@@ -71,6 +71,35 @@ namespace OpenCVForUnity.BgsegmModule
 
 
         //
+        // C++:  void cv::bgsegm::BackgroundSubtractorLSBP::apply(Mat image, Mat knownForegroundMask, Mat& fgmask, double learningRate = -1)
+        //
+
+        public override void apply(Mat image, Mat knownForegroundMask, Mat fgmask, double learningRate)
+        {
+            ThrowIfDisposed();
+            if (image != null) image.ThrowIfDisposed();
+            if (knownForegroundMask != null) knownForegroundMask.ThrowIfDisposed();
+            if (fgmask != null) fgmask.ThrowIfDisposed();
+
+            bgsegm_BackgroundSubtractorLSBP_apply_12(nativeObj, image.nativeObj, knownForegroundMask.nativeObj, fgmask.nativeObj, learningRate);
+
+
+        }
+
+        public override void apply(Mat image, Mat knownForegroundMask, Mat fgmask)
+        {
+            ThrowIfDisposed();
+            if (image != null) image.ThrowIfDisposed();
+            if (knownForegroundMask != null) knownForegroundMask.ThrowIfDisposed();
+            if (fgmask != null) fgmask.ThrowIfDisposed();
+
+            bgsegm_BackgroundSubtractorLSBP_apply_13(nativeObj, image.nativeObj, knownForegroundMask.nativeObj, fgmask.nativeObj);
+
+
+        }
+
+
+        //
         // C++:  void cv::bgsegm::BackgroundSubtractorLSBP::getBackgroundImage(Mat& backgroundImage)
         //
 
@@ -99,11 +128,17 @@ namespace OpenCVForUnity.BgsegmModule
         [DllImport(LIBNAME)]
         private static extern void bgsegm_BackgroundSubtractorLSBP_apply_11(IntPtr nativeObj, IntPtr image_nativeObj, IntPtr fgmask_nativeObj);
 
+        // C++:  void cv::bgsegm::BackgroundSubtractorLSBP::apply(Mat image, Mat knownForegroundMask, Mat& fgmask, double learningRate = -1)
+        [DllImport(LIBNAME)]
+        private static extern void bgsegm_BackgroundSubtractorLSBP_apply_12(IntPtr nativeObj, IntPtr image_nativeObj, IntPtr knownForegroundMask_nativeObj, IntPtr fgmask_nativeObj, double learningRate);
+        [DllImport(LIBNAME)]
+        private static extern void bgsegm_BackgroundSubtractorLSBP_apply_13(IntPtr nativeObj, IntPtr image_nativeObj, IntPtr knownForegroundMask_nativeObj, IntPtr fgmask_nativeObj);
+
         // C++:  void cv::bgsegm::BackgroundSubtractorLSBP::getBackgroundImage(Mat& backgroundImage)
         [DllImport(LIBNAME)]
         private static extern void bgsegm_BackgroundSubtractorLSBP_getBackgroundImage_10(IntPtr nativeObj, IntPtr backgroundImage_nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void bgsegm_BackgroundSubtractorLSBP_delete(IntPtr nativeObj);
 

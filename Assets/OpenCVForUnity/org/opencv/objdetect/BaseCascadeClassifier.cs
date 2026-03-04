@@ -49,7 +49,7 @@ namespace OpenCVForUnity.ObjdetectModule
 
 
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void objdetect_BaseCascadeClassifier_delete(IntPtr nativeObj);
 

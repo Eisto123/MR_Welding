@@ -1198,7 +1198,7 @@ namespace OpenCVForUnity.MlModule
         [DllImport(LIBNAME)]
         private static extern IntPtr ml_TrainData_create_14(IntPtr samples_nativeObj, int layout, IntPtr responses_nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void ml_TrainData_delete(IntPtr nativeObj);
 

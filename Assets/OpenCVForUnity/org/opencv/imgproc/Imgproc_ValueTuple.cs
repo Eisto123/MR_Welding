@@ -3201,6 +3201,125 @@ namespace OpenCVForUnity.ImgprocModule
 
 
         //
+        // C++:  Point2d cv::phaseCorrelateIterative(Mat src1, Mat src2, int L2size = 7, int maxIters = 10)
+        //
+
+        /// <summary>
+        ///  Detects translational shifts between two images.
+        /// </summary>
+        /// <remarks>
+        ///  This function extends the standard @ref phaseCorrelate method by improving sub-pixel accuracy
+        ///  through iterative shift refinement in the phase-correlation space, as described in
+        ///  @cite hrazdira2020iterative.
+        /// </remarks>
+        /// <param name="src1">
+        /// Source floating point array (CV_32FC1 or CV_64FC1)
+        /// </param>
+        /// <param name="src2">
+        /// Source floating point array (CV_32FC1 or CV_64FC1)
+        /// </param>
+        /// <param name="L2size">
+        /// The size of the correlation neighborhood used by the iterative shift refinement algorithm.
+        /// </param>
+        /// <param name="maxIters">
+        /// The maximum number of iterations the iterative refinement algorithm will run.
+        /// </param>
+        /// <returns>
+        ///  detected sub-pixel shift between the two arrays.
+        /// </returns>
+        /// <remarks>
+        ///  @sa phaseCorrelate, dft, idft, createHanningWindow
+        /// </remarks>
+        public static (double x, double y) phaseCorrelateIterativeAsValueTuple(Mat src1, Mat src2, int L2size, int maxIters)
+        {
+            if (src1 != null) src1.ThrowIfDisposed();
+            if (src2 != null) src2.ThrowIfDisposed();
+
+            double[] tmpArray = new double[2];
+            imgproc_Imgproc_phaseCorrelateIterative_10(src1.nativeObj, src2.nativeObj, L2size, maxIters, tmpArray);
+            (double x, double y) retVal = (tmpArray[0], tmpArray[1]);
+
+            return retVal;
+        }
+
+        /// <summary>
+        ///  Detects translational shifts between two images.
+        /// </summary>
+        /// <remarks>
+        ///  This function extends the standard @ref phaseCorrelate method by improving sub-pixel accuracy
+        ///  through iterative shift refinement in the phase-correlation space, as described in
+        ///  @cite hrazdira2020iterative.
+        /// </remarks>
+        /// <param name="src1">
+        /// Source floating point array (CV_32FC1 or CV_64FC1)
+        /// </param>
+        /// <param name="src2">
+        /// Source floating point array (CV_32FC1 or CV_64FC1)
+        /// </param>
+        /// <param name="L2size">
+        /// The size of the correlation neighborhood used by the iterative shift refinement algorithm.
+        /// </param>
+        /// <param name="maxIters">
+        /// The maximum number of iterations the iterative refinement algorithm will run.
+        /// </param>
+        /// <returns>
+        ///  detected sub-pixel shift between the two arrays.
+        /// </returns>
+        /// <remarks>
+        ///  @sa phaseCorrelate, dft, idft, createHanningWindow
+        /// </remarks>
+        public static (double x, double y) phaseCorrelateIterativeAsValueTuple(Mat src1, Mat src2, int L2size)
+        {
+            if (src1 != null) src1.ThrowIfDisposed();
+            if (src2 != null) src2.ThrowIfDisposed();
+
+            double[] tmpArray = new double[2];
+            imgproc_Imgproc_phaseCorrelateIterative_11(src1.nativeObj, src2.nativeObj, L2size, tmpArray);
+            (double x, double y) retVal = (tmpArray[0], tmpArray[1]);
+
+            return retVal;
+        }
+
+        /// <summary>
+        ///  Detects translational shifts between two images.
+        /// </summary>
+        /// <remarks>
+        ///  This function extends the standard @ref phaseCorrelate method by improving sub-pixel accuracy
+        ///  through iterative shift refinement in the phase-correlation space, as described in
+        ///  @cite hrazdira2020iterative.
+        /// </remarks>
+        /// <param name="src1">
+        /// Source floating point array (CV_32FC1 or CV_64FC1)
+        /// </param>
+        /// <param name="src2">
+        /// Source floating point array (CV_32FC1 or CV_64FC1)
+        /// </param>
+        /// <param name="L2size">
+        /// The size of the correlation neighborhood used by the iterative shift refinement algorithm.
+        /// </param>
+        /// <param name="maxIters">
+        /// The maximum number of iterations the iterative refinement algorithm will run.
+        /// </param>
+        /// <returns>
+        ///  detected sub-pixel shift between the two arrays.
+        /// </returns>
+        /// <remarks>
+        ///  @sa phaseCorrelate, dft, idft, createHanningWindow
+        /// </remarks>
+        public static (double x, double y) phaseCorrelateIterativeAsValueTuple(Mat src1, Mat src2)
+        {
+            if (src1 != null) src1.ThrowIfDisposed();
+            if (src2 != null) src2.ThrowIfDisposed();
+
+            double[] tmpArray = new double[2];
+            imgproc_Imgproc_phaseCorrelateIterative_12(src1.nativeObj, src2.nativeObj, tmpArray);
+            (double x, double y) retVal = (tmpArray[0], tmpArray[1]);
+
+            return retVal;
+        }
+
+
+        //
         // C++:  void cv::createHanningWindow(Mat& dst, Size winSize, int type)
         //
 
@@ -4109,6 +4228,18 @@ namespace OpenCVForUnity.ImgprocModule
         ///  @note Only applicable to contour moments calculations from Python bindings: Note that the numpy
         ///  type for the input array should be either np.int32 or np.float32.
         ///  
+        ///  @note For contour-based moments, the zeroth-order moment \c m00 represents
+        ///  the contour area.
+        ///  
+        ///  If the input contour is degenerate (for example, a single point or all points
+        ///  are collinear), the area is zero and therefore \c m00 == 0.
+        ///  
+        ///  In this case, the centroid coordinates (\c m10/m00, \c m01/m00) are undefined
+        ///  and must be handled explicitly by the caller.
+        ///  
+        ///  A common workaround is to compute the center using cv::boundingRect() or by
+        ///  averaging the input points.
+        ///  
         ///  @sa  contourArea, arcLength
         /// </remarks>
         public static (double m00, double m10, double m01, double m20, double m11, double m02, double m30, double m21, double m12, double m03) momentsAsValueTuple(Mat array, bool binaryImage)
@@ -4143,6 +4274,18 @@ namespace OpenCVForUnity.ImgprocModule
         /// <remarks>
         ///  @note Only applicable to contour moments calculations from Python bindings: Note that the numpy
         ///  type for the input array should be either np.int32 or np.float32.
+        ///  
+        ///  @note For contour-based moments, the zeroth-order moment \c m00 represents
+        ///  the contour area.
+        ///  
+        ///  If the input contour is degenerate (for example, a single point or all points
+        ///  are collinear), the area is zero and therefore \c m00 == 0.
+        ///  
+        ///  In this case, the centroid coordinates (\c m10/m00, \c m01/m00) are undefined
+        ///  and must be handled explicitly by the caller.
+        ///  
+        ///  A common workaround is to compute the center using cv::boundingRect() or by
+        ///  averaging the input points.
         ///  
         ///  @sa  contourArea, arcLength
         /// </remarks>
@@ -4298,7 +4441,8 @@ namespace OpenCVForUnity.ImgprocModule
         ///  in clockwise order starting from the point with greatest \f$y\f$. If two points have the
         ///  same \f$y\f$ coordinate the rightmost is the starting point. This function is useful to draw the
         ///  rectangle. In C++, instead of using this function, you can directly use RotatedRect::points method. Please
-        ///  visit the @ref tutorial_bounding_rotated_ellipses "tutorial on Creating Bounding rotated boxes and ellipses for contours" for more information.
+        ///  visit the @ref tutorial_bounding_rotated_ellipses "tutorial on Creating Bounding rotated boxes and ellipses
+        ///  for contours" for more information.
         /// </remarks>
         /// <param name="box">
         /// The input rotated rectangle. It may be the output of @ref minAreaRect.

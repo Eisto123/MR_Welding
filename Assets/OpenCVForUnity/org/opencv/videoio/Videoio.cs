@@ -1329,6 +1329,11 @@ namespace OpenCVForUnity.VideoioModule
         /// </summary>
         public const int VIDEO_ACCELERATION_MFX = 4;
 
+        /// <summary>
+        /// C++: enum VideoAccelerationType (cv.VideoAccelerationType)
+        /// </summary>
+        public const int VIDEO_ACCELERATION_DRM = 5;
+
 
         /// <summary>
         /// C++: enum VideoCaptureAPIs (cv.VideoCaptureAPIs)
@@ -1567,6 +1572,71 @@ namespace OpenCVForUnity.VideoioModule
         /// C++: enum VideoCaptureOBSensorProperties (cv.VideoCaptureOBSensorProperties)
         /// </summary>
         public const int CAP_PROP_OBSENSOR_INTRINSIC_CY = 26004;
+
+        /// <summary>
+        /// C++: enum VideoCaptureOBSensorProperties (cv.VideoCaptureOBSensorProperties)
+        /// </summary>
+        public const int CAP_PROP_OBSENSOR_RGB_POS_MSEC = 26005;
+
+        /// <summary>
+        /// C++: enum VideoCaptureOBSensorProperties (cv.VideoCaptureOBSensorProperties)
+        /// </summary>
+        public const int CAP_PROP_OBSENSOR_DEPTH_POS_MSEC = 26006;
+
+        /// <summary>
+        /// C++: enum VideoCaptureOBSensorProperties (cv.VideoCaptureOBSensorProperties)
+        /// </summary>
+        public const int CAP_PROP_OBSENSOR_DEPTH_WIDTH = 26007;
+
+        /// <summary>
+        /// C++: enum VideoCaptureOBSensorProperties (cv.VideoCaptureOBSensorProperties)
+        /// </summary>
+        public const int CAP_PROP_OBSENSOR_DEPTH_HEIGHT = 26008;
+
+        /// <summary>
+        /// C++: enum VideoCaptureOBSensorProperties (cv.VideoCaptureOBSensorProperties)
+        /// </summary>
+        public const int CAP_PROP_OBSENSOR_DEPTH_FPS = 26009;
+
+        /// <summary>
+        /// C++: enum VideoCaptureOBSensorProperties (cv.VideoCaptureOBSensorProperties)
+        /// </summary>
+        public const int CAP_PROP_OBSENSOR_COLOR_DISTORTION_K1 = 26010;
+
+        /// <summary>
+        /// C++: enum VideoCaptureOBSensorProperties (cv.VideoCaptureOBSensorProperties)
+        /// </summary>
+        public const int CAP_PROP_OBSENSOR_COLOR_DISTORTION_K2 = 26011;
+
+        /// <summary>
+        /// C++: enum VideoCaptureOBSensorProperties (cv.VideoCaptureOBSensorProperties)
+        /// </summary>
+        public const int CAP_PROP_OBSENSOR_COLOR_DISTORTION_K3 = 26012;
+
+        /// <summary>
+        /// C++: enum VideoCaptureOBSensorProperties (cv.VideoCaptureOBSensorProperties)
+        /// </summary>
+        public const int CAP_PROP_OBSENSOR_COLOR_DISTORTION_K4 = 26013;
+
+        /// <summary>
+        /// C++: enum VideoCaptureOBSensorProperties (cv.VideoCaptureOBSensorProperties)
+        /// </summary>
+        public const int CAP_PROP_OBSENSOR_COLOR_DISTORTION_K5 = 26014;
+
+        /// <summary>
+        /// C++: enum VideoCaptureOBSensorProperties (cv.VideoCaptureOBSensorProperties)
+        /// </summary>
+        public const int CAP_PROP_OBSENSOR_COLOR_DISTORTION_K6 = 26015;
+
+        /// <summary>
+        /// C++: enum VideoCaptureOBSensorProperties (cv.VideoCaptureOBSensorProperties)
+        /// </summary>
+        public const int CAP_PROP_OBSENSOR_COLOR_DISTORTION_P1 = 26016;
+
+        /// <summary>
+        /// C++: enum VideoCaptureOBSensorProperties (cv.VideoCaptureOBSensorProperties)
+        /// </summary>
+        public const int CAP_PROP_OBSENSOR_COLOR_DISTORTION_P2 = 26017;
 
 
         /// <summary>

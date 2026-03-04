@@ -612,7 +612,7 @@ namespace OpenCVForUnity.ObjdetectModule
         [return: MarshalAs(UnmanagedType.U1)]
         private static extern bool objdetect_GraphicalCodeDetector_detectAndDecodeBytesMulti_12(IntPtr nativeObj, IntPtr img_nativeObj, IntPtr decoded_info_mat_nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void objdetect_GraphicalCodeDetector_delete(IntPtr nativeObj);
 

@@ -268,7 +268,7 @@ namespace OpenCVForUnity.XphotoModule
         [DllImport(LIBNAME)]
         private static extern void xphoto_SimpleWB_setP_10(IntPtr nativeObj, float val);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void xphoto_SimpleWB_delete(IntPtr nativeObj);
 

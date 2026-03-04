@@ -89,7 +89,7 @@ namespace OpenCVForUnity.TextModule
         [DllImport(LIBNAME)]
         private static extern void text_TextDetector_detect_10(IntPtr nativeObj, IntPtr inputImage_nativeObj, IntPtr Bbox_mat_nativeObj, IntPtr confidence_mat_nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void text_TextDetector_delete(IntPtr nativeObj);
 

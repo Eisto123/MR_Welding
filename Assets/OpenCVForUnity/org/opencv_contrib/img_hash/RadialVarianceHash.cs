@@ -165,7 +165,7 @@ namespace OpenCVForUnity.Img_hashModule
         [DllImport(LIBNAME)]
         private static extern void img_1hash_RadialVarianceHash_setSigma_10(IntPtr nativeObj, double value);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void img_1hash_RadialVarianceHash_delete(IntPtr nativeObj);
 

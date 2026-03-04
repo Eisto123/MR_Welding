@@ -124,7 +124,7 @@ namespace OpenCVForUnity.Img_hashModule
         [DllImport(LIBNAME)]
         private static extern IntPtr img_1hash_BlockMeanHash_create_11();
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void img_1hash_BlockMeanHash_delete(IntPtr nativeObj);
 

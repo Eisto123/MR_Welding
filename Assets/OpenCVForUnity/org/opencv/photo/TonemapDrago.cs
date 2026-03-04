@@ -131,7 +131,7 @@ namespace OpenCVForUnity.PhotoModule
         [DllImport(LIBNAME)]
         private static extern void photo_TonemapDrago_setBias_10(IntPtr nativeObj, float bias);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void photo_TonemapDrago_delete(IntPtr nativeObj);
 

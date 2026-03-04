@@ -68,7 +68,126 @@ namespace OpenCVForUnity.Structured_lightModule
         // C++:  bool cv::structured_light::StructuredLightPattern::decode(vector_vector_Mat patternImages, Mat& disparityMap, vector_Mat blackImages = vector_Mat(), vector_Mat whiteImages = vector_Mat(), int flags = DECODE_3D_UNDERWORLD)
         //
 
-        // Unknown type 'vector_vector_Mat' (I), skipping the function
+        /// <summary>
+        ///  Decodes the structured light pattern, generating a disparity map
+        /// </summary>
+        /// <param name="patternImages">
+        /// The acquired pattern images to decode (vector&lt;vector<Mat>&gt;), loaded as grayscale and previously rectified.
+        /// </param>
+        /// <param name="disparityMap">
+        /// The decoding result: a CV_64F Mat at image resolution, storing the computed disparity map.
+        /// </param>
+        /// <param name="blackImages">
+        /// The all-black images needed for shadowMasks computation.
+        /// </param>
+        /// <param name="whiteImages">
+        /// The all-white images needed for shadowMasks computation.
+        /// </param>
+        /// <param name="flags">
+        /// Flags setting decoding algorithms. Default: DECODE_3D_UNDERWORLD.
+        ///     @note All the images must be at the same resolution.
+        /// </param>
+        public bool decode(List<List<Mat>> patternImages, Mat disparityMap, List<Mat> blackImages, List<Mat> whiteImages, int flags)
+        {
+            ThrowIfDisposed();
+            if (disparityMap != null) disparityMap.ThrowIfDisposed();
+            using Mat patternImages_mat = Converters.vector_vector_Mat_to_Mat(patternImages);
+            using Mat blackImages_mat = Converters.vector_Mat_to_Mat(blackImages);
+            using Mat whiteImages_mat = Converters.vector_Mat_to_Mat(whiteImages);
+            return structured_1light_StructuredLightPattern_decode_10(nativeObj, patternImages_mat.nativeObj, disparityMap.nativeObj, blackImages_mat.nativeObj, whiteImages_mat.nativeObj, flags);
+
+
+        }
+
+        /// <summary>
+        ///  Decodes the structured light pattern, generating a disparity map
+        /// </summary>
+        /// <param name="patternImages">
+        /// The acquired pattern images to decode (vector&lt;vector<Mat>&gt;), loaded as grayscale and previously rectified.
+        /// </param>
+        /// <param name="disparityMap">
+        /// The decoding result: a CV_64F Mat at image resolution, storing the computed disparity map.
+        /// </param>
+        /// <param name="blackImages">
+        /// The all-black images needed for shadowMasks computation.
+        /// </param>
+        /// <param name="whiteImages">
+        /// The all-white images needed for shadowMasks computation.
+        /// </param>
+        /// <param name="flags">
+        /// Flags setting decoding algorithms. Default: DECODE_3D_UNDERWORLD.
+        ///     @note All the images must be at the same resolution.
+        /// </param>
+        public bool decode(List<List<Mat>> patternImages, Mat disparityMap, List<Mat> blackImages, List<Mat> whiteImages)
+        {
+            ThrowIfDisposed();
+            if (disparityMap != null) disparityMap.ThrowIfDisposed();
+            using Mat patternImages_mat = Converters.vector_vector_Mat_to_Mat(patternImages);
+            using Mat blackImages_mat = Converters.vector_Mat_to_Mat(blackImages);
+            using Mat whiteImages_mat = Converters.vector_Mat_to_Mat(whiteImages);
+            return structured_1light_StructuredLightPattern_decode_11(nativeObj, patternImages_mat.nativeObj, disparityMap.nativeObj, blackImages_mat.nativeObj, whiteImages_mat.nativeObj);
+
+
+        }
+
+        /// <summary>
+        ///  Decodes the structured light pattern, generating a disparity map
+        /// </summary>
+        /// <param name="patternImages">
+        /// The acquired pattern images to decode (vector&lt;vector<Mat>&gt;), loaded as grayscale and previously rectified.
+        /// </param>
+        /// <param name="disparityMap">
+        /// The decoding result: a CV_64F Mat at image resolution, storing the computed disparity map.
+        /// </param>
+        /// <param name="blackImages">
+        /// The all-black images needed for shadowMasks computation.
+        /// </param>
+        /// <param name="whiteImages">
+        /// The all-white images needed for shadowMasks computation.
+        /// </param>
+        /// <param name="flags">
+        /// Flags setting decoding algorithms. Default: DECODE_3D_UNDERWORLD.
+        ///     @note All the images must be at the same resolution.
+        /// </param>
+        public bool decode(List<List<Mat>> patternImages, Mat disparityMap, List<Mat> blackImages)
+        {
+            ThrowIfDisposed();
+            if (disparityMap != null) disparityMap.ThrowIfDisposed();
+            using Mat patternImages_mat = Converters.vector_vector_Mat_to_Mat(patternImages);
+            using Mat blackImages_mat = Converters.vector_Mat_to_Mat(blackImages);
+            return structured_1light_StructuredLightPattern_decode_12(nativeObj, patternImages_mat.nativeObj, disparityMap.nativeObj, blackImages_mat.nativeObj);
+
+
+        }
+
+        /// <summary>
+        ///  Decodes the structured light pattern, generating a disparity map
+        /// </summary>
+        /// <param name="patternImages">
+        /// The acquired pattern images to decode (vector&lt;vector<Mat>&gt;), loaded as grayscale and previously rectified.
+        /// </param>
+        /// <param name="disparityMap">
+        /// The decoding result: a CV_64F Mat at image resolution, storing the computed disparity map.
+        /// </param>
+        /// <param name="blackImages">
+        /// The all-black images needed for shadowMasks computation.
+        /// </param>
+        /// <param name="whiteImages">
+        /// The all-white images needed for shadowMasks computation.
+        /// </param>
+        /// <param name="flags">
+        /// Flags setting decoding algorithms. Default: DECODE_3D_UNDERWORLD.
+        ///     @note All the images must be at the same resolution.
+        /// </param>
+        public bool decode(List<List<Mat>> patternImages, Mat disparityMap)
+        {
+            ThrowIfDisposed();
+            if (disparityMap != null) disparityMap.ThrowIfDisposed();
+            using Mat patternImages_mat = Converters.vector_vector_Mat_to_Mat(patternImages);
+            return structured_1light_StructuredLightPattern_decode_13(nativeObj, patternImages_mat.nativeObj, disparityMap.nativeObj);
+
+
+        }
 
 
 #if (UNITY_IOS || UNITY_VISIONOS || UNITY_WEBGL) && !UNITY_EDITOR
@@ -84,7 +203,21 @@ namespace OpenCVForUnity.Structured_lightModule
         [return: MarshalAs(UnmanagedType.U1)]
         private static extern bool structured_1light_StructuredLightPattern_generate_10(IntPtr nativeObj, IntPtr patternImages_mat_nativeObj);
 
-        // native support for java finalize()
+        // C++:  bool cv::structured_light::StructuredLightPattern::decode(vector_vector_Mat patternImages, Mat& disparityMap, vector_Mat blackImages = vector_Mat(), vector_Mat whiteImages = vector_Mat(), int flags = DECODE_3D_UNDERWORLD)
+        [DllImport(LIBNAME)]
+        [return: MarshalAs(UnmanagedType.U1)]
+        private static extern bool structured_1light_StructuredLightPattern_decode_10(IntPtr nativeObj, IntPtr patternImages_mat_nativeObj, IntPtr disparityMap_nativeObj, IntPtr blackImages_mat_nativeObj, IntPtr whiteImages_mat_nativeObj, int flags);
+        [DllImport(LIBNAME)]
+        [return: MarshalAs(UnmanagedType.U1)]
+        private static extern bool structured_1light_StructuredLightPattern_decode_11(IntPtr nativeObj, IntPtr patternImages_mat_nativeObj, IntPtr disparityMap_nativeObj, IntPtr blackImages_mat_nativeObj, IntPtr whiteImages_mat_nativeObj);
+        [DllImport(LIBNAME)]
+        [return: MarshalAs(UnmanagedType.U1)]
+        private static extern bool structured_1light_StructuredLightPattern_decode_12(IntPtr nativeObj, IntPtr patternImages_mat_nativeObj, IntPtr disparityMap_nativeObj, IntPtr blackImages_mat_nativeObj);
+        [DllImport(LIBNAME)]
+        [return: MarshalAs(UnmanagedType.U1)]
+        private static extern bool structured_1light_StructuredLightPattern_decode_13(IntPtr nativeObj, IntPtr patternImages_mat_nativeObj, IntPtr disparityMap_nativeObj);
+
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void structured_1light_StructuredLightPattern_delete(IntPtr nativeObj);
 

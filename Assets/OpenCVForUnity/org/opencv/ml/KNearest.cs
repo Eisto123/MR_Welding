@@ -445,7 +445,7 @@ namespace OpenCVForUnity.MlModule
         [DllImport(LIBNAME)]
         private static extern IntPtr ml_KNearest_load_10(string filepath);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void ml_KNearest_delete(IntPtr nativeObj);
 

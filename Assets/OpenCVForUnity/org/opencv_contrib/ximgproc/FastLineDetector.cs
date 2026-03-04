@@ -226,7 +226,7 @@ namespace OpenCVForUnity.XimgprocModule
         [DllImport(LIBNAME)]
         private static extern void ximgproc_FastLineDetector_drawSegments_13(IntPtr nativeObj, IntPtr image_nativeObj, IntPtr lines_nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void ximgproc_FastLineDetector_delete(IntPtr nativeObj);
 

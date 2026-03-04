@@ -173,7 +173,7 @@ namespace OpenCVForUnity.ObjdetectModule
         [DllImport(LIBNAME)]
         private static extern float objdetect_GridBoard_getMarkerSeparation_10(IntPtr nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void objdetect_GridBoard_delete(IntPtr nativeObj);
 

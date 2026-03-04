@@ -316,7 +316,7 @@ namespace OpenCVForUnity.Structured_lightModule
         [DllImport(LIBNAME)]
         private static extern void structured_1light_SinusoidalPattern_computeDataModulationTerm_10(IntPtr nativeObj, IntPtr patternImages_mat_nativeObj, IntPtr dataModulationTerm_nativeObj, IntPtr shadowMask_nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void structured_1light_SinusoidalPattern_delete(IntPtr nativeObj);
 

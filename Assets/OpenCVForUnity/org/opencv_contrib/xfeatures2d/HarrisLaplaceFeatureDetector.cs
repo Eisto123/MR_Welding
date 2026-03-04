@@ -432,7 +432,7 @@ namespace OpenCVForUnity.Xfeatures2dModule
         [DllImport(LIBNAME)]
         private static extern IntPtr xfeatures2d_HarrisLaplaceFeatureDetector_getDefaultName_10(IntPtr nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void xfeatures2d_HarrisLaplaceFeatureDetector_delete(IntPtr nativeObj);
 

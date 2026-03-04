@@ -39,9 +39,19 @@ namespace OpenCVForUnity.ImgprocModule
 
 
         //
+        // C++:   cv::Subdiv2D::Subdiv2D(Rect2f rect2f)
+        //
+
+        // Unknown type 'Rect2f' (I), skipping the function
+
+
+        //
         // C++:  void cv::Subdiv2D::initDelaunay(Rect rect)
         //
 
+        /// <remarks>
+        ///  @overload
+        /// </remarks>
         /// <summary>
         ///  Creates a new empty Delaunay subdivision
         /// </summary>
@@ -56,6 +66,13 @@ namespace OpenCVForUnity.ImgprocModule
 
 
         }
+
+
+        //
+        // C++:  void cv::Subdiv2D::initDelaunay(Rect2f rect)
+        //
+
+        // Unknown type 'Rect2f' (I), skipping the function
 
 
         //

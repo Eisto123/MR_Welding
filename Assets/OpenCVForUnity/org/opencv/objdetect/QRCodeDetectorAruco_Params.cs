@@ -322,7 +322,7 @@ namespace OpenCVForUnity.ObjdetectModule
         [DllImport(LIBNAME)]
         private static extern void objdetect_QRCodeDetectorAruco_1Params_set_1scaleTimingPatternScore_10(IntPtr nativeObj, float scaleTimingPatternScore);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void objdetect_QRCodeDetectorAruco_1Params_delete(IntPtr nativeObj);
 

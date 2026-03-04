@@ -57,6 +57,7 @@ public class DataProcessor : MonoBehaviour
                 // Optional: Log for debugging
                 Debug.Log($"Welding position: {data.tipPosition}, Closest on line: {closestPoint}, Error: {distance:F3}m, Segment: {segmentIndex}");
             }
+            referenceLineManager.SetLineRendererVisible(false);
 
             Debug.Log($"Processed {processedData.Count} data points. Average alignment error: {CalculateAverageError():F3}m");
         }

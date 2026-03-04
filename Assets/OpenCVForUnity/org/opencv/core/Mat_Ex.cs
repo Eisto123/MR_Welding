@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace OpenCVForUnity.CoreModule
 {
 
-    public partial class Mat
+    public partial class Mat : CleanableMat
     {
 
         #region put_Array_length_offset

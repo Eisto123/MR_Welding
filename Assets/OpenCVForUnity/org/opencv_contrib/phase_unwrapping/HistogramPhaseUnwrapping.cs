@@ -128,7 +128,7 @@ namespace OpenCVForUnity.Phase_unwrappingModule
         [DllImport(LIBNAME)]
         private static extern void phase_1unwrapping_HistogramPhaseUnwrapping_getInverseReliabilityMap_10(IntPtr nativeObj, IntPtr reliabilityMap_nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void phase_1unwrapping_HistogramPhaseUnwrapping_delete(IntPtr nativeObj);
 

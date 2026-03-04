@@ -539,7 +539,7 @@ namespace OpenCVForUnity.Calib3dModule
         [DllImport(LIBNAME)]
         private static extern void calib3d_UsacParams_set_1final_1polisher_1iterations_10(IntPtr nativeObj, int final_polisher_iterations);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void calib3d_UsacParams_delete(IntPtr nativeObj);
 

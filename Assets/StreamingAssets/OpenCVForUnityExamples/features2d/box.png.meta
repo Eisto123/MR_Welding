@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 67d183baf7683814da89d65676e3463c
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 21088
+  packageName: OpenCV for Unity
+  packageVersion: 3.0.0
+  assetPath: Assets/OpenCVForUnity/StreamingAssets/OpenCVForUnityExamples/features2d/box.png
+  uploadId: 796640

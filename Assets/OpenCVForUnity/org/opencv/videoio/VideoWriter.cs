@@ -602,7 +602,7 @@ namespace OpenCVForUnity.VideoioModule
         [DllImport(LIBNAME)]
         private static extern IntPtr videoio_VideoWriter_getBackendName_10(IntPtr nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void videoio_VideoWriter_delete(IntPtr nativeObj);
 

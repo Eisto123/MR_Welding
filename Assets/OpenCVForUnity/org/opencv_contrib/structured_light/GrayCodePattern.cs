@@ -240,7 +240,7 @@ namespace OpenCVForUnity.Structured_lightModule
         [return: MarshalAs(UnmanagedType.U1)]
         private static extern bool structured_1light_GrayCodePattern_getProjPixel_10(IntPtr nativeObj, IntPtr patternImages_mat_nativeObj, int x, int y, double[] projPix_out);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void structured_1light_GrayCodePattern_delete(IntPtr nativeObj);
 

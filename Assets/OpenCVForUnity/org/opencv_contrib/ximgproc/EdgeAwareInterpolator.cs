@@ -341,7 +341,7 @@ namespace OpenCVForUnity.XimgprocModule
         [DllImport(LIBNAME)]
         private static extern float ximgproc_EdgeAwareInterpolator_getFGSSigma_10(IntPtr nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void ximgproc_EdgeAwareInterpolator_delete(IntPtr nativeObj);
 

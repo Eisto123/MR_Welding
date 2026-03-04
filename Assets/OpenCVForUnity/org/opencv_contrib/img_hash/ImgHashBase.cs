@@ -112,7 +112,7 @@ namespace OpenCVForUnity.Img_hashModule
         [DllImport(LIBNAME)]
         private static extern double img_1hash_ImgHashBase_compare_10(IntPtr nativeObj, IntPtr hashOne_nativeObj, IntPtr hashTwo_nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void img_1hash_ImgHashBase_delete(IntPtr nativeObj);
 

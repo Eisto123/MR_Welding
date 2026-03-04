@@ -19,54 +19,14 @@ namespace OpenCVForUnity.CoreModule
     /// </para>
     /// </remarks>
 
-    public partial class Mat : DisposableOpenCVObject
+    public partial class Mat : CleanableMat
     {
 
         // C++: enum
         public const int AUTO_STEP = 0;
 
-        /// <summary>
-        /// Deallocates the matrix data and releases resources.
-        /// </summary>
-        /// <remarks>
-        /// This method decrements the reference counter associated with the matrix data. If the reference
-        /// counter reaches zero, the matrix data is deallocated, and the data and reference counter pointers
-        /// are set to null. It is generally not necessary to call this method manually, as it is automatically
-        /// invoked in the destructor or by any other method that changes the data pointer. The reference
-        /// counter decrement and check for zero is an atomic operation on supported platforms, ensuring
-        /// thread safety when operating on the same matrices asynchronously.
-        /// </remarks>
-        protected override void Dispose(bool disposing)
+        public Mat(IntPtr addr) : base(DisposableObject.ThrowIfNullIntPtr(addr))
         {
-
-            try
-            {
-
-                if (disposing)
-                {
-                }
-
-                if (IsEnabledDispose)
-                {
-                    if (nativeObj != IntPtr.Zero)
-                        core_Mat_n_1delete(nativeObj);
-                    nativeObj = IntPtr.Zero;
-                }
-
-            }
-            finally
-            {
-                base.Dispose(disposing);
-            }
-
-        }
-
-        public Mat(IntPtr addr)
-        {
-
-            if (addr == IntPtr.Zero)
-                throw new CvException("Native object address is NULL");
-            nativeObj = addr;
 
         }
 
@@ -80,10 +40,8 @@ namespace OpenCVForUnity.CoreModule
         /// The constructed matrix can further be assigned to another matrix or matrix expression or can be
         /// allocated with Mat::create.In the former case, the old content is de-referenced.
         /// </remarks>
-        public Mat()
+        public Mat() : base(DisposableObject.ThrowIfNullIntPtr(core_Mat_n_1Mat__()))
         {
-
-            nativeObj = DisposableObject.ThrowIfNullIntPtr(core_Mat_n_1Mat__());
 
         }
 
@@ -107,10 +65,8 @@ namespace OpenCVForUnity.CoreModule
         /// Array type. Use CV_8UC1, ..., CV_64FC4 to create 1-4 channel matrices, or
         /// CV_8UC(n), ..., CV_64FC(n) to create multi-channel(up to CV_CN_MAX channels) matrices.
         /// </param>
-        public Mat(int rows, int cols, int type)
+        public Mat(int rows, int cols, int type) : base(DisposableObject.ThrowIfNullIntPtr(core_Mat_n_1Mat__III(rows, cols, type)))
         {
-
-            nativeObj = DisposableObject.ThrowIfNullIntPtr(core_Mat_n_1Mat__III(rows, cols, type));
 
         }
 
@@ -132,10 +88,8 @@ namespace OpenCVForUnity.CoreModule
         /// Array type. Use CV_8UC1, ..., CV_64FC4 to create 1-4 channel matrices, or
         /// CV_8UC(n), ..., CV_64FC(n) to create multi-channel(up to CV_CN_MAX channels) matrices.
         /// </param>
-        public Mat(Size size, int type)
+        public Mat(Size size, int type) : base(DisposableObject.ThrowIfNullIntPtr(core_Mat_n_1Mat__DDI(size.width, size.height, type)))
         {
-
-            nativeObj = DisposableObject.ThrowIfNullIntPtr(core_Mat_n_1Mat__DDI(size.width, size.height, type));
 
         }
 
@@ -156,10 +110,8 @@ namespace OpenCVForUnity.CoreModule
         /// Array type. Use CV_8UC1, ..., CV_64FC4 to create 1-4 channel matrices, or
         /// CV_8UC(n), ..., CV_64FC(n) to create multi-channel(up to CV_CN_MAX channels) matrices.
         /// </param>
-        public Mat(int[] sizes, int type)
+        public Mat(int[] sizes, int type) : base(DisposableObject.ThrowIfNullIntPtr(core_Mat_n_1Mat__I_3II(sizes.Length, sizes, sizes.Length, type)))
         {
-
-            nativeObj = DisposableObject.ThrowIfNullIntPtr(core_Mat_n_1Mat__I_3II(sizes.Length, sizes, sizes.Length, type));
 
         }
 
@@ -188,10 +140,8 @@ namespace OpenCVForUnity.CoreModule
         /// the particular value after the construction, use the assignment operator
         /// Mat::operator=(const Scalar&amp; value) .
         /// </param>
-        public Mat(int rows, int cols, int type, Scalar s)
+        public Mat(int rows, int cols, int type, Scalar s) : base(DisposableObject.ThrowIfNullIntPtr(core_Mat_n_1Mat__IIIDDDD(rows, cols, type, s.val[0], s.val[1], s.val[2], s.val[3])))
         {
-
-            nativeObj = DisposableObject.ThrowIfNullIntPtr(core_Mat_n_1Mat__IIIDDDD(rows, cols, type, s.val[0], s.val[1], s.val[2], s.val[3]));
 
         }
 
@@ -218,10 +168,8 @@ namespace OpenCVForUnity.CoreModule
         /// the particular value after the construction, use the assignment operator
         /// Mat::operator=(const Scalar&amp; value) .
         /// </param>
-        public Mat(Size size, int type, Scalar s)
+        public Mat(Size size, int type, Scalar s) : base(DisposableObject.ThrowIfNullIntPtr(core_Mat_n_1Mat__DDIDDDD(size.width, size.height, type, s.val[0], s.val[1], s.val[2], s.val[3])))
         {
-
-            nativeObj = DisposableObject.ThrowIfNullIntPtr(core_Mat_n_1Mat__DDIDDDD(size.width, size.height, type, s.val[0], s.val[1], s.val[2], s.val[3]));
 
         }
 
@@ -247,10 +195,8 @@ namespace OpenCVForUnity.CoreModule
         /// the particular value after the construction, use the assignment operator
         /// Mat::operator=(const Scalar&amp; value) .
         /// </param>
-        public Mat(int[] sizes, int type, Scalar s)
+        public Mat(int[] sizes, int type, Scalar s) : base(DisposableObject.ThrowIfNullIntPtr(core_Mat_n_1Mat__I_3IIDDDD(sizes.Length, sizes, sizes.Length, type, s.val[0], s.val[1], s.val[2], s.val[3])))
         {
-
-            nativeObj = DisposableObject.ThrowIfNullIntPtr(core_Mat_n_1Mat__I_3IIDDDD(sizes.Length, sizes, sizes.Length, type, s.val[0], s.val[1], s.val[2], s.val[3]));
 
         }
 
@@ -278,7 +224,7 @@ namespace OpenCVForUnity.CoreModule
         /// <param name="colRange">
         /// colRange Range of the m columns to take. Use Range::all() to take all the columns.
         /// </param>
-        public Mat(Mat m, Range rowRange, Range colRange)
+        public Mat(Mat m, Range rowRange, Range colRange) : base(IntPtr.Zero)
         {
             if (m != null)
                 m.ThrowIfDisposed();
@@ -304,7 +250,7 @@ namespace OpenCVForUnity.CoreModule
         /// Range of the m rows to take. As usual, the range start is inclusive and the range
         /// end is exclusive.Use Range::all() to take all the rows.
         /// </param>
-        public Mat(Mat m, Range rowRange)
+        public Mat(Mat m, Range rowRange) : base(IntPtr.Zero)
         {
             if (m != null)
                 m.ThrowIfDisposed();
@@ -333,7 +279,7 @@ namespace OpenCVForUnity.CoreModule
         /// <param name="ranges">
         /// Array of selected ranges of m along each dimensionality.
         /// </param>
-        public Mat(Mat m, Range[] ranges)
+        public Mat(Mat m, Range[] ranges) : base(IntPtr.Zero)
         {
             if (m != null)
                 m.ThrowIfDisposed();
@@ -369,7 +315,7 @@ namespace OpenCVForUnity.CoreModule
         /// <param name="roi">
         /// Region of interest.
         /// </param>
-        public Mat(Mat m, Rect roi)
+        public Mat(Mat m, Rect roi) : base(IntPtr.Zero)
         {
             if (m != null)
                 m.ThrowIfDisposed();
@@ -410,7 +356,7 @@ namespace OpenCVForUnity.CoreModule
         /// the end of each row, if any.If the parameter is missing(set to AUTO_STEP ), no padding is assumed
         /// and the actual step is calculated as cols* elemSize(). See Mat::elemSize.
         /// </param>
-        public Mat(int rows, int cols, int type, IntPtr data, long step = AUTO_STEP)
+        public Mat(int rows, int cols, int type, IntPtr data, long step = AUTO_STEP) : base(IntPtr.Zero)
         {
 
             nativeObj = DisposableObject.ThrowIfNullIntPtr(core_Mat_n_1Mat__IIIVL(rows, cols, type, data, step));
@@ -447,7 +393,7 @@ namespace OpenCVForUnity.CoreModule
         /// the end of each row, if any.If the parameter is missing(set to AUTO_STEP ), no padding is assumed
         /// and the actual step is calculated as cols* elemSize(). See Mat::elemSize.
         /// </param>
-        public Mat(Size size, int type, IntPtr data, long step = AUTO_STEP)
+        public Mat(Size size, int type, IntPtr data, long step = AUTO_STEP) : base(IntPtr.Zero)
         {
 
             nativeObj = DisposableObject.ThrowIfNullIntPtr(core_Mat_n_1Mat__DDIVL(size.width, size.height, type, data, step));
@@ -3696,7 +3642,6 @@ namespace OpenCVForUnity.CoreModule
 
 #if (UNITY_IOS || UNITY_VISIONOS || UNITY_WEBGL) && !UNITY_EDITOR
         const string LIBNAME = "__Internal";
-
 #else
         const string LIBNAME = "opencvforunity";
 #endif
@@ -4015,9 +3960,9 @@ namespace OpenCVForUnity.CoreModule
         [DllImport(LIBNAME)]
         private static extern IntPtr core_Mat_n_1zeros__I_3II(int ndims, int[] sizes, int length, int type);
 
-        // native support for java finalize()
-        [DllImport(LIBNAME)]
-        private static extern void core_Mat_n_1delete(IntPtr nativeObj);
+        //// native support for java finalize()
+        //[DllImport(LIBNAME)]
+        //private static extern void core_Mat_n_1delete(IntPtr nativeObj);
 
         [DllImport(LIBNAME)]
         private static extern int core_Mat_nPutD(IntPtr self, int row, int col, int count, [In, MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 3)] double[] data);

@@ -217,7 +217,7 @@ namespace OpenCVForUnity.PhotoModule
         [DllImport(LIBNAME)]
         private static extern void photo_MergeMertens_setExposureWeight_10(IntPtr nativeObj, float exposure_weight);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void photo_MergeMertens_delete(IntPtr nativeObj);
 

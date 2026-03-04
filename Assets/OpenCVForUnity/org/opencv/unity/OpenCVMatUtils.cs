@@ -170,8 +170,16 @@ namespace OpenCVForUnity.UnityIntegration
                     {
                         byte[] rawTextureData = texture2D.GetRawTextureData();
                         rawTextureDataHandle = GCHandle.Alloc(rawTextureData, GCHandleType.Pinned);
-                        OpenCVForUnity_MatToTexture(mat.nativeObj, rawTextureDataHandle.AddrOfPinnedObject(), (int)format, flip, flipCode);
-                        texture2D.LoadRawTextureData(rawTextureDataHandle.AddrOfPinnedObject(), rawTextureData.Length);
+                        try
+                        {
+                            OpenCVForUnity_MatToTexture(mat.nativeObj, rawTextureDataHandle.AddrOfPinnedObject(), (int)format, flip, flipCode);
+                            texture2D.LoadRawTextureData(rawTextureDataHandle.AddrOfPinnedObject(), rawTextureData.Length);
+                        }
+                        finally
+                        {
+                            if (rawTextureDataHandle.IsAllocated)
+                                rawTextureDataHandle.Free();
+                        }
                     }
                     else
                     {
@@ -195,11 +203,18 @@ namespace OpenCVForUnity.UnityIntegration
                             throw new ArgumentException("The rawTextureDataBuffer array length must match the size of texture2D data.");
 
                         rawTextureDataHandle = GCHandle.Alloc(rawTextureDataBuffer, GCHandleType.Pinned);
-                        OpenCVForUnity_MatToTexture(mat.nativeObj, rawTextureDataHandle.AddrOfPinnedObject(), (int)format, flip, flipCode);
-                        texture2D.LoadRawTextureData(rawTextureDataHandle.AddrOfPinnedObject(), rawTextureDataBuffer.Length);
+                        try
+                        {
+                            OpenCVForUnity_MatToTexture(mat.nativeObj, rawTextureDataHandle.AddrOfPinnedObject(), (int)format, flip, flipCode);
+                            texture2D.LoadRawTextureData(rawTextureDataHandle.AddrOfPinnedObject(), rawTextureDataBuffer.Length);
+                        }
+                        finally
+                        {
+                            if (rawTextureDataHandle.IsAllocated)
+                                rawTextureDataHandle.Free();
+                        }
                     }
                     texture2D.Apply(updateMipmaps, makeNoLongerReadable);
-                    rawTextureDataHandle.Free();
 
                     return;
                 }
@@ -249,11 +264,19 @@ namespace OpenCVForUnity.UnityIntegration
                 Color32[] pixels32 = texture2D.GetPixels32();
 
                 pixels32Handle = GCHandle.Alloc(pixels32, GCHandleType.Pinned);
-                OpenCVForUnity_MatToTexture(mat.nativeObj, pixels32Handle.AddrOfPinnedObject(), (int)TextureFormat.RGBA32, flip, flipCode);
+                try
+                {
+                    OpenCVForUnity_MatToTexture(mat.nativeObj, pixels32Handle.AddrOfPinnedObject(), (int)TextureFormat.RGBA32, flip, flipCode);
 
-                ConvertToGrayscaleIfFormatMatches(pixels32, texture2D.format);
+                    ConvertToGrayscaleIfFormatMatches(pixels32, texture2D.format);
 
-                texture2D.SetPixels32(pixels32);
+                    texture2D.SetPixels32(pixels32);
+                }
+                finally
+                {
+                    if (pixels32Handle.IsAllocated)
+                        pixels32Handle.Free();
+                }
             }
             else
             {
@@ -261,14 +284,21 @@ namespace OpenCVForUnity.UnityIntegration
                     throw new ArgumentException("The pixels32Buffer array length must match the number of mat elements.");
 
                 pixels32Handle = GCHandle.Alloc(pixels32Buffer, GCHandleType.Pinned);
-                OpenCVForUnity_MatToTexture(mat.nativeObj, pixels32Handle.AddrOfPinnedObject(), (int)TextureFormat.RGBA32, flip, flipCode);
+                try
+                {
+                    OpenCVForUnity_MatToTexture(mat.nativeObj, pixels32Handle.AddrOfPinnedObject(), (int)TextureFormat.RGBA32, flip, flipCode);
 
-                ConvertToGrayscaleIfFormatMatches(pixels32Buffer, texture2D.format);
+                    ConvertToGrayscaleIfFormatMatches(pixels32Buffer, texture2D.format);
 
-                texture2D.SetPixels32(pixels32Buffer);
+                    texture2D.SetPixels32(pixels32Buffer);
+                }
+                finally
+                {
+                    if (pixels32Handle.IsAllocated)
+                        pixels32Handle.Free();
+                }
             }
             texture2D.Apply(updateMipmaps, makeNoLongerReadable);
-            pixels32Handle.Free();
 #endif
         }
 
@@ -429,11 +459,19 @@ namespace OpenCVForUnity.UnityIntegration
                     throw new ArgumentException("The number of mat elements must match the Color32 array length of the specified mipLevel.");
 
                 pixels32Handle = GCHandle.Alloc(pixels32, GCHandleType.Pinned);
-                OpenCVForUnity_MatToTexture(mat.nativeObj, pixels32Handle.AddrOfPinnedObject(), (int)TextureFormat.RGBA32, flip, flipCode);
+                try
+                {
+                    OpenCVForUnity_MatToTexture(mat.nativeObj, pixels32Handle.AddrOfPinnedObject(), (int)TextureFormat.RGBA32, flip, flipCode);
 
-                ConvertToGrayscaleIfFormatMatches(pixels32, texture2D.format);
+                    ConvertToGrayscaleIfFormatMatches(pixels32, texture2D.format);
 
-                texture2D.SetPixels32(pixels32, mipLevel);
+                    texture2D.SetPixels32(pixels32, mipLevel);
+                }
+                finally
+                {
+                    if (pixels32Handle.IsAllocated)
+                        pixels32Handle.Free();
+                }
             }
             else
             {
@@ -441,14 +479,21 @@ namespace OpenCVForUnity.UnityIntegration
                     throw new ArgumentException("The pixels32Buffer array length must match the number of mat elements.");
 
                 pixels32Handle = GCHandle.Alloc(pixels32Buffer, GCHandleType.Pinned);
-                OpenCVForUnity_MatToTexture(mat.nativeObj, pixels32Handle.AddrOfPinnedObject(), (int)TextureFormat.RGBA32, flip, flipCode);
+                try
+                {
+                    OpenCVForUnity_MatToTexture(mat.nativeObj, pixels32Handle.AddrOfPinnedObject(), (int)TextureFormat.RGBA32, flip, flipCode);
 
-                ConvertToGrayscaleIfFormatMatches(pixels32Buffer, texture2D.format);
+                    ConvertToGrayscaleIfFormatMatches(pixels32Buffer, texture2D.format);
 
-                texture2D.SetPixels32(pixels32Buffer, mipLevel);
+                    texture2D.SetPixels32(pixels32Buffer, mipLevel);
+                }
+                finally
+                {
+                    if (pixels32Handle.IsAllocated)
+                        pixels32Handle.Free();
+                }
             }
             texture2D.Apply(updateMipmaps, makeNoLongerReadable);
-            pixels32Handle.Free();
 #endif
         }
 
@@ -747,8 +792,15 @@ namespace OpenCVForUnity.UnityIntegration
                 }
 #else
                 GCHandle RawTextureDataHandle = GCHandle.Alloc(texture2D.GetRawTextureData(), GCHandleType.Pinned);
-                OpenCVForUnity_TextureToMat(RawTextureDataHandle.AddrOfPinnedObject(), mat.nativeObj, (int)format, flip, flipCode);
-                RawTextureDataHandle.Free();
+                try
+                {
+                    OpenCVForUnity_TextureToMat(RawTextureDataHandle.AddrOfPinnedObject(), mat.nativeObj, (int)format, flip, flipCode);
+                }
+                finally
+                {
+                    if (RawTextureDataHandle.IsAllocated)
+                        RawTextureDataHandle.Free();
+                }
 #endif
 
                 return;
@@ -768,8 +820,15 @@ namespace OpenCVForUnity.UnityIntegration
             }
 #else
             GCHandle pixels32Handle = GCHandle.Alloc(pixels32, GCHandleType.Pinned);
-            OpenCVForUnity_TextureToMat(pixels32Handle.AddrOfPinnedObject(), mat.nativeObj, (int)TextureFormat.RGBA32, flip, flipCode);
-            pixels32Handle.Free();
+            try
+            {
+                OpenCVForUnity_TextureToMat(pixels32Handle.AddrOfPinnedObject(), mat.nativeObj, (int)TextureFormat.RGBA32, flip, flipCode);
+            }
+            finally
+            {
+                if (pixels32Handle.IsAllocated)
+                    pixels32Handle.Free();
+            }
 #endif
         }
 
@@ -836,8 +895,15 @@ namespace OpenCVForUnity.UnityIntegration
             }
 #else
             GCHandle pixels32Handle = GCHandle.Alloc(pixels32, GCHandleType.Pinned);
-            OpenCVForUnity_TextureToMat(pixels32Handle.AddrOfPinnedObject(), mat.nativeObj, (int)TextureFormat.RGBA32, flip, flipCode);
-            pixels32Handle.Free();
+            try
+            {
+                OpenCVForUnity_TextureToMat(pixels32Handle.AddrOfPinnedObject(), mat.nativeObj, (int)TextureFormat.RGBA32, flip, flipCode);
+            }
+            finally
+            {
+                if (pixels32Handle.IsAllocated)
+                    pixels32Handle.Free();
+            }
 #endif
         }
 
@@ -952,22 +1018,36 @@ namespace OpenCVForUnity.UnityIntegration
                 ((type == CvType.CV_8UC4 && format == TextureFormat.RGBA32) || (type == CvType.CV_8UC3 && format == TextureFormat.RGB24) || (type == CvType.CV_8UC1 && (format == TextureFormat.Alpha8 || format == TextureFormat.R8))))
             {
                 GCHandle RawTextureDataHandle = GCHandle.Alloc(rawTexData, GCHandleType.Pinned);
-                OpenCVForUnity_TextureToMat(RawTextureDataHandle.AddrOfPinnedObject(), mat.nativeObj, (int)texture2D.format, flip, flipCode);
-                RawTextureDataHandle.Free();
+                try
+                {
+                    OpenCVForUnity_TextureToMat(RawTextureDataHandle.AddrOfPinnedObject(), mat.nativeObj, (int)texture2D.format, flip, flipCode);
+                }
+                finally
+                {
+                    if (RawTextureDataHandle.IsAllocated)
+                        RawTextureDataHandle.Free();
+                }
 
                 return matBytesNum;
             }
             else
             {
                 GCHandle RawTextureDataHandle = GCHandle.Alloc(rawTexData, GCHandleType.Pinned);
-                int bytesNum = OpenCVForUnity_ByteArrayToMatData(RawTextureDataHandle.AddrOfPinnedObject(), rawTexData.Length, mat.nativeObj);
-                RawTextureDataHandle.Free();
-                if (flip)
+                try
                 {
-                    Core.flip(mat, mat, flipCode);
-                }
+                    int bytesNum = OpenCVForUnity_ByteArrayToMatData(RawTextureDataHandle.AddrOfPinnedObject(), rawTexData.Length, mat.nativeObj);
+                    if (flip)
+                    {
+                        Core.flip(mat, mat, flipCode);
+                    }
 
-                return bytesNum;
+                    return bytesNum;
+                }
+                finally
+                {
+                    if (RawTextureDataHandle.IsAllocated)
+                        RawTextureDataHandle.Free();
+                }
             }
 #endif
         }
@@ -1174,17 +1254,31 @@ namespace OpenCVForUnity.UnityIntegration
                 Color32[] colors = webCamTexture.GetPixels32();
 
                 pixels32Handle = GCHandle.Alloc(colors, GCHandleType.Pinned);
+                try
+                {
+                    OpenCVForUnity_TextureToMat(pixels32Handle.AddrOfPinnedObject(), mat.nativeObj, (int)TextureFormat.RGBA32, flip, flipCode);
+                }
+                finally
+                {
+                    if (pixels32Handle.IsAllocated)
+                        pixels32Handle.Free();
+                }
             }
             else
             {
                 webCamTexture.GetPixels32(pixels32Buffer);
 
                 pixels32Handle = GCHandle.Alloc(pixels32Buffer, GCHandleType.Pinned);
+                try
+                {
+                    OpenCVForUnity_TextureToMat(pixels32Handle.AddrOfPinnedObject(), mat.nativeObj, (int)TextureFormat.RGBA32, flip, flipCode);
+                }
+                finally
+                {
+                    if (pixels32Handle.IsAllocated)
+                        pixels32Handle.Free();
+                }
             }
-
-            OpenCVForUnity_TextureToMat(pixels32Handle.AddrOfPinnedObject(), mat.nativeObj, (int)TextureFormat.RGBA32, flip, flipCode);
-
-            pixels32Handle.Free();
 #endif
         }
 
@@ -1805,9 +1899,16 @@ namespace OpenCVForUnity.UnityIntegration
             }
 #else
             GCHandle arrayHandle = GCHandle.Alloc(array, GCHandleType.Pinned);
-            int bytesNum = OpenCVForUnity_MatDataToByteArray(mat.nativeObj, array.Length * Marshal.SizeOf<T>(), arrayHandle.AddrOfPinnedObject());
-            arrayHandle.Free();
-            return bytesNum;
+            try
+            {
+                int bytesNum = OpenCVForUnity_MatDataToByteArray(mat.nativeObj, array.Length * Marshal.SizeOf<T>(), arrayHandle.AddrOfPinnedObject());
+                return bytesNum;
+            }
+            finally
+            {
+                if (arrayHandle.IsAllocated)
+                    arrayHandle.Free();
+            }
 #endif
         }
 
@@ -1871,9 +1972,16 @@ namespace OpenCVForUnity.UnityIntegration
             }
 #else
             GCHandle arrayHandle = GCHandle.Alloc(array, GCHandleType.Pinned);
-            int bytesNum = OpenCVForUnity_MatDataToByteArray(mat.nativeObj, length * Marshal.SizeOf<T>(), arrayHandle.AddrOfPinnedObject());
-            arrayHandle.Free();
-            return bytesNum;
+            try
+            {
+                int bytesNum = OpenCVForUnity_MatDataToByteArray(mat.nativeObj, length * Marshal.SizeOf<T>(), arrayHandle.AddrOfPinnedObject());
+                return bytesNum;
+            }
+            finally
+            {
+                if (arrayHandle.IsAllocated)
+                    arrayHandle.Free();
+            }
 #endif
         }
 
@@ -1936,9 +2044,16 @@ namespace OpenCVForUnity.UnityIntegration
             }
 #else
             GCHandle arrayHandle = GCHandle.Alloc(array, GCHandleType.Pinned);
-            int bytesNum = OpenCVForUnity_ByteArrayToMatData(arrayHandle.AddrOfPinnedObject(), array.Length * Marshal.SizeOf<T>(), mat.nativeObj);
-            arrayHandle.Free();
-            return bytesNum;
+            try
+            {
+                int bytesNum = OpenCVForUnity_ByteArrayToMatData(arrayHandle.AddrOfPinnedObject(), array.Length * Marshal.SizeOf<T>(), mat.nativeObj);
+                return bytesNum;
+            }
+            finally
+            {
+                if (arrayHandle.IsAllocated)
+                    arrayHandle.Free();
+            }
 #endif
         }
 
@@ -2002,9 +2117,16 @@ namespace OpenCVForUnity.UnityIntegration
             }
 #else
             GCHandle arrayHandle = GCHandle.Alloc(array, GCHandleType.Pinned);
-            int bytesNum = OpenCVForUnity_ByteArrayToMatData(arrayHandle.AddrOfPinnedObject(), length * Marshal.SizeOf<T>(), mat.nativeObj);
-            arrayHandle.Free();
-            return bytesNum;
+            try
+            {
+                int bytesNum = OpenCVForUnity_ByteArrayToMatData(arrayHandle.AddrOfPinnedObject(), length * Marshal.SizeOf<T>(), mat.nativeObj);
+                return bytesNum;
+            }
+            finally
+            {
+                if (arrayHandle.IsAllocated)
+                    arrayHandle.Free();
+            }
 #endif
         }
 

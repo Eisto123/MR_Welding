@@ -312,7 +312,7 @@ namespace OpenCVForUnity.Calib3dModule
         [DllImport(LIBNAME)]
         private static extern void calib3d_StereoMatcher_setDisp12MaxDiff_10(IntPtr nativeObj, int disp12MaxDiff);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void calib3d_StereoMatcher_delete(IntPtr nativeObj);
 

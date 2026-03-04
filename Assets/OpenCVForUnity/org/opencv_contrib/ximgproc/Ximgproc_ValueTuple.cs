@@ -104,5 +104,162 @@ namespace OpenCVForUnity.XimgprocModule
 
         }
 
+
+        //
+        // C++:  Vec4i cv::ximgproc::HoughPoint2Line(Point houghPoint, Mat srcImgInfo, int angleRange = ARO_315_135, int makeSkew = HDO_DESKEW, int rules = RO_IGNORE_BORDERS)
+        //
+
+        /// <summary>
+        ///    Calculates coordinates of line segment corresponded by point in Hough space.
+        /// </summary>
+        /// <param name="houghPoint">
+        /// Point in Hough space.
+        /// </param>
+        /// <param name="srcImgInfo">
+        /// The source (input) image of Hough transform.
+        /// </param>
+        /// <param name="angleRange">
+        /// The part of Hough space where point is situated, see cv::AngleRangeOption
+        /// </param>
+        /// <param name="makeSkew">
+        /// Specifies to do or not to do image skewing, see cv::HoughDeskewOption
+        /// </param>
+        /// <param name="rules">
+        /// Specifies strictness of line segment calculating, see cv::RulesOption
+        /// </param>
+        /// <remarks>
+        ///  If rules parameter set to RO_STRICT
+        ///             then returned line cut along the border of source image.
+        /// </remarks>
+        /// <remarks>
+        ///  If rules parameter set to RO_WEAK then in case of point, which belongs
+        ///             the incorrect part of Hough image, returned line will not intersect source image.
+        ///   
+        ///    The function calculates coordinates of line segment corresponded by point in Hough space.
+        /// </remarks>
+        public static int[] HoughPoint2Line(in (double x, double y) houghPoint, Mat srcImgInfo, int angleRange, int makeSkew, int rules)
+        {
+            if (srcImgInfo != null) srcImgInfo.ThrowIfDisposed();
+
+            int[] retVal = new int[4];
+            ximgproc_Ximgproc_HoughPoint2Line_10(houghPoint.x, houghPoint.y, srcImgInfo.nativeObj, angleRange, makeSkew, rules, retVal);
+
+            return retVal;
+        }
+
+        /// <summary>
+        ///    Calculates coordinates of line segment corresponded by point in Hough space.
+        /// </summary>
+        /// <param name="houghPoint">
+        /// Point in Hough space.
+        /// </param>
+        /// <param name="srcImgInfo">
+        /// The source (input) image of Hough transform.
+        /// </param>
+        /// <param name="angleRange">
+        /// The part of Hough space where point is situated, see cv::AngleRangeOption
+        /// </param>
+        /// <param name="makeSkew">
+        /// Specifies to do or not to do image skewing, see cv::HoughDeskewOption
+        /// </param>
+        /// <param name="rules">
+        /// Specifies strictness of line segment calculating, see cv::RulesOption
+        /// </param>
+        /// <remarks>
+        ///  If rules parameter set to RO_STRICT
+        ///             then returned line cut along the border of source image.
+        /// </remarks>
+        /// <remarks>
+        ///  If rules parameter set to RO_WEAK then in case of point, which belongs
+        ///             the incorrect part of Hough image, returned line will not intersect source image.
+        ///   
+        ///    The function calculates coordinates of line segment corresponded by point in Hough space.
+        /// </remarks>
+        public static int[] HoughPoint2Line(in (double x, double y) houghPoint, Mat srcImgInfo, int angleRange, int makeSkew)
+        {
+            if (srcImgInfo != null) srcImgInfo.ThrowIfDisposed();
+
+            int[] retVal = new int[4];
+            ximgproc_Ximgproc_HoughPoint2Line_11(houghPoint.x, houghPoint.y, srcImgInfo.nativeObj, angleRange, makeSkew, retVal);
+
+            return retVal;
+        }
+
+        /// <summary>
+        ///    Calculates coordinates of line segment corresponded by point in Hough space.
+        /// </summary>
+        /// <param name="houghPoint">
+        /// Point in Hough space.
+        /// </param>
+        /// <param name="srcImgInfo">
+        /// The source (input) image of Hough transform.
+        /// </param>
+        /// <param name="angleRange">
+        /// The part of Hough space where point is situated, see cv::AngleRangeOption
+        /// </param>
+        /// <param name="makeSkew">
+        /// Specifies to do or not to do image skewing, see cv::HoughDeskewOption
+        /// </param>
+        /// <param name="rules">
+        /// Specifies strictness of line segment calculating, see cv::RulesOption
+        /// </param>
+        /// <remarks>
+        ///  If rules parameter set to RO_STRICT
+        ///             then returned line cut along the border of source image.
+        /// </remarks>
+        /// <remarks>
+        ///  If rules parameter set to RO_WEAK then in case of point, which belongs
+        ///             the incorrect part of Hough image, returned line will not intersect source image.
+        ///   
+        ///    The function calculates coordinates of line segment corresponded by point in Hough space.
+        /// </remarks>
+        public static int[] HoughPoint2Line(in (double x, double y) houghPoint, Mat srcImgInfo, int angleRange)
+        {
+            if (srcImgInfo != null) srcImgInfo.ThrowIfDisposed();
+
+            int[] retVal = new int[4];
+            ximgproc_Ximgproc_HoughPoint2Line_12(houghPoint.x, houghPoint.y, srcImgInfo.nativeObj, angleRange, retVal);
+
+            return retVal;
+        }
+
+        /// <summary>
+        ///    Calculates coordinates of line segment corresponded by point in Hough space.
+        /// </summary>
+        /// <param name="houghPoint">
+        /// Point in Hough space.
+        /// </param>
+        /// <param name="srcImgInfo">
+        /// The source (input) image of Hough transform.
+        /// </param>
+        /// <param name="angleRange">
+        /// The part of Hough space where point is situated, see cv::AngleRangeOption
+        /// </param>
+        /// <param name="makeSkew">
+        /// Specifies to do or not to do image skewing, see cv::HoughDeskewOption
+        /// </param>
+        /// <param name="rules">
+        /// Specifies strictness of line segment calculating, see cv::RulesOption
+        /// </param>
+        /// <remarks>
+        ///  If rules parameter set to RO_STRICT
+        ///             then returned line cut along the border of source image.
+        /// </remarks>
+        /// <remarks>
+        ///  If rules parameter set to RO_WEAK then in case of point, which belongs
+        ///             the incorrect part of Hough image, returned line will not intersect source image.
+        ///   
+        ///    The function calculates coordinates of line segment corresponded by point in Hough space.
+        /// </remarks>
+        public static int[] HoughPoint2Line(in (double x, double y) houghPoint, Mat srcImgInfo)
+        {
+            if (srcImgInfo != null) srcImgInfo.ThrowIfDisposed();
+
+            int[] retVal = new int[4];
+            ximgproc_Ximgproc_HoughPoint2Line_13(houghPoint.x, houghPoint.y, srcImgInfo.nativeObj, retVal);
+
+            return retVal;
+        }
+
     }
 }

@@ -62,14 +62,26 @@ public class BeadPaint : MonoBehaviour
 
     void Start()
     {
+        // Cache default transform
+        _defaultParent = transform.parent;
+        _defaultLocalPosition = transform.localPosition;
+        _defaultLocalRotation = transform.localRotation;
+        _defaultLocalScale = transform.localScale;
+
         _voxelBuffer = new ComputeBuffer(VoxelCount, sizeof(float));
         _timeBuffer = new ComputeBuffer(VoxelCount, sizeof(float));
         _builder = new MeshBuilder(_dimensions, _triangleBudget, _builderCompute);
-        
+
         _meshFilter = GetComponent<MeshFilter>();
         _meshRenderer = GetComponent<MeshRenderer>();
+
+        if (_weldMaterial != null)
+        {
+            _meshRenderer.sharedMaterial = _weldMaterial; // ensure runtime mesh uses correct shader/material
+        }
+
         _meshFilter.sharedMesh = _builder.Mesh;
-        
+
         InitializeEmptyField();
         UpdateBoundaryBox();
     }
@@ -259,11 +271,15 @@ public class BeadPaint : MonoBehaviour
     // Clear the current working mesh
     void ClearCurrentMesh()
     {
-        // Create a NEW builder for the next weld
         _builder = new MeshBuilder(_dimensions, _triangleBudget, _builderCompute);
         InitializeEmptyField();
         _meshFilter.sharedMesh = _builder.Mesh;
-        
+
+        if (_weldMaterial != null)
+        {
+            _meshRenderer.sharedMaterial = _weldMaterial; // keep consistent after reset
+        }
+
         Debug.Log("BeadPaint: Working mesh cleared with new builder");
     }
 
@@ -345,6 +361,51 @@ public class BeadPaint : MonoBehaviour
     public List<GameObject> GetAllWeldBeads()
     {
         return new List<GameObject>(_storedWeldBeads);
+    }
+
+    // Default transform cache
+    private Transform _defaultParent;
+    private Vector3 _defaultLocalPosition;
+    private Quaternion _defaultLocalRotation;
+    private Vector3 _defaultLocalScale;
+
+
+    public void AlignToTrackedObject(Transform trackedTarget)
+    {
+        if (trackedTarget == null)
+        {
+            Debug.LogWarning("BeadPaint: Align target is null.");
+            return;
+        }
+
+        transform.SetPositionAndRotation(trackedTarget.position, trackedTarget.rotation);
+        Debug.Log($"BeadPaint: Aligned to tracked object '{trackedTarget.name}'");
+    }
+
+    public void ResetToDefaultAndClear()
+    {
+        isDrawing = false;
+        ResetAccumulation();
+
+        // Restore transform to original default
+        transform.SetParent(_defaultParent, false);
+        transform.localPosition = _defaultLocalPosition;
+        transform.localRotation = _defaultLocalRotation;
+        transform.localScale = _defaultLocalScale;
+
+        // Clear all stored beads/builders
+        ClearAllWeldBeads();
+
+        // Reset current working field/mesh
+        if (_builder != null)
+        {
+            _builder.Dispose();
+        }
+        _builder = new MeshBuilder(_dimensions, _triangleBudget, _builderCompute);
+        InitializeEmptyField();
+        _meshFilter.sharedMesh = _builder.Mesh;
+
+        Debug.Log("BeadPaint: Reset to default transform and cleared all weld beads.");
     }
 
     void OnValidate()

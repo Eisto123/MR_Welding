@@ -107,7 +107,7 @@ namespace OpenCVForUnity.VideoModule
         [DllImport(LIBNAME)]
         private static extern void video_DenseOpticalFlow_collectGarbage_10(IntPtr nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void video_DenseOpticalFlow_delete(IntPtr nativeObj);
 

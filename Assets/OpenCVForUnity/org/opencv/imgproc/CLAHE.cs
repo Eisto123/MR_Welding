@@ -139,6 +139,46 @@ namespace OpenCVForUnity.ImgprocModule
 
 
         //
+        // C++:  void cv::CLAHE::setBitShift(int bitShift)
+        //
+
+        /// <summary>
+        ///  Sets bit shift parameter for histogram bins.
+        /// </summary>
+        /// <param name="bitShift">
+        /// bit shift value (default is 0).
+        /// </param>
+        public void setBitShift(int bitShift)
+        {
+            ThrowIfDisposed();
+
+            imgproc_CLAHE_setBitShift_10(nativeObj, bitShift);
+
+
+        }
+
+
+        //
+        // C++:  int cv::CLAHE::getBitShift()
+        //
+
+        /// <summary>
+        ///  Returns the bit shift parameter for histogram bins.
+        /// </summary>
+        /// <returns>
+        ///  current bit shift value.
+        /// </returns>
+        public int getBitShift()
+        {
+            ThrowIfDisposed();
+
+            return imgproc_CLAHE_getBitShift_10(nativeObj);
+
+
+        }
+
+
+        //
         // C++:  void cv::CLAHE::collectGarbage()
         //
 
@@ -180,11 +220,19 @@ namespace OpenCVForUnity.ImgprocModule
         [DllImport(LIBNAME)]
         private static extern void imgproc_CLAHE_getTilesGridSize_10(IntPtr nativeObj, double[] retVal);
 
+        // C++:  void cv::CLAHE::setBitShift(int bitShift)
+        [DllImport(LIBNAME)]
+        private static extern void imgproc_CLAHE_setBitShift_10(IntPtr nativeObj, int bitShift);
+
+        // C++:  int cv::CLAHE::getBitShift()
+        [DllImport(LIBNAME)]
+        private static extern int imgproc_CLAHE_getBitShift_10(IntPtr nativeObj);
+
         // C++:  void cv::CLAHE::collectGarbage()
         [DllImport(LIBNAME)]
         private static extern void imgproc_CLAHE_collectGarbage_10(IntPtr nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void imgproc_CLAHE_delete(IntPtr nativeObj);
 

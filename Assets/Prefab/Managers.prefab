@@ -86,14 +86,18 @@ MonoBehaviour:
     isCompleted: 0
   - stepType: 3
     isCompleted: 0
+  - stepType: 4
+    isCompleted: 0
   currentStep:
     stepType: 0
     isCompleted: 0
-  passthroughCameraRenderer: {fileID: 0}
+  Scanner: {fileID: 0}
   onProgressToNextStep: {fileID: 11400000, guid: 0e057eeb3a35784469cee067cca3a468,
     type: 2}
   dataProcessor: {fileID: 4302777698377931707}
   lineGraph: {fileID: 0}
+  beadPaint: {fileID: 0}
+  instructionPanelManager: {fileID: 0}
 --- !u!1 &8270199232155652733
 GameObject:
   m_ObjectHideFlags: 0

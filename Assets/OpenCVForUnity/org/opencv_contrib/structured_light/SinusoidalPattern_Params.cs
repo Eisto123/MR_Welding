@@ -387,7 +387,7 @@ namespace OpenCVForUnity.Structured_lightModule
         [DllImport(LIBNAME)]
         private static extern void structured_1light_SinusoidalPattern_1Params_set_1setMarkers_10(IntPtr nativeObj, [MarshalAs(UnmanagedType.U1)] bool setMarkers);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void structured_1light_SinusoidalPattern_1Params_delete(IntPtr nativeObj);
 

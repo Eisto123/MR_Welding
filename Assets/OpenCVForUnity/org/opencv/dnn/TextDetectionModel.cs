@@ -184,7 +184,7 @@ namespace OpenCVForUnity.DnnModule
         [DllImport(LIBNAME)]
         private static extern void dnn_TextDetectionModel_detectTextRectangles_11(IntPtr nativeObj, IntPtr frame_nativeObj, IntPtr detections_mat_nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void dnn_TextDetectionModel_delete(IntPtr nativeObj);
 

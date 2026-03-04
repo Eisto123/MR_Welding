@@ -315,7 +315,7 @@ namespace OpenCVForUnity.Wechat_qrcodeModule
         [DllImport(LIBNAME)]
         private static extern float wechat_1qrcode_WeChatQRCode_getScaleFactor_10(IntPtr nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void wechat_1qrcode_WeChatQRCode_delete(IntPtr nativeObj);
 

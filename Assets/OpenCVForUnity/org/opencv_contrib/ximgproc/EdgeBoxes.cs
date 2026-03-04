@@ -621,7 +621,7 @@ namespace OpenCVForUnity.XimgprocModule
         [DllImport(LIBNAME)]
         private static extern void ximgproc_EdgeBoxes_setKappa_10(IntPtr nativeObj, float value);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void ximgproc_EdgeBoxes_delete(IntPtr nativeObj);
 

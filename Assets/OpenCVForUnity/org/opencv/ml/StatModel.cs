@@ -364,7 +364,7 @@ namespace OpenCVForUnity.MlModule
         [DllImport(LIBNAME)]
         private static extern float ml_StatModel_predict_12(IntPtr nativeObj, IntPtr samples_nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void ml_StatModel_delete(IntPtr nativeObj);
 

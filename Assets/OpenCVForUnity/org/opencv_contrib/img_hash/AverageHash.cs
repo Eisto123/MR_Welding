@@ -72,7 +72,7 @@ namespace OpenCVForUnity.Img_hashModule
         [DllImport(LIBNAME)]
         private static extern IntPtr img_1hash_AverageHash_create_10();
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void img_1hash_AverageHash_delete(IntPtr nativeObj);
 

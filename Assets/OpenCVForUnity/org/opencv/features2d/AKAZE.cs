@@ -778,7 +778,7 @@ namespace OpenCVForUnity.Features2dModule
         [DllImport(LIBNAME)]
         private static extern int features2d_AKAZE_getMaxPoints_10(IntPtr nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void features2d_AKAZE_delete(IntPtr nativeObj);
 

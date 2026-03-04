@@ -189,7 +189,7 @@ namespace OpenCVForUnity.XimgprocModule
         [DllImport(LIBNAME)]
         private static extern int ximgproc_GraphSegmentation_getMinSize_10(IntPtr nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void ximgproc_GraphSegmentation_delete(IntPtr nativeObj);
 

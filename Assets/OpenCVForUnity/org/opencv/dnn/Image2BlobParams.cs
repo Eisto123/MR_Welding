@@ -529,7 +529,7 @@ namespace OpenCVForUnity.DnnModule
         [DllImport(LIBNAME)]
         private static extern void dnn_Image2BlobParams_set_1borderValue_10(IntPtr nativeObj, double borderValue_val0, double borderValue_val1, double borderValue_val2, double borderValue_val3);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void dnn_Image2BlobParams_delete(IntPtr nativeObj);
 

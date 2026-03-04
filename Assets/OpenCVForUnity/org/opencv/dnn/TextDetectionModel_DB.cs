@@ -277,7 +277,7 @@ namespace OpenCVForUnity.DnnModule
         [DllImport(LIBNAME)]
         private static extern int dnn_TextDetectionModel_1DB_getMaxCandidates_10(IntPtr nativeObj);
 
-        // native support for java finalize()
+        // native support for java finalize() or cleaner
         [DllImport(LIBNAME)]
         private static extern void dnn_TextDetectionModel_1DB_delete(IntPtr nativeObj);
 
