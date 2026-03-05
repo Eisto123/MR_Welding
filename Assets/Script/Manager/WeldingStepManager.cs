@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UI.Statistics;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 public enum WeldingStepType
 {
@@ -111,6 +112,8 @@ public class WeldingStepManager : MonoBehaviour
                 Debug.Log("Processing Plate Placement Step");
                 if (Scanner != null) Scanner.StopAutoPlacementScan();
                 if (beadPaint != null) beadPaint.ResetToDefaultAndClear();
+                if (dataProcessor != null) dataProcessor.ClearProcessedData();
+                lineGraph?.Clear();    
                 break;
 
             case WeldingStepType.AutoPlacement:

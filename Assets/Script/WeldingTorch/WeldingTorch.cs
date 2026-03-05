@@ -35,6 +35,8 @@ public class WeldingTorch : MonoBehaviour
 
     private RaycastHit[] hitResults = new RaycastHit[10]; // Pre-allocated array for performance
     private Transform currentHitObject;
+    [Header("Welding VFX")]
+    [SerializeField] private ParticleSystem weldParticles;
     void OnEnable()
     {
         drawMesh = FindAnyObjectByType<BeadPaint>();
@@ -140,12 +142,14 @@ public class WeldingTorch : MonoBehaviour
                 if (!drawMesh.isDrawing)
                     drawMesh.SetDrawingActive(true);
                 dataRecorder.StartRecording();
+                weldParticles.Play();
             }
             else
             {
                 if (drawMesh.isDrawing)
                     drawMesh.SetDrawingActive(false);
                 dataRecorder.StopRecording();
+                weldParticles.Stop();
             }
         }
         else
@@ -153,6 +157,7 @@ public class WeldingTorch : MonoBehaviour
             if (drawMesh.isDrawing)
                 drawMesh.SetDrawingActive(false);
             dataRecorder.StopRecording();
+            weldParticles.Stop();
         }
     }
 
@@ -172,6 +177,7 @@ public class WeldingTorch : MonoBehaviour
         isPressing = false;
         drawMesh.SetDrawingActive(false);
         dataRecorder.StopRecording();  // Add this: Explicitly stop recording on release
+        weldParticles.Stop();
     }
     
     void OnDrawGizmos()

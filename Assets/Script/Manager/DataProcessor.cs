@@ -77,10 +77,15 @@ public class DataProcessor : MonoBehaviour
         }
         return sum / processedData.Count;
     }
+    public void ClearProcessedData()
+    {
+        processedData.Clear();
+    }
 
     // Optional: Public getter for processed data
     public List<ProcessedWeldingData> GetProcessedData()
     {
         return new List<ProcessedWeldingData>(processedData);
     }
+    
 }
