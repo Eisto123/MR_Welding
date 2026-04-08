@@ -115,7 +115,7 @@ public class WeldingStepManager : MonoBehaviour
             case WeldingStepType.PlacePlate:
                 Debug.Log("Processing Plate Placement Step");
                 if (Scanner != null) Scanner.StopAutoPlacementScan();
-                if (beadPaint != null) beadPaint.ResetToDefaultAndClear();
+                //if (beadPaint != null) beadPaint.ResetToDefaultAndClear();
                 if (dataProcessor != null) dataProcessor.ClearProcessedData();
                 lineGraph?.Clear();    
                 break;

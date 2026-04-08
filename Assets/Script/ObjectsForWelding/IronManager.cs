@@ -4,6 +4,7 @@ using UnityEngine;
 public class IronManager : MonoBehaviour
 {
     public List<GameObject> irons = new List<GameObject>();
+    public List<GameObject> panels = new List<GameObject>();
 
     public void SetIronVisual(object Step)
     {
@@ -13,6 +14,10 @@ public class IronManager : MonoBehaviour
             foreach (var iron in irons)
             {
                 iron.GetComponent<Renderer>().material.color = Color.clear;
+            }
+            foreach (var panel in panels)
+            {
+                panel.SetActive(false);
             }
             return;
         }

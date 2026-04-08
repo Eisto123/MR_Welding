@@ -198,6 +198,8 @@ public class BeadPaint : MonoBehaviour
             data[i] = -1e3f;
             timeData[i] = 0f;
         }
+        _voxelBuffer = new ComputeBuffer(VoxelCount, sizeof(float));
+        _timeBuffer = new ComputeBuffer(VoxelCount, sizeof(float));
         _voxelBuffer.SetData(data);
         _timeBuffer.SetData(timeData);
     }

@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class WeldingTorch : MonoBehaviour
 {
-    private bool isGrabbing = false;
+    public bool isARScene = true;
+    public MeshRenderer torchMeshRenderer;
     private BeadPaint drawMesh;
     private DataRecorder dataRecorder;
     [SerializeField] private Transform tipPoint;
@@ -41,14 +42,14 @@ public class WeldingTorch : MonoBehaviour
     {
         drawMesh = FindAnyObjectByType<BeadPaint>();
         dataRecorder = FindAnyObjectByType<DataRecorder>();
-    }
-    public void OnGrab()
-    {
-        isGrabbing = true;
-    }
-    public void OnRelease()
-    {
-        isGrabbing = false;
+        if (isARScene)
+        {
+            torchMeshRenderer.enabled = false;
+        }
+        else
+        {
+            torchMeshRenderer.enabled = true;
+        }
     }
 
     public void UpdateCurrentStep(object step)
@@ -135,20 +136,26 @@ public class WeldingTorch : MonoBehaviour
     {
         if (isPressing)
         {
-            if (currentWeldingStepType != WeldingStepType.Tacking) return;
+            if (currentWeldingStepType != null)
+            {
+                if (currentWeldingStepType != WeldingStepType.Tacking && isARScene) return;
+            }
+            
 
             if (PerformBoxCast())
             {
                 if (!drawMesh.isDrawing)
                     drawMesh.SetDrawingActive(true);
-                dataRecorder.StartRecording();
+                if (dataRecorder != null)
+                    dataRecorder.StartRecording();
                 weldParticles.Play();
             }
             else
             {
                 if (drawMesh.isDrawing)
                     drawMesh.SetDrawingActive(false);
-                dataRecorder.StopRecording();
+                if (dataRecorder != null)
+                    dataRecorder.StopRecording();
                 weldParticles.Stop();
             }
         }
@@ -156,27 +163,24 @@ public class WeldingTorch : MonoBehaviour
         {
             if (drawMesh.isDrawing)
                 drawMesh.SetDrawingActive(false);
-            dataRecorder.StopRecording();
+            if (dataRecorder != null)
+                dataRecorder.StopRecording();
             weldParticles.Stop();
         }
     }
 
     public void StartWelding()
     {
-        if (!isGrabbing) return;
+        
         isPressing = true;
     }
 
     public void StopWelding()
     {
-        if (!isGrabbing)
-        {
-            isPressing = false;
-            return;
-        }
         isPressing = false;
         drawMesh.SetDrawingActive(false);
-        dataRecorder.StopRecording();  // Add this: Explicitly stop recording on release
+        if (dataRecorder != null)
+            dataRecorder.StopRecording();  // Add this: Explicitly stop recording on release
         weldParticles.Stop();
     }
     
