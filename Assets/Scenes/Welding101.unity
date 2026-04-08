@@ -3105,7 +3105,7 @@ PrefabInstance:
     - target: {fileID: 4437619491075673078, guid: 1afe17518a14213478afccad59687b1c,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4437619491075673078, guid: 1afe17518a14213478afccad59687b1c,
         type: 3}
@@ -3120,7 +3120,7 @@ PrefabInstance:
     - target: {fileID: 4437619491075673078, guid: 1afe17518a14213478afccad59687b1c,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SetCurrentStep
+      value: ReloadCurrentScene
       objectReference: {fileID: 0}
     - target: {fileID: 4437619491075673078, guid: 1afe17518a14213478afccad59687b1c,
         type: 3}

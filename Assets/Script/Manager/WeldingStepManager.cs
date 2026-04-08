@@ -103,6 +103,10 @@ public class WeldingStepManager : MonoBehaviour
         }
         onProgressToNextStep.RaiseEvent(currentStep.stepType, this);
     }
+    public void ReloadCurrentScene()
+    {
+        SceneLoader.Instance.LoadSceneByName(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
+    }
 
     private void ProcessCurrentStep()
     {
