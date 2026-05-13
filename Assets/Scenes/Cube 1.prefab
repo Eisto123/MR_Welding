@@ -317,7 +317,7 @@ PrefabInstance:
     - target: {fileID: 1965391148585917364, guid: 4d0c049c5e2d74d41959585930a6e819,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.0015
       objectReference: {fileID: 0}
     - target: {fileID: 1965391148585917364, guid: 4d0c049c5e2d74d41959585930a6e819,
         type: 3}
@@ -364,6 +364,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PanelWithManipulators
       objectReference: {fileID: 0}
+    - target: {fileID: 1965391149196224410, guid: 4d0c049c5e2d74d41959585930a6e819,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3300489571672081622, guid: 4d0c049c5e2d74d41959585930a6e819,
         type: 3}
       propertyPath: m_Layer
@@ -374,6 +379,11 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 48c1bdb26b9bab8488624db6913eeb43, type: 2}
+    - target: {fileID: 5528235813560465287, guid: 4d0c049c5e2d74d41959585930a6e819,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6282613407888846490, guid: 4d0c049c5e2d74d41959585930a6e819,
         type: 3}
       propertyPath: m_Layer

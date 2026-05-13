@@ -50,6 +50,13 @@ sealed class MeshBuilder : System.IDisposable
 
     void RunCompute(ComputeBuffer voxels, ComputeBuffer timeBuffer, float target, float scale)
     {
+        // Clear the full mesh buffer first. This prevents stale triangles from
+        // surviving frames where the triangle budget is exceeded.
+        _compute.SetInt("MaxTriangle", _triangleBudget);
+        _compute.SetBuffer(1, "VertexBuffer", _vertexBuffer);
+        _compute.SetBuffer(1, "IndexBuffer", _indexBuffer);
+        _compute.DispatchThreads(1, _triangleBudget, 1, 1);
+
         _counterBuffer.SetCounterValue(0);
 
         // Isosurface reconstruction
@@ -64,12 +71,6 @@ sealed class MeshBuilder : System.IDisposable
         _compute.SetBuffer(0, "IndexBuffer", _indexBuffer);
         _compute.SetBuffer(0, "Counter", _counterBuffer);
         _compute.DispatchThreads(0, _grids);
-
-        // Clear unused area of the buffers.
-        _compute.SetBuffer(1, "VertexBuffer", _vertexBuffer);
-        _compute.SetBuffer(1, "IndexBuffer", _indexBuffer);
-        _compute.SetBuffer(1, "Counter", _counterBuffer);
-        _compute.DispatchThreads(1, 1024, 1, 1);
 
         // Bounding box
         var ext = new Vector3(_grids.x, _grids.y, _grids.z) * scale;

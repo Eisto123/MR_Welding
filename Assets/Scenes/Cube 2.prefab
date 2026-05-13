@@ -315,7 +315,7 @@ PrefabInstance:
     - target: {fileID: 1965391148585917364, guid: 4d0c049c5e2d74d41959585930a6e819,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.0015
       objectReference: {fileID: 0}
     - target: {fileID: 1965391148585917364, guid: 4d0c049c5e2d74d41959585930a6e819,
         type: 3}
@@ -361,6 +361,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: PanelWithManipulators Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 1965391149196224410, guid: 4d0c049c5e2d74d41959585930a6e819,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5528235813560465287, guid: 4d0c049c5e2d74d41959585930a6e819,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:

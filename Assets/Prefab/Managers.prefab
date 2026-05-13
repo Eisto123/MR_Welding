@@ -91,13 +91,33 @@ MonoBehaviour:
   currentStep:
     stepType: 0
     isCompleted: 0
-  Scanner: {fileID: 0}
+  trackingOrchestrator: {fileID: 0}
   onProgressToNextStep: {fileID: 11400000, guid: 0e057eeb3a35784469cee067cca3a468,
     type: 2}
   dataProcessor: {fileID: 4302777698377931707}
   lineGraph: {fileID: 0}
   beadPaint: {fileID: 0}
   instructionPanelManager: {fileID: 0}
+  autoPlacementPrefabBindings:
+  - classId: 0
+    label: ButtShape
+    prefab: {fileID: 2425211544481852686, guid: 398a5c0924735fc4cb15eddf35f4845f,
+      type: 3}
+  - classId: 1
+    label: TShape
+    prefab: {fileID: 2425211544481852686, guid: 6451682d891e6d346b3134a130789744,
+      type: 3}
+  defaultAutoPlacementPrefab: {fileID: 0}
+  autoPlacementPrefabParent: {fileID: 0}
+  destroyPreviousAutoPlacementPrefab: 1
+  minimumAutoPlacementConfidence: 0.999
+  trackingWireframeOverlay: {fileID: 0}
+  trackingSettings: {fileID: 0}
+  trackingPoseReferenceTransform: {fileID: 0}
+  useFramePoseReferenceWhenAvailable: 1
+  poseIsInCameraSpace: 1
+  flipCvYToUnity: 1
+  translationScale: 1
 --- !u!1 &8270199232155652733
 GameObject:
   m_ObjectHideFlags: 0

@@ -47,6 +47,20 @@ float TimeValue(uint x, uint y, uint z)
     return TimeBuffer[x + Dims.x * (y + Dims.y * z)];
 }
 
+float SafeEdgeParam(float value1, float value2)
+{
+    float denom = value2 - value1;
+    if (abs(denom) < 1e-6) return 0.5;
+    return saturate((Isovalue - value1) / denom);
+}
+
+float3 SafeNormalize(float3 v)
+{
+    float lenSq = dot(v, v);
+    if (lenSq < 1e-12) return float3(0, 1, 0);
+    return v * rsqrt(lenSq);
+}
+
 // Voxel value with calculated gradient
 float4 VoxelValueWithGradient(uint3 i)
 {
@@ -156,9 +170,9 @@ void MeshReconstruction(uint3 id : SV_DispatchThreadID)
         float time2 = times[pair.y];
         float3 vertex1 = id + CubeVertex(pair.x);
         float3 vertex2 = id + CubeVertex(pair.y);
-        float param = (Isovalue - sample1.w) / (sample2.w - sample1.w);
+        float param = SafeEdgeParam(sample1.w, sample2.w);
         vertices[i] = TransformPoint(lerp(vertex1, vertex2, param));
-        normals[i] = -normalize(lerp(sample1.xyz, sample2.xyz, param));
+        normals[i] = -SafeNormalize(lerp(sample1.xyz, sample2.xyz, param));
         timeValues[i] = lerp(time1, time2, param);
     }
 
@@ -189,14 +203,11 @@ void MeshReconstruction(uint3 id : SV_DispatchThreadID)
 [numthreads(64, 1, 1)]
 void ClearUnused(uint id : SV_DispatchThreadID)
 {
-    while (true)
-    {
-        uint count = Counter.IncrementCounter();
-        if (count >= MaxTriangle) break;
-        uint vidx = count * 3;
-        WriteVertex(vidx + 0, 0, 0, float2(0, 0));
-        WriteVertex(vidx + 1, 0, 0, float2(0, 0));
-        WriteVertex(vidx + 2, 0, 0, float2(0, 0));
-        WriteIndices(vidx, uint3(0, 0, 0));
-    }
+    if (id >= MaxTriangle) return;
+
+    uint vidx = id * 3;
+    WriteVertex(vidx + 0, 0, 0, float2(0, 0));
+    WriteVertex(vidx + 1, 0, 0, float2(0, 0));
+    WriteVertex(vidx + 2, 0, 0, float2(0, 0));
+    WriteIndices(vidx, uint3(vidx, vidx, vidx));
 }

@@ -1,8 +1,7 @@
-using System;
 using System.Collections.Generic;
 using UI.Statistics;
 using UnityEngine;
-using UnityEngine.Profiling;
+using UnityEngine.Serialization;
 
 public enum WeldingStepType
 {
@@ -27,45 +26,85 @@ public class WeldingStep
 }
 public class WeldingStepManager : MonoBehaviour
 {
+    [System.Serializable]
+    private class AutoPlacementPrefabBinding
+    {
+        public int classId = -1;
+        public string label = "";
+        public GameObject prefab = null;
+    }
+
     public List<WeldingStep> weldingSteps;
     public WeldingStep currentStep;
-    public QuestCamera Scanner;
+    [FormerlySerializedAs("Scanner")]
+    public TrackingOrchestrator trackingOrchestrator;
     public ObjectEventSO onProgressToNextStep;
     public DataProcessor dataProcessor;
     public LineGraph lineGraph;
     public BeadPaint beadPaint;
     public InstructionPanelManager instructionPanelManager; // <-- add this
 
+    [Header("Auto Placement Prefabs")]
+    [SerializeField] private List<AutoPlacementPrefabBinding> autoPlacementPrefabBindings = new List<AutoPlacementPrefabBinding>();
+    [SerializeField] private GameObject defaultAutoPlacementPrefab;
+    [SerializeField] private Transform autoPlacementPrefabParent;
+    [SerializeField] private bool destroyPreviousAutoPlacementPrefab = true;
+    [SerializeField, Range(0f, 1f)] private float minimumAutoPlacementConfidence = 0.999f;
+
+    [Header("Tracking Pose Conversion")]
+    [SerializeField] private TrackingWireframeOverlay trackingWireframeOverlay;
+    [SerializeField] private TrackingSettings trackingSettings;
+    [SerializeField] private Transform trackingPoseReferenceTransform;
+    [SerializeField] private bool useFramePoseReferenceWhenAvailable = true;
+    [SerializeField] private bool poseIsInCameraSpace = true;
+    [SerializeField] private bool flipCvYToUnity = false;
+    [SerializeField] private float translationScale = 1f;
+
+    private bool autoPlacementDetectionHandled;
+    private bool isSubscribedToTrackingResults;
+    private GameObject spawnedAutoPlacementPrefab;
+
     void Start()
     {
-        if (Scanner != null)
-        {
-            Scanner.OnAutoPlacementObjectFound += HandleAutoPlacementObjectFound;
-        }
+        ApplyTrackingPoseSettings();
+        SubscribeToTrackingResults();
 
         SetCurrentStep(0);
     }
 
     private void OnDestroy()
     {
-        if (Scanner != null)
+        if (trackingOrchestrator != null && isSubscribedToTrackingResults)
         {
-            Scanner.OnAutoPlacementObjectFound -= HandleAutoPlacementObjectFound;
+            trackingOrchestrator.OnTrackingResultUpdated -= HandleTrackingResultUpdated;
         }
+
+        ClearSpawnedAutoPlacementPrefab();
     }
 
-    private void HandleAutoPlacementObjectFound()
+    private void HandleTrackingResultUpdated(TrackingResult result)
     {
-        if (currentStep != null && currentStep.stepType == WeldingStepType.AutoPlacement)
-        {
-            if (beadPaint != null && Scanner != null && Scanner.LastAutoPlacementTarget != null)
-            {
-                beadPaint.AlignToTrackedObject(Scanner.LastAutoPlacementTarget);
-            }
+        if (autoPlacementDetectionHandled ||
+            currentStep == null ||
+            currentStep.stepType != WeldingStepType.AutoPlacement)
+            return;
 
-            Debug.Log("AutoPlacement: object found. Progressing to next step.");
-            progressToNextStep();
+        if (!IsAutoPlacementDetectionSuccessful(result))
+            return;
+
+        autoPlacementDetectionHandled = true;
+        GameObject spawnedPrefab = SpawnAutoPlacementPrefab(result);
+        if (spawnedPrefab != null)
+        {
+            AlignBeadPaintToSpawnedPrefab(spawnedPrefab);
         }
+        else
+        {
+            AlignBeadPaintToTrackingResult(result);
+        }
+
+        Debug.Log("AutoPlacement: tracking confirmed. Progressing to next step.");
+        progressToNextStep();
     }
 
     public void SetCurrentStep(int index)
@@ -114,7 +153,8 @@ public class WeldingStepManager : MonoBehaviour
         {
             case WeldingStepType.PlacePlate:
                 Debug.Log("Processing Plate Placement Step");
-                if (Scanner != null) Scanner.StopAutoPlacementScan();
+                StopDetection();
+                ClearSpawnedAutoPlacementPrefab();
                 //if (beadPaint != null) beadPaint.ResetToDefaultAndClear();
                 if (dataProcessor != null) dataProcessor.ClearProcessedData();
                 lineGraph?.Clear();    
@@ -122,28 +162,34 @@ public class WeldingStepManager : MonoBehaviour
 
             case WeldingStepType.AutoPlacement:
                 Debug.Log("Processing Auto Placement Step");
-                if (Scanner != null)
+                autoPlacementDetectionHandled = false;
+                ClearSpawnedAutoPlacementPrefab();
+                if (TryResolveTrackingOrchestrator())
                 {
-                    Scanner.StartAutoPlacementScan();
+                    SubscribeToTrackingResults();
+                    if (!trackingOrchestrator.StartDetection())
+                    {
+                        Debug.LogWarning("TrackingOrchestrator failed to start detection for AutoPlacement.");
+                    }
                 }
                 else
                 {
-                    Debug.LogWarning("Scanner reference is missing. Cannot run AutoPlacement scan.");
+                    Debug.LogWarning("TrackingOrchestrator reference is missing. Cannot run AutoPlacement detection.");
                 }
                 break;
 
             case WeldingStepType.Alignment:
                 Debug.Log("Processing Alignment Step");
-                if (Scanner != null) Scanner.StopAutoPlacementScan();
+                StopDetection();
                 break;
 
             case WeldingStepType.Tacking:
                 Debug.Log("Processing Tacking Step");
-                if (Scanner != null) Scanner.StopAutoPlacementScan();
+                StopDetection();
                 
                 break;
             case WeldingStepType.Completed:
-                if (Scanner != null) Scanner.StopAutoPlacementScan();
+                StopDetection();
                 Debug.Log("Welding Completed!");
                 dataProcessor.ProcessData();
                 var graphData = dataProcessor.GetProcessedData();
@@ -184,5 +230,196 @@ public class WeldingStepManager : MonoBehaviour
                 Debug.LogWarning("Unknown welding step type");
                 break;
         }
+    }
+
+    private bool TryResolveTrackingOrchestrator()
+    {
+        if (trackingOrchestrator == null)
+        {
+            trackingOrchestrator = FindAnyObjectByType<TrackingOrchestrator>();
+        }
+
+        return trackingOrchestrator != null;
+    }
+
+    private bool TryResolveTrackingWireframeOverlay()
+    {
+        if (trackingWireframeOverlay == null && trackingOrchestrator != null)
+        {
+            trackingWireframeOverlay = trackingOrchestrator.GetComponentInChildren<TrackingWireframeOverlay>();
+        }
+
+        if (trackingWireframeOverlay == null)
+        {
+            trackingWireframeOverlay = FindAnyObjectByType<TrackingWireframeOverlay>();
+        }
+
+        return trackingWireframeOverlay != null;
+    }
+
+    private void SubscribeToTrackingResults()
+    {
+        if (!TryResolveTrackingOrchestrator() || isSubscribedToTrackingResults)
+            return;
+
+        trackingOrchestrator.OnTrackingResultUpdated += HandleTrackingResultUpdated;
+        isSubscribedToTrackingResults = true;
+    }
+
+    private void StopDetection()
+    {
+        if (TryResolveTrackingOrchestrator())
+        {
+            trackingOrchestrator.StopDetection();
+        }
+    }
+
+    private bool IsAutoPlacementDetectionSuccessful(TrackingResult result)
+    {
+        if (result.State != TrackingState.Tracking || !result.PoseValid || !result.IsConfirmed)
+            return false;
+
+        if (minimumAutoPlacementConfidence <= 0f)
+            return true;
+
+        return result.HasConfidence && result.Confidence >= minimumAutoPlacementConfidence;
+    }
+
+    private GameObject SpawnAutoPlacementPrefab(TrackingResult result)
+    {
+        GameObject prefab = GetAutoPlacementPrefab(result.TrackedClassId);
+        if (prefab == null)
+        {
+            Debug.LogWarning($"AutoPlacement: no prefab mapped for class {result.TrackedClassId} ({result.TrackedLabel}).");
+            return null;
+        }
+
+        if (!TryBuildAutoPlacementWorldPose(result, out Vector3 worldPosition, out Quaternion worldRotation))
+        {
+            Debug.LogWarning("AutoPlacement: failed to build wireframe pose for prefab placement.");
+            return null;
+        }
+
+        if (destroyPreviousAutoPlacementPrefab)
+        {
+            ClearSpawnedAutoPlacementPrefab();
+        }
+
+        spawnedAutoPlacementPrefab = Instantiate(prefab, worldPosition, worldRotation, autoPlacementPrefabParent);
+        string label = string.IsNullOrWhiteSpace(result.TrackedLabel) ? $"Class{result.TrackedClassId}" : result.TrackedLabel;
+        spawnedAutoPlacementPrefab.name = $"AutoPlacement_{label}";
+
+        string confidenceText = result.HasConfidence ? result.Confidence.ToString("F3") : "N/A";
+        Debug.Log(
+            $"AutoPlacement: spawned prefab '{prefab.name}' for class {result.TrackedClassId} ({label}) " +
+            $"at wireframe pose. conf={confidenceText}");
+
+        return spawnedAutoPlacementPrefab;
+    }
+
+    private GameObject GetAutoPlacementPrefab(int classId)
+    {
+        if (autoPlacementPrefabBindings != null)
+        {
+            for (int i = 0; i < autoPlacementPrefabBindings.Count; i++)
+            {
+                AutoPlacementPrefabBinding binding = autoPlacementPrefabBindings[i];
+                if (binding != null && binding.classId == classId && binding.prefab != null)
+                    return binding.prefab;
+            }
+        }
+
+        return defaultAutoPlacementPrefab;
+    }
+
+    private void ClearSpawnedAutoPlacementPrefab()
+    {
+        if (spawnedAutoPlacementPrefab == null)
+            return;
+
+        Destroy(spawnedAutoPlacementPrefab);
+        spawnedAutoPlacementPrefab = null;
+    }
+
+    private void ApplyTrackingPoseSettings()
+    {
+        if (trackingSettings == null)
+            return;
+
+        poseIsInCameraSpace = trackingSettings.PoseIsInCameraSpace;
+        flipCvYToUnity = trackingSettings.FlipCvYToUnity;
+        translationScale = trackingSettings.TranslationScale;
+    }
+
+    private void AlignBeadPaintToSpawnedPrefab(GameObject spawnedPrefab)
+    {
+        if (beadPaint == null || spawnedPrefab == null)
+            return;
+
+        beadPaint.AlignToTrackedObject(spawnedPrefab.transform);
+    }
+
+    private void AlignBeadPaintToTrackingResult(TrackingResult result)
+    {
+        if (beadPaint == null)
+            return;
+
+        if (!TryBuildTrackingWorldPose(result, out Vector3 worldPosition, out Quaternion worldRotation))
+        {
+            Debug.LogWarning("AutoPlacement: failed to convert TrackingResult pose for BeadPaint alignment.");
+            return;
+        }
+
+        beadPaint.transform.SetPositionAndRotation(worldPosition, worldRotation);
+        Debug.Log("BeadPaint: aligned to TrackingOrchestrator pose.");
+    }
+
+    private bool TryBuildAutoPlacementWorldPose(
+        TrackingResult result,
+        out Vector3 worldPosition,
+        out Quaternion worldRotation)
+    {
+        if (TryResolveTrackingWireframeOverlay() &&
+            trackingWireframeOverlay.TryBuildWireframeWorldPose(result, out worldPosition, out worldRotation))
+        {
+            return true;
+        }
+
+        return TryBuildTrackingWorldPose(result, out worldPosition, out worldRotation);
+    }
+
+    private bool TryBuildTrackingWorldPose(
+        TrackingResult result,
+        out Vector3 worldPosition,
+        out Quaternion worldRotation)
+    {
+        if (useFramePoseReferenceWhenAvailable &&
+            poseIsInCameraSpace &&
+            result.HasPoseReference)
+        {
+            return PoseConverter.TryBuildUnityPose(
+                result.RowMajorPose16,
+                flipCvYToUnity,
+                translationScale,
+                true,
+                result.PoseReferencePosition,
+                result.PoseReferenceRotation,
+                out worldPosition,
+                out worldRotation);
+        }
+
+        if (trackingPoseReferenceTransform == null && Camera.main != null)
+        {
+            trackingPoseReferenceTransform = Camera.main.transform;
+        }
+
+        return PoseConverter.TryBuildUnityPose(
+            result.RowMajorPose16,
+            flipCvYToUnity,
+            translationScale,
+            poseIsInCameraSpace,
+            poseIsInCameraSpace ? trackingPoseReferenceTransform : null,
+            out worldPosition,
+            out worldRotation);
     }
 }
