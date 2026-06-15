@@ -33,4 +33,6 @@ public struct TrackingResult
     public Vector3 PoseReferencePosition;
     public Quaternion PoseReferenceRotation;
     public string ErrorMessage;
+    public float FrameSourceMs;
+    public float Srt3dUpdateMs;
 }

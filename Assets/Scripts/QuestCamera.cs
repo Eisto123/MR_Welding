@@ -207,7 +207,7 @@ public class QuestCamera : MonoBehaviour
 
     private void Update()
     {
-        if(OVRInput.GetDown(OVRInput.Button.One))
+        if (!EvaluationLogger.IsAccuracyTestModeActive && OVRInput.GetDown(OVRInput.Button.One))
         {
             enableProcessingFrame = !enableProcessingFrame;
             Debug.Log($"Toggled frame processing: {(enableProcessingFrame ? "ON" : "OFF")}");

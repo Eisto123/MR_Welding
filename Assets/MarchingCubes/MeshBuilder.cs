@@ -50,12 +50,7 @@ sealed class MeshBuilder : System.IDisposable
 
     void RunCompute(ComputeBuffer voxels, ComputeBuffer timeBuffer, float target, float scale)
     {
-        // Clear the full mesh buffer first. This prevents stale triangles from
-        // surviving frames where the triangle budget is exceeded.
-        _compute.SetInt("MaxTriangle", _triangleBudget);
-        _compute.SetBuffer(1, "VertexBuffer", _vertexBuffer);
-        _compute.SetBuffer(1, "IndexBuffer", _indexBuffer);
-        _compute.DispatchThreads(1, _triangleBudget, 1, 1);
+        ClearMeshBuffers();
 
         _counterBuffer.SetCounterValue(0);
 
@@ -75,6 +70,19 @@ sealed class MeshBuilder : System.IDisposable
         // Bounding box
         var ext = new Vector3(_grids.x, _grids.y, _grids.z) * scale;
         _mesh.bounds = new Bounds(Vector3.zero, ext);
+        SetSubMeshIndexCount(3 * _triangleBudget);
+    }
+
+    void ClearMeshBuffers()
+    {
+        if (_compute == null || _vertexBuffer == null || _indexBuffer == null) return;
+
+        // Clear the full mesh buffer first. This prevents stale or uninitialized
+        // triangles from being rendered before/after reconstruction.
+        _compute.SetInt("MaxTriangle", _triangleBudget);
+        _compute.SetBuffer(1, "VertexBuffer", _vertexBuffer);
+        _compute.SetBuffer(1, "IndexBuffer", _indexBuffer);
+        _compute.DispatchThreads(1, _triangleBudget, 1, 1);
     }
 
     #endregion
@@ -132,14 +140,18 @@ sealed class MeshBuilder : System.IDisposable
         _mesh.SetVertexBufferParams(vertexCount, vp, vn, vuv2);
         _mesh.SetIndexBufferParams(vertexCount, IndexFormat.UInt32);
 
-        // Submesh initialization
-        _mesh.SetSubMesh(0, new SubMeshDescriptor(0, vertexCount),
-                         MeshUpdateFlags.DontRecalculateBounds);
-
         // GraphicsBuffer references
         _vertexBuffer = _mesh.GetVertexBuffer(0);
         _indexBuffer = _mesh.GetIndexBuffer();
+
+        SetSubMeshIndexCount(0);
+        _mesh.bounds = new Bounds(Vector3.zero, Vector3.zero);
+        ClearMeshBuffers();
     }
+
+    void SetSubMeshIndexCount(int indexCount)
+      => _mesh.SetSubMesh(0, new SubMeshDescriptor(0, indexCount),
+                          MeshUpdateFlags.DontRecalculateBounds);
 
     void ReleaseMesh()
     {

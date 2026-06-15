@@ -37,6 +37,10 @@ public class TrackingOrchestrator : MonoBehaviour
     [SerializeField] private int lowConfidenceFramesBeforeYoloReacquire = 8;
     [SerializeField] private bool logSeedEvents = true;
 
+    [Header("Fast Seed Retry")]
+    [Tooltip("When an unconfirmed YOLO seed fails the confidence gate, try the next automatic yaw candidate on the next frame instead of waiting for Yolo Scan Every N Frames.")]
+    [SerializeField] private bool forceYoloScanNextFrameAfterSeedFailure = true;
+
     [Header("Manual Start Trigger")]
     [Tooltip("If true, YOLO scanning waits for the manual trigger button before searching for a seed pose. Useful when you want to control the moment of capture (head still, object visible) instead of letting YOLO scan continuously while the head is moving.")]
     [SerializeField] private bool requireManualStartTrigger = false;
@@ -50,6 +54,8 @@ public class TrackingOrchestrator : MonoBehaviour
     [SerializeField] private bool requireMinimumStartConfidence = false;
     [SerializeField, Range(0f, 1f)] private float startConfidenceThreshold = 0.7f;
     [SerializeField, Range(1, 60)] private int startConfidenceProbationFrames = 8;
+    [Tooltip("When ON, accept an unconfirmed seed as soon as any probation frame reaches Start Confidence Threshold instead of always waiting for the full probation window.")]
+    [SerializeField] private bool clearStartConfidenceGateAsSoonAsThresholdReached = true;
 
     [Header("YOLO Class to Tracking Object")]
     [SerializeField] private TrackingObjectClassBinding[] trackingObjectsByClass =
@@ -87,6 +93,7 @@ public class TrackingOrchestrator : MonoBehaviour
     private ICameraFrameSource frameSource;
     private ITrackerNativeBridge nativeBridge;
     private ITrackingPoseSeedProvider poseSeedProvider;
+    private ITrackingPoseSeedRetryStrategy poseSeedRetryStrategy;
     private int frameCounter;
     private int consecutiveValidFrames;
     private int consecutiveMissFrames;
@@ -101,6 +108,8 @@ public class TrackingOrchestrator : MonoBehaviour
     private float probationMaxConfidence;
     private bool probationCleared;
     private bool hasAcceptedSeedPose;
+    private bool currentSeedConfirmed;
+    private bool forceYoloScanNextFrame;
     private int postSeedDebugFramesRemaining;
     private int postSeedDebugFrameIndex;
     private bool detectionEnabled;
@@ -109,6 +118,10 @@ public class TrackingOrchestrator : MonoBehaviour
     public TrackingResult LastResult { get; private set; }
     public bool IsDetectionEnabled => detectionEnabled;
     public event Action<TrackingResult> OnTrackingResultUpdated;
+    public event Action<TrackingPoseSeed> OnSeedAccepted;
+    public event Action<string> OnSeedRejected;
+    public event Action<TrackingResult, string> OnSeedConfirmed;
+    public float StartConfidenceThreshold => startConfidenceThreshold;
 
     private void Awake()
     {
@@ -185,7 +198,7 @@ public class TrackingOrchestrator : MonoBehaviour
         var stopwatch = logStageTimings ? System.Diagnostics.Stopwatch.StartNew() : null;
         if (!frameSource.TryGetFrame(out FramePacket framePacket))
             return;
-        long frameSourceTicks = stopwatch?.ElapsedTicks ?? 0L;
+        long frameSourceTicks = stopwatch != null ? stopwatch.ElapsedTicks : 0L;
 
         frameCounter++;
         TrackingResult result;
@@ -237,6 +250,8 @@ public class TrackingOrchestrator : MonoBehaviour
     private void PublishResult(TrackingResult result, System.Diagnostics.Stopwatch stopwatch, long frameSourceTicks)
     {
         long totalTicks = stopwatch?.ElapsedTicks ?? 0L;
+        if (logStageTimings && stopwatch != null)
+            result.FrameSourceMs = (float)TicksToMilliseconds(frameSourceTicks);
         LastResult = result;
         State = result.State;
         OnTrackingResultUpdated?.Invoke(result);
@@ -253,7 +268,8 @@ public class TrackingOrchestrator : MonoBehaviour
                 Debug.Log("[TrackingOrchestrator] pose(4x4):\n" + FormatPose(result.RowMajorPose16));
         }
 
-        if (stopwatch != null &&
+        if (logStageTimings &&
+            stopwatch != null &&
             timingLogEveryNFrames > 0 &&
             frameCounter % timingLogEveryNFrames == 0)
         {
@@ -268,6 +284,7 @@ public class TrackingOrchestrator : MonoBehaviour
     {
         TrackingResult result = CreateBaseResult(framePacket, State, null);
 
+        long srtStartTicks = logStageTimings ? System.Diagnostics.Stopwatch.GetTimestamp() : 0L;
         bool processOk = nativeBridge.ProcessFrame(framePacket.Rgb24, framePacket.Width, framePacket.Height);
         result.ProcessOk = processOk;
 
@@ -307,6 +324,11 @@ public class TrackingOrchestrator : MonoBehaviour
                 result.HasConfidence = true;
                 result.Confidence = conf;
             }
+        }
+        if (logStageTimings)
+        {
+            long srtEndTicks = System.Diagnostics.Stopwatch.GetTimestamp();
+            result.Srt3dUpdateMs = (float)TicksToMilliseconds(srtEndTicks - srtStartTicks);
         }
 
         LogPostSeedPoseDeltaIfNeeded(result);
@@ -351,6 +373,12 @@ public class TrackingOrchestrator : MonoBehaviour
 
     private bool ShouldRunYoloScan()
     {
+        if (forceYoloScanNextFrame)
+        {
+            forceYoloScanNextFrame = false;
+            return true;
+        }
+
         return yoloScanEveryNFrames <= 1 || frameCounter % yoloScanEveryNFrames == 0;
     }
 
@@ -397,6 +425,7 @@ public class TrackingOrchestrator : MonoBehaviour
 
         nativeTrackingStarted = true;
         nativeStoppedForSearch = false;
+        forceYoloScanNextFrame = false;
         Array.Copy(seed.RowMajorPose16, acceptedSeedPose, 16);
         hasAcceptedSeedPose = true;
         postSeedDebugFramesRemaining = PostSeedDebugFrameCount;
@@ -408,7 +437,9 @@ public class TrackingOrchestrator : MonoBehaviour
         probationMaxConfidence = 0f;
         // No probation if the gate is disabled, so consider it cleared immediately.
         probationCleared = !requireMinimumStartConfidence;
+        currentSeedConfirmed = false;
         lastSeedStatus = debugInfo;
+        OnSeedAccepted?.Invoke(seed);
 
         if (logSeedEvents)
             Debug.Log("[TrackingOrchestrator] YOLO seed accepted: " + debugInfo);
@@ -557,29 +588,35 @@ public class TrackingOrchestrator : MonoBehaviour
             result.IsConfirmed = false;
             result.IsInProbation = true;
 
+            if (clearStartConfidenceGateAsSoonAsThresholdReached &&
+                result.PoseValid &&
+                result.HasConfidence &&
+                result.Confidence >= startConfidenceThreshold)
+            {
+                ClearStartConfidenceGate(ref result,
+                    $"conf {result.Confidence:F3} reached threshold {startConfidenceThreshold:F3} early");
+                return;
+            }
+
             if (probationFramesElapsed < startConfidenceProbationFrames)
                 return;
 
             if (probationMaxConfidence < startConfidenceThreshold)
             {
-                AbandonCurrentSeed(ref result,
+                RejectCurrentSeedAndAbandon(ref result,
                     $"probation max conf {probationMaxConfidence:F3} < threshold {startConfidenceThreshold:F3}");
                 return;
             }
 
-            probationCleared = true;
-            result.IsConfirmed = true;
-            result.IsInProbation = false;
-            // Successful lock: consume the manual trigger so a follow-up scan requires a fresh press.
-            manualTriggerArmed = false;
-            if (logSeedEvents)
-                Debug.Log($"[TrackingOrchestrator] Probation cleared: max conf {probationMaxConfidence:F3} >= {startConfidenceThreshold:F3}.");
+            ClearStartConfidenceGate(ref result,
+                $"max conf {probationMaxConfidence:F3} >= threshold {startConfidenceThreshold:F3}");
         }
 
         // 2) Normal post-seed loss policy.
         bool lowConfidence = result.HasConfidence && result.Confidence < minimumSrt3dConfidence;
         if (result.PoseValid && !lowConfidence)
         {
+            MarkCurrentSeedConfirmed();
             lowConfidenceFrames = 0;
             return;
         }
@@ -596,11 +633,50 @@ public class TrackingOrchestrator : MonoBehaviour
             ? $"confidence {result.Confidence:F3} below {minimumSrt3dConfidence:F3}"
             : "SRT3D pose was not valid";
 
-        AbandonCurrentSeed(ref result, reason);
+        RejectCurrentSeedAndAbandon(ref result, reason);
 
         // Lost during steady-state tracking: require an explicit re-trigger if the manual gate is on.
         if (requireManualStartTrigger)
             manualTriggerArmed = false;
+    }
+
+    private void ClearStartConfidenceGate(ref TrackingResult result, string reason)
+    {
+        probationCleared = true;
+        result.IsConfirmed = true;
+        result.IsInProbation = false;
+        lowConfidenceFrames = 0;
+        MarkCurrentSeedConfirmed();
+
+        // Successful lock: consume the manual trigger so a follow-up scan requires a fresh press.
+        manualTriggerArmed = false;
+        if (logSeedEvents)
+            Debug.Log($"[TrackingOrchestrator] Probation cleared: {reason}.");
+        OnSeedConfirmed?.Invoke(result, reason);
+    }
+
+    private void MarkCurrentSeedConfirmed()
+    {
+        if (currentSeedConfirmed)
+            return;
+
+        currentSeedConfirmed = true;
+        poseSeedRetryStrategy?.NotifySeedConfirmed();
+    }
+
+    private void RejectCurrentSeedAndAbandon(ref TrackingResult result, string reason)
+    {
+        bool rejectedBeforeConfirmation = !currentSeedConfirmed;
+        if (rejectedBeforeConfirmation)
+            poseSeedRetryStrategy?.NotifySeedRejected(reason);
+        else
+            poseSeedRetryStrategy?.ResetSeedRetryStrategy();
+
+        OnSeedRejected?.Invoke(reason);
+        AbandonCurrentSeed(ref result, reason);
+
+        if (rejectedBeforeConfirmation && forceYoloScanNextFrameAfterSeedFailure)
+            forceYoloScanNextFrame = true;
     }
 
     private void AbandonCurrentSeed(ref TrackingResult result, string reason)
@@ -615,6 +691,8 @@ public class TrackingOrchestrator : MonoBehaviour
         probationMaxConfidence = 0f;
         probationCleared = false;
         hasAcceptedSeedPose = false;
+        currentSeedConfirmed = false;
+        forceYoloScanNextFrame = false;
         postSeedDebugFramesRemaining = 0;
         postSeedDebugFrameIndex = 0;
 
@@ -692,8 +770,11 @@ public class TrackingOrchestrator : MonoBehaviour
         probationMaxConfidence = 0f;
         probationCleared = false;
         hasAcceptedSeedPose = false;
+        currentSeedConfirmed = false;
+        forceYoloScanNextFrame = false;
         postSeedDebugFramesRemaining = 0;
         postSeedDebugFrameIndex = 0;
+        poseSeedRetryStrategy?.ResetSeedRetryStrategy();
     }
 
     private void OnDisable()
@@ -715,6 +796,7 @@ public class TrackingOrchestrator : MonoBehaviour
         frameSource = frameSourceBehaviour as ICameraFrameSource;
         nativeBridge = nativeBridgeBehaviour as ITrackerNativeBridge;
         poseSeedProvider = poseSeedProviderBehaviour as ITrackingPoseSeedProvider;
+        poseSeedRetryStrategy = poseSeedProviderBehaviour as ITrackingPoseSeedRetryStrategy;
         if (frameSource == null)
             Debug.LogError("[TrackingOrchestrator] frameSourceBehaviour must implement ICameraFrameSource.");
         if (nativeBridge == null)

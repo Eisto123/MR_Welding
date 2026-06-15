@@ -1,0 +1,1097 @@
+# Evaluation Logging Implementation Specification
+
+## Project: Vision-Based MR Object-Aligned Welding Training
+
+## 1. Purpose
+
+This document describes the evaluation logging system that needs to be added to the Unity project.
+
+The paper evaluation will focus on the complete MR registration pipeline running on Meta Quest 3S:
+
+> YOLO + Depth + SRT3D + Unity MR Registration
+
+We will not evaluate YOLO as an isolated object detector. Instead, the goal is to measure whether the combined pipeline can support:
+
+1. Automatic initialization and convergence.
+2. Accurate registration between the virtual workpiece and the physical workpiece.
+3. Real-time runtime performance on Meta Quest 3S, especially comparing continuous tracking with the pose-lock strategy.
+
+The implementation should generate CSV logs that can be used directly for paper analysis.
+
+---
+
+# 2. Evaluation Sections to Support
+
+The code should support logging for the following paper sections:
+
+```text
+5.2 Initialization and Convergence
+5.3 Registration Accuracy
+5.5 Runtime Performance and Pose-Lock Optimization
+```
+
+The logging system should not focus on YOLO mAP, precision, or recall. YOLO confidence and bounding box can still be logged as part of the pipeline state, but they are not the main evaluation target.
+
+---
+
+# 3. Required CSV Output Files
+
+The implementation should generate three CSV files:
+
+```text
+TrialSummaryLog.csv
+RegistrationAccuracyLog.csv
+RuntimeFrameLog.csv
+```
+
+Recommended output folder:
+
+```text
+Application.persistentDataPath/EvaluationLogs/
+```
+
+Each test session can create a timestamped subfolder, for example:
+
+```text
+Application.persistentDataPath/EvaluationLogs/2026-06-03_1530/
+```
+
+---
+
+# 4. Common Logging Concepts
+
+## 4.1 Trial ID
+
+Each evaluation trial should have a unique `trial_id`.
+
+Example:
+
+```text
+Butt_001
+Butt_002
+TShape_001
+TShape_002
+```
+
+A trial starts when the user begins an evaluation run and ends when one of the following happens:
+
+1. The system successfully reaches pose lock.
+2. The system fails to initialize after timeout.
+3. The user manually stops the trial.
+
+## 4.2 Object Types
+
+Use consistent object type names:
+
+```text
+ButtShape
+TShape
+```
+
+## 4.3 System States
+
+Use the following enum or string values for system state:
+
+```text
+Idle
+Detection
+DepthInitialization
+SRT3DInitialization
+SRT3DTracking
+PoseLock
+Welding
+Recalibration
+Failed
+```
+
+## 4.4 Evaluation Modes
+
+For runtime comparison, support at least two modes:
+
+```text
+ContinuousTracking
+PoseLock
+```
+
+Explanation:
+
+* `ContinuousTracking`: SRT3D remains active during welding.
+* `PoseLock`: SRT3D is paused after stable convergence, and the virtual workpiece transform is fixed in Unity world space during welding.
+
+---
+
+# 5. CSV 1: TrialSummaryLog.csv
+
+## 5.1 Purpose
+
+This file supports paper section:
+
+```text
+5.2 Initialization and Convergence
+```
+
+It should record one row per trial.
+
+The goal is to measure:
+
+1. Whether the full pipeline can initialize successfully.
+2. How long it takes to reach a stable pose.
+3. How many tracking attempts are needed.
+4. Whether pose lock is reached.
+
+## 5.2 Required Fields
+
+```text
+trial_id
+object_type
+test_condition
+mode
+
+start_time
+end_time
+trial_duration
+
+first_yolo_detection_time
+time_to_first_yolo_detection
+first_yolo_confidence
+first_yolo_bbox_x
+first_yolo_bbox_y
+first_yolo_bbox_w
+first_yolo_bbox_h
+
+depth_query_success
+initial_depth_value
+initial_position_x
+initial_position_y
+initial_position_z
+initial_rotation_x
+initial_rotation_y
+initial_rotation_z
+
+srt3d_init_start_time
+srt3d_first_valid_pose_time
+srt3d_confidence_threshold
+srt3d_convergence_time
+max_srt3d_confidence
+avg_srt3d_confidence_after_convergence
+
+num_initialization_attempts
+initialization_success
+failure_reason
+
+pose_lock_enabled
+pose_lock_time
+time_to_pose_lock
+
+final_position_x
+final_position_y
+final_position_z
+final_rotation_x
+final_rotation_y
+final_rotation_z
+final_rotation_w
+```
+
+## 5.3 Field Meaning
+
+### Basic trial fields
+
+```text
+trial_id
+```
+
+Unique ID for this test run.
+
+```text
+object_type
+```
+
+`ButtShape` or `TShape`.
+
+```text
+test_condition
+```
+
+Simple description of the test condition.
+
+Examples:
+
+```text
+normal_front_0.7m
+normal_30deg_0.7m
+normal_60deg_0.7m
+```
+
+```text
+mode
+```
+
+`ContinuousTracking` or `PoseLock`.
+
+### Timing fields
+
+All time fields should use seconds since trial start, or absolute Unity time. Be consistent.
+
+Recommended:
+
+```text
+Time.realtimeSinceStartup
+```
+
+Then calculate relative durations.
+
+```text
+start_time
+end_time
+trial_duration
+```
+
+Trial start, trial end, and total duration.
+
+```text
+first_yolo_detection_time
+time_to_first_yolo_detection
+```
+
+Time when YOLO first detects the correct object, and duration from trial start to that detection.
+
+### YOLO fields
+
+These are not for evaluating YOLO itself, but for recording the pipeline initialization state.
+
+```text
+first_yolo_confidence
+first_yolo_bbox_x
+first_yolo_bbox_y
+first_yolo_bbox_w
+first_yolo_bbox_h
+```
+
+Record the first valid YOLO detection used for initialization.
+
+### Depth and initial pose fields
+
+```text
+depth_query_success
+initial_depth_value
+initial_position_x
+initial_position_y
+initial_position_z
+initial_rotation_x
+initial_rotation_y
+initial_rotation_z
+```
+
+These values represent the initial pose estimated from YOLO + Depth before SRT3D refinement.
+
+### SRT3D convergence fields
+
+```text
+srt3d_init_start_time
+srt3d_first_valid_pose_time
+srt3d_confidence_threshold
+srt3d_convergence_time
+max_srt3d_confidence
+avg_srt3d_confidence_after_convergence
+```
+
+These are used to measure whether SRT3D successfully converges after initialization.
+
+The default confidence threshold is:
+
+```text
+0.8
+```
+
+If the project uses a different threshold, log the actual value.
+
+### Success / failure fields
+
+```text
+num_initialization_attempts
+initialization_success
+failure_reason
+```
+
+Possible `failure_reason` values:
+
+```text
+None
+NoYOLODetection
+DepthQueryFailed
+SRT3DInitFailed
+LowTrackingConfidence
+Timeout
+ManualStop
+Unknown
+```
+
+### Pose lock fields
+
+```text
+pose_lock_enabled
+pose_lock_time
+time_to_pose_lock
+```
+
+These fields are important for the pose-lock strategy.
+
+### Final pose fields
+
+```text
+final_position_x
+final_position_y
+final_position_z
+final_rotation_x
+final_rotation_y
+final_rotation_z
+final_rotation_w
+```
+
+This is the final pose used for Unity MR registration.
+
+## 5.4 Metrics to Calculate Later
+
+From this CSV, we should be able to calculate:
+
+```text
+Initialization Success Rate
+Average Time to First YOLO Detection
+Average Time to Stable Pose
+Average SRT3D Convergence Time
+Average Number of Initialization Attempts
+Failure Count by Reason
+```
+
+---
+
+# 6. CSV 2: RegistrationAccuracyLog.csv
+
+## 6.1 Purpose
+
+This file supports paper section:
+
+```text
+5.3 Registration Accuracy
+```
+
+The goal is to compare:
+
+```text
+YOLO + Depth only
+vs
+YOLO + Depth + SRT3D
+```
+
+This is the most important accuracy comparison in the evaluation.
+
+YOLO + Depth only represents the coarse initial pose.
+YOLO + Depth + SRT3D represents the refined pose after tracking convergence.
+
+## 6.2 Required Methods
+
+Use the following values for the `method` field:
+
+```text
+YOLO_Depth_Only
+YOLO_Depth_SRT3D
+```
+
+## 6.3 Recommended Measurement Method
+
+Use physical reference points on the workpiece only for evaluation.
+
+Examples:
+
+```text
+weld_start_point
+weld_end_point
+corner_1
+corner_2
+t_joint_center
+edge_midpoint
+```
+
+Important:
+
+> These physical reference points must not be used by the tracking algorithm. They are only for measuring alignment error.
+
+For each reference point:
+
+1. Record the physical point location in image pixel coordinates.
+2. Project the corresponding virtual reference point into the camera image.
+3. Calculate pixel error.
+4. Optionally estimate millimeter error using depth and camera intrinsics.
+
+Approximate conversion:
+
+```text
+estimated_error_mm = pixel_error * depth_m / focal_length_px * 1000
+```
+
+## 6.4 Required Fields
+
+```text
+trial_id
+object_type
+method
+reference_point_id
+frame_id
+timestamp
+
+physical_point_px_x
+physical_point_px_y
+virtual_point_px_x
+virtual_point_px_y
+
+pixel_error
+depth_at_point
+estimated_error_mm
+
+view_angle
+distance
+
+pose_position_x
+pose_position_y
+pose_position_z
+pose_rotation_x
+pose_rotation_y
+pose_rotation_z
+pose_rotation_w
+```
+
+## 6.5 Field Meaning
+
+```text
+trial_id
+```
+
+Links this row to the corresponding trial.
+
+```text
+object_type
+```
+
+`ButtShape` or `TShape`.
+
+```text
+method
+```
+
+Either:
+
+```text
+YOLO_Depth_Only
+YOLO_Depth_SRT3D
+```
+
+```text
+reference_point_id
+```
+
+Identifier of the measured reference point.
+
+Example:
+
+```text
+weld_start
+weld_end
+corner_left
+corner_right
+t_joint_center
+```
+
+```text
+physical_point_px_x
+physical_point_px_y
+```
+
+Pixel coordinate of the real physical reference point in the camera image.
+
+This can be entered manually through a debug UI, selected by clicking/tapping on the camera image, or recorded from an evaluation overlay.
+
+```text
+virtual_point_px_x
+virtual_point_px_y
+```
+
+Pixel coordinate of the corresponding virtual reference point after projecting the Unity world point into camera image space.
+
+```text
+pixel_error
+```
+
+2D pixel distance between the physical point and virtual point.
+
+Formula:
+
+```text
+pixel_error = sqrt((physical_x - virtual_x)^2 + (physical_y - virtual_y)^2)
+```
+
+```text
+depth_at_point
+```
+
+Depth value at or near the reference point.
+
+```text
+estimated_error_mm
+```
+
+Approximate real-world alignment error in millimeters.
+
+```text
+view_angle
+distance
+```
+
+Optional test condition information.
+
+Examples:
+
+```text
+front
+30deg
+60deg
+0.7m
+```
+
+```text
+pose_position_x/y/z
+pose_rotation_x/y/z/w
+```
+
+The pose used by the current method when measuring this reference point.
+
+## 6.6 Metrics to Calculate Later
+
+From this CSV, we should be able to calculate:
+
+```text
+Mean Alignment Error
+Max Alignment Error
+RMSE
+Error Reduction from YOLO_Depth_Only to YOLO_Depth_SRT3D
+Per-object Error
+Per-reference-point Error
+```
+
+Expected paper table:
+
+```text
+Method                  Mean Error    RMSE    Max Error
+YOLO + Depth only        xx mm        xx mm    xx mm
+YOLO + Depth + SRT3D     xx mm        xx mm    xx mm
+```
+
+---
+
+# 7. CSV 3: RuntimeFrameLog.csv
+
+## 7.1 Purpose
+
+This file supports paper section:
+
+```text
+5.5 Runtime Performance and Pose-Lock Optimization
+```
+
+The goal is to measure runtime performance on Meta Quest 3S and compare:
+
+```text
+ContinuousTracking
+vs
+PoseLock
+```
+
+This is used to support the claim that pose lock reduces computational cost during welding interaction.
+
+## 7.2 Required Fields
+
+```text
+trial_id
+frame_id
+timestamp
+mode
+system_state
+
+fps
+frame_time_ms
+main_thread_time_ms
+render_thread_time_ms
+gpu_time_ms
+
+camera_acquisition_ms
+yolo_inference_ms
+depth_query_ms
+srt3d_update_ms
+pose_conversion_ms
+unity_registration_ms
+marching_cubes_update_ms
+mesh_upload_ms
+shader_update_ms
+
+srt3d_active
+yolo_active
+marching_cubes_active
+pose_locked
+
+srt3d_confidence
+tracking_lost
+
+weld_bead_vertices
+weld_bead_triangles
+generated_weld_points
+
+memory_used_mb
+gc_alloc_mb
+```
+
+## 7.3 Minimum Required Fields
+
+If some fields are difficult to access on Quest 3S, at minimum log:
+
+```text
+trial_id
+frame_id
+timestamp
+mode
+system_state
+
+fps
+frame_time_ms
+
+yolo_inference_ms
+depth_query_ms
+srt3d_update_ms
+pose_conversion_ms
+marching_cubes_update_ms
+
+srt3d_active
+yolo_active
+marching_cubes_active
+pose_locked
+
+srt3d_confidence
+tracking_lost
+
+weld_bead_vertices
+weld_bead_triangles
+```
+
+## 7.4 Field Meaning
+
+```text
+mode
+```
+
+Runtime mode:
+
+```text
+ContinuousTracking
+PoseLock
+```
+
+```text
+system_state
+```
+
+Current system state:
+
+```text
+Detection
+DepthInitialization
+SRT3DInitialization
+SRT3DTracking
+PoseLock
+Welding
+Recalibration
+Failed
+```
+
+```text
+fps
+frame_time_ms
+```
+
+Overall runtime performance.
+
+```text
+main_thread_time_ms
+render_thread_time_ms
+gpu_time_ms
+```
+
+Optional Unity profiler metrics, if available.
+
+```text
+camera_acquisition_ms
+yolo_inference_ms
+depth_query_ms
+srt3d_update_ms
+pose_conversion_ms
+unity_registration_ms
+marching_cubes_update_ms
+mesh_upload_ms
+shader_update_ms
+```
+
+Timing breakdown for each module.
+
+Use high-resolution timers such as:
+
+```csharp
+System.Diagnostics.Stopwatch
+```
+
+```text
+srt3d_active
+yolo_active
+marching_cubes_active
+pose_locked
+```
+
+Boolean flags showing which parts of the system are active.
+
+```text
+srt3d_confidence
+tracking_lost
+```
+
+Tracking state information.
+
+```text
+weld_bead_vertices
+weld_bead_triangles
+generated_weld_points
+```
+
+Procedural weld generation complexity.
+
+```text
+memory_used_mb
+gc_alloc_mb
+```
+
+Optional memory metrics.
+
+## 7.5 Metrics to Calculate Later
+
+From this CSV, we should be able to calculate:
+
+```text
+Average FPS
+Average Frame Time
+P95 Frame Time
+Average YOLO Inference Time
+Average Depth Query Time
+Average SRT3D Update Time
+Average Marching Cubes Update Time
+Average Frame Time in ContinuousTracking mode
+Average Frame Time in PoseLock mode
+Runtime Improvement from PoseLock
+```
+
+Expected paper table:
+
+```text
+Mode                  SRT3D Active During Welding    Avg FPS    Avg Frame Time    P95 Frame Time
+ContinuousTracking    Yes                            xx         xx ms             xx ms
+PoseLock              No                             xx         xx ms             xx ms
+```
+
+Another useful table:
+
+```text
+Module                     Avg Time
+YOLO Inference              xx ms
+Depth Query                 xx ms
+SRT3D Update                xx ms
+Pose Conversion             xx ms
+Marching Cubes Update       xx ms
+Unity Rendering             xx ms
+```
+
+---
+
+# 8. Recommended Evaluation Logger Architecture
+
+Create a Unity C# class:
+
+```csharp
+EvaluationLogger
+```
+
+Recommended responsibilities:
+
+```text
+- Create timestamped log folder.
+- Create CSV files with headers.
+- Start and stop trials.
+- Log trial summary.
+- Log registration accuracy rows.
+- Log runtime frame rows.
+- Flush data safely to disk.
+```
+
+## 8.1 Suggested Public Methods
+
+```csharp
+StartTrial(string trialId, string objectType, string testCondition, string mode)
+
+RecordFirstYoloDetection(float confidence, Rect bbox)
+
+RecordDepthInitialization(bool success, float depthValue, Vector3 initialPosition, Vector3 initialEulerRotation)
+
+RecordSRT3DInitializationStart()
+
+RecordSRT3DValidPose(float confidence, Vector3 position, Quaternion rotation)
+
+RecordPoseLock(Vector3 finalPosition, Quaternion finalRotation)
+
+EndTrial(bool success, string failureReason)
+
+LogRegistrationError(
+    string trialId,
+    string objectType,
+    string method,
+    string referencePointId,
+    int frameId,
+    Vector2 physicalPointPx,
+    Vector2 virtualPointPx,
+    float depthAtPoint,
+    float estimatedErrorMm,
+    string viewAngle,
+    string distance,
+    Vector3 posePosition,
+    Quaternion poseRotation
+)
+
+LogRuntimeFrame(RuntimeFrameData data)
+```
+
+## 8.2 Suggested Data Struct
+
+```csharp
+public struct RuntimeFrameData
+{
+    public string trialId;
+    public int frameId;
+    public float timestamp;
+    public string mode;
+    public string systemState;
+
+    public float fps;
+    public float frameTimeMs;
+
+    public float yoloInferenceMs;
+    public float depthQueryMs;
+    public float srt3dUpdateMs;
+    public float poseConversionMs;
+    public float marchingCubesUpdateMs;
+
+    public bool srt3dActive;
+    public bool yoloActive;
+    public bool marchingCubesActive;
+    public bool poseLocked;
+
+    public float srt3dConfidence;
+    public bool trackingLost;
+
+    public int weldBeadVertices;
+    public int weldBeadTriangles;
+    public int generatedWeldPoints;
+}
+```
+
+## 8.3 Runtime Logging Frequency
+
+To reduce overhead, runtime logging does not need to write every frame.
+
+Recommended options:
+
+```text
+Option A: log every frame during short 30-second runtime tests.
+Option B: log every 5 frames during longer tests.
+Option C: store values in memory and write to CSV at the end of the trial.
+```
+
+Preferred:
+
+```text
+Store in memory during test, write to disk when trial ends.
+```
+
+This avoids file I/O affecting runtime performance.
+
+---
+
+# 9. Evaluation Test Procedure
+
+## 9.1 Initialization and Convergence Test
+
+For each object type:
+
+```text
+ButtShape: at least 5 trials, preferably 10
+TShape: at least 5 trials, preferably 10
+```
+
+Each trial:
+
+1. Place physical workpiece in the test area.
+2. Start trial.
+3. Run YOLO detection.
+4. Run depth-based initial pose estimation.
+5. Initialize SRT3D.
+6. Wait until tracking confidence exceeds threshold.
+7. Lock pose.
+8. End trial as success.
+
+If timeout occurs, end trial as failure.
+
+Recommended timeout:
+
+```text
+10 seconds or 15 seconds
+```
+
+## 9.2 Registration Accuracy Test
+
+For each successful trial:
+
+1. Save the initial pose from YOLO + Depth only.
+2. Save the refined pose from YOLO + Depth + SRT3D.
+3. For each physical reference point, compare it with the projected virtual reference point.
+4. Log one row per reference point and method.
+
+Recommended number of reference points:
+
+```text
+At least 3 per workpiece
+Preferably 4 to 6 per workpiece
+```
+
+Recommended methods:
+
+```text
+YOLO_Depth_Only
+YOLO_Depth_SRT3D
+```
+
+## 9.3 Runtime Performance and Pose-Lock Test
+
+Test two modes:
+
+```text
+ContinuousTracking
+PoseLock
+```
+
+For each mode:
+
+1. Initialize the system.
+2. Start welding interaction.
+3. Generate weld bead using Marching Cubes for a fixed duration.
+4. Log runtime frame data.
+
+Recommended duration:
+
+```text
+30 seconds per mode
+```
+
+Recommended comparison:
+
+```text
+ContinuousTracking + MarchingCubes active
+PoseLock + MarchingCubes active
+```
+
+This directly tests whether pausing SRT3D after pose convergence improves runtime performance during welding.
+
+---
+
+# 10. Important Notes
+
+## 10.1 Do Not Over-Measure YOLO
+
+The paper does not evaluate YOLO as a standalone detector. Do not spend time implementing mAP, precision, recall, or full detection benchmark tools.
+
+Only log YOLO information that is useful for pipeline initialization:
+
+```text
+first_yolo_detection_time
+first_yolo_confidence
+first_yolo_bbox
+yolo_inference_ms
+```
+
+## 10.2 Reference Points Are Only for Evaluation
+
+If physical reference markers or colored dots are used for registration accuracy measurement, they must not be used by YOLO, SRT3D, or any tracking algorithm.
+
+The paper needs to be able to state:
+
+> Reference points were used only for measuring registration error and were not used by the tracking pipeline.
+
+## 10.3 Pose Lock Is an Optimization, Not a Tracking Limitation
+
+The framework supports continuous SRT3D tracking.
+Pose lock is an application-specific optimization for welding training because the physical workpiece is expected to remain stationary during welding.
+
+The runtime evaluation should show the benefit of pose lock.
+
+## 10.4 Use Consistent Units
+
+Use consistent units across logs:
+
+```text
+time: seconds or milliseconds, clearly indicated in field name
+position: Unity world units, preferably meters
+rotation: quaternion for final pose
+error: pixels and estimated millimeters
+```
+
+## 10.5 Avoid Runtime Distortion
+
+CSV writing can affect performance. For runtime tests, store log rows in memory and write to disk after the trial ends.
+
+---
+
+# 11. Minimum Implementation Checklist
+
+The implementation is complete when the Unity project can:
+
+```text
+[ ] Create timestamped evaluation log folder.
+[ ] Write TrialSummaryLog.csv with headers.
+[ ] Write RegistrationAccuracyLog.csv with headers.
+[ ] Write RuntimeFrameLog.csv with headers.
+[ ] Start and end evaluation trials.
+[ ] Record first YOLO detection time, confidence, and bbox.
+[ ] Record depth initialization result and initial pose.
+[ ] Record SRT3D initialization start time.
+[ ] Record SRT3D convergence time and confidence.
+[ ] Record pose lock time and final pose.
+[ ] Record registration errors for YOLO_Depth_Only and YOLO_Depth_SRT3D.
+[ ] Record runtime frame data for ContinuousTracking and PoseLock modes.
+[ ] Export all logs as CSV files.
+```
+
+---
+
+# 12. Final Expected Output
+
+After running evaluation, the log folder should contain:
+
+```text
+EvaluationLogs/
+  2026-06-03_1530/
+    TrialSummaryLog.csv
+    RegistrationAccuracyLog.csv
+    RuntimeFrameLog.csv
+```
+
+These files should be ready for later analysis in Python, Excel, or R.

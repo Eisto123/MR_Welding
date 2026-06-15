@@ -61,6 +61,7 @@ public class WeldingStepManager : MonoBehaviour
     [SerializeField] private float translationScale = 1f;
 
     private bool autoPlacementDetectionHandled;
+    private bool autoPlacementEvaluationHoldLogged;
     private bool isSubscribedToTrackingResults;
     private GameObject spawnedAutoPlacementPrefab;
 
@@ -91,6 +92,16 @@ public class WeldingStepManager : MonoBehaviour
 
         if (!IsAutoPlacementDetectionSuccessful(result))
             return;
+
+        if (EvaluationLogger.IsAccuracyTestModeActive)
+        {
+            if (!autoPlacementEvaluationHoldLogged)
+            {
+                Debug.Log("AutoPlacement: evaluation mode active. Holding welding step progression after tracking success.");
+                autoPlacementEvaluationHoldLogged = true;
+            }
+            return;
+        }
 
         autoPlacementDetectionHandled = true;
         GameObject spawnedPrefab = SpawnAutoPlacementPrefab(result);
@@ -163,6 +174,7 @@ public class WeldingStepManager : MonoBehaviour
             case WeldingStepType.AutoPlacement:
                 Debug.Log("Processing Auto Placement Step");
                 autoPlacementDetectionHandled = false;
+                autoPlacementEvaluationHoldLogged = false;
                 ClearSpawnedAutoPlacementPrefab();
                 if (TryResolveTrackingOrchestrator())
                 {

@@ -42,6 +42,11 @@ public class TrackingWireframeOverlay : MonoBehaviour
     [SerializeField] private bool showProbationWireframe = false;
     [SerializeField] private Color probationColor = new Color(1f, 0.15f, 0.15f, 1f);
 
+    [Header("Attempt Debug")]
+    [Tooltip("When ON, the latest initial SRT3D pose for the current unconfirmed seed attempt is drawn in red whenever native probation has not produced a valid pose yet. When native does produce a probation pose, the existing red probation wireframe takes over so you can watch convergence.")]
+    [SerializeField] private bool showAttemptPoseWireframe = true;
+    [SerializeField] private Color attemptPoseColor = new Color(1f, 0.15f, 0.15f, 1f);
+
     [Header("Seed Pose Debug")]
     [Tooltip("Optional reference to a MonoBehaviour that implements ISeedPoseDebugSource (e.g. YoloEnvironmentPoseSeedProvider). When 'Show Seed Pose Wireframe' is on, the same wireframe mesh is drawn at the most recent physical seed pose, in 'Seed Pose Color' (default yellow). This is the YOLO+raycast mesh pose before TemplateFrameCorrectionEuler is applied for SRT3D, so it isolates physical seed quality from native SRT3D drift. If the yellow wireframe is wrong, tune SurfaceNormalAxis/yaw. If yellow is right but red/green is rolled, tune TemplateFrameCorrectionEuler.")]
     [SerializeField] private MonoBehaviour seedPoseDebugSourceBehaviour;
@@ -73,6 +78,8 @@ public class TrackingWireframeOverlay : MonoBehaviour
     private bool _ready;
     private bool _ownsMaterial;
     private ISeedPoseDebugSource _seedPoseDebugSource;
+
+    public float LastPoseConversionMs { get; private set; } = -1f;
 
     private void Start()
     {
@@ -216,8 +223,9 @@ public class TrackingWireframeOverlay : MonoBehaviour
         // 1) Main wireframe (the SRT3D-tracked pose). Confirmed pose renders normally; during the
         //    probation window we optionally render in the probation colour so the user can see
         //    where SRT3D is converging while it has not yet cleared the confidence gate.
+        bool showUnconfirmedSrtPose = showProbationWireframe || showAttemptPoseWireframe;
         bool isProbationDraw =
-            result.PoseValid && !result.IsConfirmed && result.IsInProbation && showProbationWireframe;
+            result.PoseValid && !result.IsConfirmed && result.IsInProbation && showUnconfirmedSrtPose;
         bool drawMain = result.PoseValid && (result.IsConfirmed || isProbationDraw);
         if (drawMain && TryBuildWireframeWorldPose(result, out Vector3 worldPos, out Quaternion worldRot))
         {
@@ -230,6 +238,16 @@ public class TrackingWireframeOverlay : MonoBehaviour
                 color = lostColor;
 
             DrawWireMeshAt(worldPos, worldRot, color);
+        }
+
+        if (ShouldDrawAttemptPose(result, drawMain) &&
+            _seedPoseDebugSource.TryGetLastInitialSrt3dWorldPose(
+                out Pose attemptPose,
+                out int attemptClassId,
+                out _) &&
+            (attemptClassId < 0 || attemptClassId == result.TrackedClassId))
+        {
+            DrawWireMeshAt(attemptPose.position, attemptPose.rotation, attemptPoseColor);
         }
 
         // 2) Seed pose wireframe (the YOLO+raycast pose, BEFORE SRT3D optimises it). Independent
@@ -257,13 +275,34 @@ public class TrackingWireframeOverlay : MonoBehaviour
         }
     }
 
+    private bool ShouldDrawAttemptPose(TrackingResult result, bool mainWireframeDrawn)
+    {
+        if (!showAttemptPoseWireframe ||
+            mainWireframeDrawn ||
+            _seedPoseDebugSource == null ||
+            trackingOrchestrator == null ||
+            !trackingOrchestrator.IsDetectionEnabled)
+        {
+            return false;
+        }
+
+        return !result.IsConfirmed &&
+               result.TrackedClassId >= 0 &&
+               result.State != TrackingState.Error &&
+               result.State != TrackingState.NotInitialized;
+    }
+
     public bool TryBuildWireframeWorldPose(TrackingResult result, out Vector3 worldPos, out Quaternion worldRot)
     {
+        long startTicks = System.Diagnostics.Stopwatch.GetTimestamp();
         worldPos = Vector3.zero;
         worldRot = Quaternion.identity;
 
         if (!result.PoseValid || !TryBuildWorldPoseFromResult(result, out worldPos, out worldRot))
+        {
+            LastPoseConversionMs = TicksToMilliseconds(System.Diagnostics.Stopwatch.GetTimestamp() - startTicks);
             return false;
+        }
 
         // SRT3D output is in the "template body" frame, which differs from the .obj's natural
         // mesh frame by TemplateFrameCorrection. Apply the inverse so callers get the same pose
@@ -275,7 +314,13 @@ public class TrackingWireframeOverlay : MonoBehaviour
             worldRot = worldRot * Quaternion.Inverse(templateCorrection);
         }
 
+        LastPoseConversionMs = TicksToMilliseconds(System.Diagnostics.Stopwatch.GetTimestamp() - startTicks);
         return true;
+    }
+
+    private static float TicksToMilliseconds(long ticks)
+    {
+        return (float)(ticks * 1000.0 / System.Diagnostics.Stopwatch.Frequency);
     }
 
     private bool TryBuildWorldPoseFromResult(TrackingResult result, out Vector3 worldPos, out Quaternion worldRot)

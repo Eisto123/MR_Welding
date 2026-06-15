@@ -11,7 +11,7 @@ using CvRect = OpenCVForUnity.CoreModule.Rect;
 /// Builds the initial SRT3D camera-space pose from a YOLO detection and Meta environment raycasts.
 /// Output convention is native SRT3D's T_cam_obj, row-major.
 /// </summary>
-public class YoloEnvironmentPoseSeedProvider : MonoBehaviour, ITrackingPoseSeedProvider, ISeedPoseDebugSource
+public class YoloEnvironmentPoseSeedProvider : MonoBehaviour, ITrackingPoseSeedProvider, ITrackingPoseSeedRetryStrategy, ISeedPoseDebugSource
 {
     private enum NativePoseCameraConvention
     {
@@ -129,6 +129,14 @@ public class YoloEnvironmentPoseSeedProvider : MonoBehaviour, ITrackingPoseSeedP
     [Tooltip("Current cumulative manual yaw offset added to every seed yaw. Increments by 'Manual Yaw Step Degrees' on each button press. Set this directly in the inspector to bake a known-good offset, or use the button at runtime to discover one.")]
     [SerializeField] private float manualYawCalibrationDegrees = 0f;
 
+    [Header("Automatic Yaw Retry")]
+    [Tooltip("When a bbox-aspect seed is rejected before SRT3D confirms it, try the opposite yaw direction first, then small yaw offsets on both directions.")]
+    [SerializeField] private bool enableAutomaticYawRetry = true;
+    [Tooltip("Step size for automatic small yaw retries after original/opposite have both failed.")]
+    [SerializeField, Range(1f, 10f)] private float yawRetryMicroStepDegrees = 1f;
+    [Tooltip("Largest automatic small yaw adjustment to try after original/opposite have both failed.")]
+    [SerializeField, Range(1f, 20f)] private float yawRetryMaxMicroAdjustmentDegrees = 5f;
+
     [Header("Debug")]
     [SerializeField] private bool debugLogging = false;
 
@@ -164,6 +172,10 @@ public class YoloEnvironmentPoseSeedProvider : MonoBehaviour, ITrackingPoseSeedP
     private Pose lastInitialSrt3dWorldPose;
     private float lastInitialRoundTripPositionError;
     private float lastInitialRoundTripAngleError;
+    private int yawRetryCandidateIndex;
+    private int yawRetryClassId = -1;
+    private bool lastSeedUsedBboxAspectYaw;
+    private string lastYawRetryCandidateLabel = "original";
 
     public bool IsReady =>
         passthroughCameraAccess != null &&
@@ -244,6 +256,38 @@ public class YoloEnvironmentPoseSeedProvider : MonoBehaviour, ITrackingPoseSeedP
         return false;
     }
 
+    public void ResetSeedRetryStrategy()
+    {
+        yawRetryCandidateIndex = 0;
+        yawRetryClassId = -1;
+        lastSeedUsedBboxAspectYaw = false;
+        lastYawRetryCandidateLabel = "original";
+    }
+
+    public void NotifySeedRejected(string reason)
+    {
+        if (!enableAutomaticYawRetry || !lastSeedUsedBboxAspectYaw)
+            return;
+
+        yawRetryCandidateIndex = GetNextYawRetryCandidateIndex(yawRetryCandidateIndex);
+        lastYawRetryCandidateLabel = GetYawRetryCandidateLabel(yawRetryCandidateIndex);
+
+        if (debugLogging)
+        {
+            Debug.Log(
+                $"[YoloEnvironmentPoseSeedProvider] Seed rejected ({reason}); " +
+                $"next automatic yaw retry={lastYawRetryCandidateLabel}.");
+        }
+    }
+
+    public void NotifySeedConfirmed()
+    {
+        if (debugLogging && yawRetryCandidateIndex != 0)
+            Debug.Log("[YoloEnvironmentPoseSeedProvider] Seed confirmed; automatic yaw retry reset to original.");
+
+        ResetSeedRetryStrategy();
+    }
+
     public bool TryGetSeedPose(FramePacket framePacket, out TrackingPoseSeed seed, out string debugInfo)
     {
         seed = default;
@@ -281,9 +325,13 @@ public class YoloEnvironmentPoseSeedProvider : MonoBehaviour, ITrackingPoseSeedP
             return false;
         }
 
+        long seedStartTicks = System.Diagnostics.Stopwatch.GetTimestamp();
+        float yoloInferenceMs;
         try
         {
+            long yoloStartTicks = System.Diagnostics.Stopwatch.GetTimestamp();
             yoloDetector.DetectObjects(cameraTexture, null);
+            yoloInferenceMs = TicksToMilliseconds(System.Diagnostics.Stopwatch.GetTimestamp() - yoloStartTicks);
         }
         catch (System.Exception e)
         {
@@ -302,6 +350,10 @@ public class YoloEnvironmentPoseSeedProvider : MonoBehaviour, ITrackingPoseSeedP
         int imageWidth = Mathf.Max(1, cameraTexture.width);
         int imageHeight = Mathf.Max(1, cameraTexture.height);
         ClassPoseProfile poseProfile = GetPoseProfile(bestDetection.ClassId);
+        EnsureYawRetryClass(bestDetection.ClassId);
+        lastSeedUsedBboxAspectYaw = false;
+        lastYawRetryCandidateLabel = GetYawRetryCandidateLabel(yawRetryCandidateIndex);
+
         bool hasGrayFrame = false;
         if (enableEdgeYawEstimation && !poseProfile.UseBoundingBoxAspectYaw)
         {
@@ -330,6 +382,7 @@ public class YoloEnvironmentPoseSeedProvider : MonoBehaviour, ITrackingPoseSeedP
             debugInfo = poseInfo;
             return false;
         }
+        float depthQueryMs = TicksToMilliseconds(System.Diagnostics.Stopwatch.GetTimestamp() - seedStartTicks) - yoloInferenceMs;
 
         Quaternion seedRotationOffset =
             Quaternion.Euler(poseProfile.LocalRotationOffsetEuler) *
@@ -393,7 +446,20 @@ public class YoloEnvironmentPoseSeedProvider : MonoBehaviour, ITrackingPoseSeedP
         {
             RowMajorPose16 = rowMajorPose16,
             ClassId = bestDetection.ClassId,
-            Label = lastSeedLabel
+            Label = lastSeedLabel,
+            YoloConfidence = bestDetection.Confidence,
+            YoloBoxX = bestDetection.Box.x,
+            YoloBoxY = bestDetection.Box.y,
+            YoloBoxWidth = bestDetection.Box.width,
+            YoloBoxHeight = bestDetection.Box.height,
+            DepthQuerySuccess = true,
+            InitialDepthMeters = Vector3.Distance(cameraPose.position, rawHitPoint),
+            InitialWorldPosition = worldPose.position,
+            InitialWorldRotation = worldPose.rotation,
+            RetryCandidate = lastYawRetryCandidateLabel,
+            YoloInferenceMs = yoloInferenceMs,
+            DepthQueryMs = Mathf.Max(0f, depthQueryMs),
+            SeedBuildMs = TicksToMilliseconds(System.Diagnostics.Stopwatch.GetTimestamp() - seedStartTicks)
         };
 
         debugInfo =
@@ -550,6 +616,94 @@ public class YoloEnvironmentPoseSeedProvider : MonoBehaviour, ITrackingPoseSeedP
         return passthroughCameraAccess.GetCameraPose();
     }
 
+    private void EnsureYawRetryClass(int classId)
+    {
+        if (yawRetryClassId == classId)
+            return;
+
+        yawRetryCandidateIndex = 0;
+        yawRetryClassId = classId;
+        lastSeedUsedBboxAspectYaw = false;
+        lastYawRetryCandidateLabel = "original";
+    }
+
+    private int GetNextYawRetryCandidateIndex(int currentIndex)
+    {
+        int candidateCount = Mathf.Max(1, GetYawRetryCandidateCount());
+        return (currentIndex + 1) % candidateCount;
+    }
+
+    private int GetYawRetryCandidateCount()
+    {
+        if (!enableAutomaticYawRetry)
+            return 1;
+
+        return 2 + GetYawRetryMicroDegreeCount() * 4;
+    }
+
+    private int GetYawRetryMicroDegreeCount()
+    {
+        if (yawRetryMaxMicroAdjustmentDegrees <= 1e-3f)
+            return 0;
+
+        float step = Mathf.Max(0.25f, yawRetryMicroStepDegrees);
+        return Mathf.Max(1, Mathf.CeilToInt(yawRetryMaxMicroAdjustmentDegrees / step));
+    }
+
+    private string GetYawRetryCandidateLabel(int candidateIndex)
+    {
+        GetYawRetryCandidate(candidateIndex, out _, out _, out string label);
+        return label;
+    }
+
+    private float GetCurrentYawRetryDirectionMultiplier()
+    {
+        GetYawRetryCandidate(yawRetryCandidateIndex, out float yawDirectionMultiplier, out _, out _);
+        return yawDirectionMultiplier;
+    }
+
+    private float GetCurrentYawRetryAdjustmentDegrees()
+    {
+        GetYawRetryCandidate(yawRetryCandidateIndex, out _, out float yawAdjustmentDegrees, out _);
+        return yawAdjustmentDegrees;
+    }
+
+    private void GetYawRetryCandidate(
+        int candidateIndex,
+        out float yawDirectionMultiplier,
+        out float yawAdjustmentDegrees,
+        out string label)
+    {
+        yawDirectionMultiplier = 1f;
+        yawAdjustmentDegrees = 0f;
+        label = "original";
+
+        if (!enableAutomaticYawRetry || candidateIndex <= 0)
+            return;
+
+        if (candidateIndex == 1 || GetYawRetryMicroDegreeCount() <= 0)
+        {
+            yawDirectionMultiplier = -1f;
+            label = "opposite";
+            return;
+        }
+
+        int microCandidateCount = Mathf.Max(1, GetYawRetryMicroDegreeCount() * 4);
+        int microSlot = (candidateIndex - 2) % microCandidateCount;
+        int degreeIndex = microSlot / 4;
+        int slotInDegree = microSlot % 4;
+
+        float step = Mathf.Max(0.25f, yawRetryMicroStepDegrees);
+        float degrees = Mathf.Min(yawRetryMaxMicroAdjustmentDegrees, (degreeIndex + 1) * step);
+        bool opposite = slotInDegree == 1 || slotInDegree == 3;
+        bool negativeAdjustment = slotInDegree >= 2;
+
+        yawDirectionMultiplier = opposite ? -1f : 1f;
+        yawAdjustmentDegrees = negativeAdjustment ? -degrees : degrees;
+        string adjustmentSign = yawAdjustmentDegrees >= 0f ? "+" : "";
+        label = $"{(opposite ? "opposite" : "original")}{adjustmentSign}{yawAdjustmentDegrees:F1}deg";
+    }
+
     private bool TryBuildWorldPose(
         YoloDetector.Detection detection,
         ClassPoseProfile poseProfile,
@@ -640,16 +794,22 @@ public class YoloEnvironmentPoseSeedProvider : MonoBehaviour, ITrackingPoseSeedP
         Vector3 longAxisWorld = Vector3.zero;
         string yawSource = "fallback";
         float aspectYawDegrees = 0f;
+        string yawRetryInfo = "none";
         if (poseProfile.UseBoundingBoxAspectYaw &&
             TryEstimateLongAxisFromBoundingBox(
                 detection,
                 poseProfile,
                 cameraPose,
                 planeNormal,
+                GetCurrentYawRetryDirectionMultiplier(),
+                GetCurrentYawRetryAdjustmentDegrees(),
                 out longAxisWorld,
                 out aspectYawDegrees))
         {
             yawSource = "bboxAspect";
+            lastSeedUsedBboxAspectYaw = true;
+            lastYawRetryCandidateLabel = GetYawRetryCandidateLabel(yawRetryCandidateIndex);
+            yawRetryInfo = lastYawRetryCandidateLabel;
         }
 
         bool usedWorldEdge = false;
@@ -724,7 +884,7 @@ public class YoloEnvironmentPoseSeedProvider : MonoBehaviour, ITrackingPoseSeedP
             $"rawN=({rawHitNormal.x:F2},{rawHitNormal.y:F2},{rawHitNormal.z:F2}) horiz={hitLooksHorizontal}, " +
             $"seedPt=({seedPoint.x:F3},{seedPoint.y:F3},{seedPoint.z:F3}) " +
             $"localUp=({localUpInWorld.x:F2},{localUpInWorld.y:F2},{localUpInWorld.z:F2}), " +
-            $"yaw={yawSource}:{aspectYawDegrees:F1} edgeYaw={usedWorldEdge} manualYaw={manualYawCalibrationDegrees:F0}, " +
+            $"yaw={yawSource}:{aspectYawDegrees:F1} retry={yawRetryInfo} edgeYaw={usedWorldEdge} manualYaw={manualYawCalibrationDegrees:F0}, " +
             $"originOff={poseProfile.OriginToSupportOffsetMeters:F3} drop={poseProfile.FallbackVerticalDropMeters:F3} " +
             $"supportSamples={usedSupportSamples} supportDist={Vector3.Distance(supportRay.origin, supportHit.point):F3}";
         return true;
@@ -919,6 +1079,8 @@ public class YoloEnvironmentPoseSeedProvider : MonoBehaviour, ITrackingPoseSeedP
         ClassPoseProfile poseProfile,
         Pose cameraPose,
         Vector3 planeNormal,
+        float yawDirectionMultiplier,
+        float yawAdjustmentDegrees,
         out Vector3 longAxisWorld,
         out float signedYawDegrees)
     {
@@ -935,7 +1097,8 @@ public class YoloEnvironmentPoseSeedProvider : MonoBehaviour, ITrackingPoseSeedP
 
         float pixelAspect = detection.Box.width / Mathf.Max(1f, detection.Box.height);
         float unsignedYaw = EstimateUnsignedAabbYawDegrees(pixelAspect, footprintLong, footprintShort);
-        signedYawDegrees = unsignedYaw * Mathf.Sign(poseProfile.AspectYawSign) + poseProfile.YawOffsetDegrees;
+        float direction = Mathf.Sign(poseProfile.AspectYawSign) * Mathf.Sign(yawDirectionMultiplier);
+        signedYawDegrees = unsignedYaw * direction + poseProfile.YawOffsetDegrees + yawAdjustmentDegrees;
 
         Vector3 cameraRightOnPlane = GetCameraRightOnPlane(cameraPose, planeNormal);
         longAxisWorld = Quaternion.AngleAxis(signedYawDegrees, planeNormal) * cameraRightOnPlane;
@@ -1112,6 +1275,11 @@ public class YoloEnvironmentPoseSeedProvider : MonoBehaviour, ITrackingPoseSeedP
     private static bool IsFinite(float v)
     {
         return !float.IsNaN(v) && !float.IsInfinity(v);
+    }
+
+    private static float TicksToMilliseconds(long ticks)
+    {
+        return (float)(ticks * 1000.0 / System.Diagnostics.Stopwatch.Frequency);
     }
 
     private void Update()
